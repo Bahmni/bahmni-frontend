@@ -1,0 +1,13 @@
+# directories
+.husky/
+dist/
+node_modules/
+
+# dotfiles
+.*
+
+# by file type
+**/*.css
+**/*.scss
+**/*.md
+**/*.json

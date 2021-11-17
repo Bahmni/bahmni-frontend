@@ -48,7 +48,7 @@ function setupOpenMRS() {
         id: 'bahmni-patient-search',
         slot: 'top-nav-actions-slot',
         order: 0,
-        load: getAsyncLifecycle(() => import('./patient-search-icon'), options),
+        load: getAsyncLifecycle(() => import('./header-icon'), options),
       },
     ],
   };

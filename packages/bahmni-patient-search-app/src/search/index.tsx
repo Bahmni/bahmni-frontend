@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import Button from 'carbon-components-react/es/components/Button';
 import TextInput from 'carbon-components-react/es/components/TextInput';
@@ -43,7 +43,7 @@ const headers = [
   },
 ];
 
-export function PatientSearch() {
+const Search: React.FC = () => {
   const { t } = useTranslation();
   const config = useConfig() as Config;
   const [patients, setPatients] = useState<Array<fhir.Patient>>();
@@ -101,7 +101,7 @@ export function PatientSearch() {
   }
 
   return (
-    <div>
+    <div className={`omrs-main-content ${styles.container}`}>
       {renderTitle()}
       <TextInput
         id="search-patient-input"
@@ -116,4 +116,6 @@ export function PatientSearch() {
       <Tile>{patients ? renderPatients() : null}</Tile>
     </div>
   );
-}
+};
+
+export default Search;

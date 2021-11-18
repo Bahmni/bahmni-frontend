@@ -7,6 +7,7 @@
   ],
   "scripts": {
     "start": "openmrs develop --sources 'packages/bahmni-*-app/'",
+    "bahmni": "openmrs develop --spa-path '/bahmni/' --sources 'packages/bahmni-*-app/'  --config-url config.json",
     "ci:publish": "lerna publish from-package --yes",
     "ci:prepublish": "lerna publish from-package --no-git-reset --yes --dist-tag next",
     "ci:release": "lerna version --no-git-tag-version",

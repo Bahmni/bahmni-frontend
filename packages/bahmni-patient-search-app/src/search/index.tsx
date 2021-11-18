@@ -16,7 +16,7 @@ import {
   TableCell,
   DataTableRow,
 } from 'carbon-components-react';
-import { useConfig } from '@openmrs/esm-framework';
+import { ExtensionSlot, useConfig } from '@openmrs/esm-framework';
 import { Config } from '../config-schema';
 import styles from './styles.css';
 
@@ -114,6 +114,7 @@ const Search: React.FC = () => {
         <Trans key="getPatient">Search patients with name </Trans> "{patientName}"
       </Button>
       <Tile>{patients ? renderPatients() : null}</Tile>
+      <ExtensionSlot extensionSlotName="search-patient-widgets-slot" />
     </div>
   );
 };

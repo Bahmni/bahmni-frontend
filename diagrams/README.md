@@ -1,0 +1,2 @@
+- Please import .png file into https://excalidraw.com/ to make changes
+- Remember to export with Embed scene checked

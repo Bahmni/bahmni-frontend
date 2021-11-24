@@ -64,3 +64,6 @@ dist/
 
 # Intellij integration
 *.iml
+
+# macos
+.DS_Store

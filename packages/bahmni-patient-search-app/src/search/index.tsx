@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import Button from 'carbon-components-react/es/components/Button';
+// import Button from 'carbon-components-react/es/components/Button';
+import { Button } from '@bahmni/design-system/src';
 import TextInput from 'carbon-components-react/es/components/TextInput';
 import { Tile } from 'carbon-components-react/es/components/Tile';
 import { getPatient } from './api';
@@ -111,7 +112,7 @@ const Search: React.FC = () => {
         style={{ width: '50%' }}
       />
       <Button onClick={() => getPatient(patientName).then(setPatients)} style={{ margin: '30px 0px' }}>
-        <Trans key="getPatient">Search patients with name </Trans> "{patientName}"
+        <Trans key="getPatient">Search patients with nome </Trans> "{patientName}"
       </Button>
       <Tile>{patients ? renderPatients() : null}</Tile>
       <ExtensionSlot extensionSlotName="search-patient-widgets-slot" />

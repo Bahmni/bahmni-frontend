@@ -1,4 +1,4 @@
-name: Node.js CI
+name: bahmni-frontend CI
 
 on:
   push:
@@ -24,9 +24,3 @@ jobs:
       - run: npx lerna run typescript
       - run: npx lerna run test
       - run: npx lerna run build
-      # - name: Upload Artifacts
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: packages
-      #     path: |
-      #       packages/**/dist

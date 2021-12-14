@@ -1,24 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { TextInput } from './design-system';
+import { Search } from './design-system';
 import { search } from './api';
+import { useAsync } from 'react-async';
 
 const App = () => {
   const [textInput, setTextInput] = useState('');
+  const [drugsArray, setDrugsArray] = useState([]);
+  const {
+    run: searchDrug,
+    data: drugs,
+    error: error,
+  } = useAsync({
+    deferFn: () => search(textInput),
+    onReject: () => error ?? console.log('searchDrug Failed: Error fetching drug names'),
+  });
+
+  useEffect(() => {
+    if (drugs) {
+      setDrugsArray([]);
+      drugs.results.map((drug) => {
+        setDrugsArray([...drugsArray, drug.name]);
+      });
+    }
+  }, [drugs]);
 
   useEffect(() => {
     if (textInput.length > 1) {
-      search(textInput);
+      searchDrug();
     }
   }, [textInput]);
 
   const handleTextInput = (e) => {
     setTextInput(e.target.value);
   };
+
   return (
-    <>
-      <h1>Hello Webpack React</h1>
-      <TextInput id="search" labelText="Search_Drugs" onChange={(e) => handleTextInput(e)}></TextInput>
-    </>
+    <div>
+      <Search id="search" onChange={(e) => handleTextInput(e)} />
+    </div>
   );
 };
 

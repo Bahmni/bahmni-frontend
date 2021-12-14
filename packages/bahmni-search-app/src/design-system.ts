@@ -1,2 +1,2 @@
-import TextInput from 'carbon-components-react/es/components/TextInput';
-export { TextInput };
+import Search from 'carbon-components-react/es/components/Search';
+export { Search };

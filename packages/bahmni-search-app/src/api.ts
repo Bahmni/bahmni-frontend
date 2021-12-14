@@ -6,5 +6,5 @@ export const search = async (drugName) => {
   const res = await axios.get('http://localhost:8080/openmrs/ws/rest/v1/drug', {
     params: { q: drugName, s, v },
   });
-  console.log(res.data);
+  return res.data;
 };

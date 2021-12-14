@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 
 module.exports = {
   mode: 'development',
@@ -11,7 +10,6 @@ module.exports = {
   target: 'node',
   devServer: {
     port: '8000',
-    // contentBase: ['./public'],
     static: ['./public'],
     open: true,
   },
@@ -29,10 +27,4 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env.REACT_APP_USERNAME': JSON.stringify(process.env.REACT_APP_USERNAME),
-      'process.env.REACT_APP_PASSWORD': JSON.stringify(process.env.REACT_APP_PASSWORD),
-    }),
-  ],
 };

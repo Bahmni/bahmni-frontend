@@ -1,2 +1,3 @@
 import Search from 'carbon-components-react/es/components/Search';
-export { Search };
+import { ClickableTile } from 'carbon-components-react/es/components/Tile';
+export { Search, ClickableTile };

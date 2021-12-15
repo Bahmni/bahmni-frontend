@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Search } from './design-system';
+import { Search, ClickableTile } from './design-system';
 import { search } from './api';
 import { useAsync } from 'react-async';
 
 const App = () => {
   const [textInput, setTextInput] = useState('');
-  const [drugsArray, setDrugsArray] = useState([]);
   const {
     run: searchDrug,
     data: drugs,
@@ -16,16 +15,7 @@ const App = () => {
   });
 
   useEffect(() => {
-    if (drugs) {
-      setDrugsArray([]);
-      drugs.results.map((drug) => {
-        setDrugsArray([...drugsArray, drug.name]);
-      });
-    }
-  }, [drugs]);
-
-  useEffect(() => {
-    if (textInput.length > 1) {
+    if (textInput.length > 1 && textInput.length < 17) {
       searchDrug();
     }
   }, [textInput]);
@@ -34,9 +24,30 @@ const App = () => {
     setTextInput(e.target.value);
   };
 
+  const clearTextInput = () => {
+    setTextInput('');
+  };
+
+  const selectDrug = (e) => {
+    console.log(e.target.outerText);
+    setTextInput(e.target.outerText);
+  };
+
   return (
     <div>
-      <Search id="search" onChange={(e) => handleTextInput(e)} />
+      <Search
+        id="search"
+        labelText="SearchDrugs"
+        onChange={(e) => handleTextInput(e)}
+        onClear={() => clearTextInput()}
+        value={textInput}
+      />
+      {drugs &&
+        drugs.results.map((drug) => (
+          <ClickableTile key={drug.uuid} onClick={(e) => selectDrug(e)}>
+            {drug.name}
+          </ClickableTile>
+        ))}
     </div>
   );
 };

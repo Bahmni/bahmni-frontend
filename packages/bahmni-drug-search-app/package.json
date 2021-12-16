@@ -1,5 +1,5 @@
 {
-  "name": "bahmni-search-app",
+  "name": "bahmni-drug-search-app",
   "version": "1.0.0",
   "main": "index.tsx",
   "license": "MIT",

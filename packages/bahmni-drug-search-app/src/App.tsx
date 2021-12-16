@@ -3,6 +3,19 @@ import { Search, ClickableTile } from './design-system';
 import { search } from './api';
 import { useAsync } from 'react-async';
 
+const styles = {
+  container: {
+    width: '50%',
+    padding: '10rem',
+    margin: 'auto',
+  },
+  tileList: {
+    margin: 'auto',
+    overflow: 'scroll',
+    maxHeight: '20rem',
+  },
+};
+
 const App = () => {
   const [textInput, setTextInput] = useState('');
   const [isTextInputAvailable, setIsTextInputAvailable] = useState(false);
@@ -47,7 +60,7 @@ const App = () => {
   };
 
   return (
-    <div>
+    <div style={styles.container}>
       <Search
         id="search"
         labelText="SearchDrugs"
@@ -55,7 +68,7 @@ const App = () => {
         onClear={() => clearTextInput()}
         value={textInput}
       />
-      {renderClickableTile()}
+      <div style={styles.tileList}>{renderClickableTile()}</div>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { useAsync } from 'react-async';
 
 const App = () => {
   const [textInput, setTextInput] = useState('');
+  const [isTextInputAvailable, setIsTextInputAvailable] = useState(false);
   const {
     run: searchDrug,
     data: drugs,
@@ -18,6 +19,7 @@ const App = () => {
     if (textInput.length > 1 && textInput.length < 17) {
       searchDrug();
     }
+    textInput.length == 2 ? setIsTextInputAvailable(true) : setIsTextInputAvailable(!(textInput.length < 2));
   }, [textInput]);
 
   const handleTextInput = (e) => {
@@ -26,11 +28,22 @@ const App = () => {
 
   const clearTextInput = () => {
     setTextInput('');
+    setIsTextInputAvailable(false);
   };
 
   const selectDrug = (e) => {
     console.log(e.target.outerText);
     setTextInput(e.target.outerText);
+  };
+
+  const renderClickableTile = () => {
+    if (drugs && isTextInputAvailable) {
+      return drugs.results.map((drug) => (
+        <ClickableTile key={drug.uuid} onClick={(e) => selectDrug(e)}>
+          {drug.name}
+        </ClickableTile>
+      ));
+    }
   };
 
   return (
@@ -42,12 +55,7 @@ const App = () => {
         onClear={() => clearTextInput()}
         value={textInput}
       />
-      {drugs &&
-        drugs.results.map((drug) => (
-          <ClickableTile key={drug.uuid} onClick={(e) => selectDrug(e)}>
-            {drug.name}
-          </ClickableTile>
-        ))}
+      {renderClickableTile()}
     </div>
   );
 };

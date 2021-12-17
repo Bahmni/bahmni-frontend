@@ -1,5 +1,3 @@
-import { importMap } from './importmap.js';
-
 const cleanUpContainer = function (container) {
   while (container.firstChild) {
     container.removeChild(container.firstChild);

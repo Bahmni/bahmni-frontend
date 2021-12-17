@@ -4,22 +4,19 @@
   "main": "index.tsx",
   "license": "MIT",
   "dependencies": {
-    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@babel/plugin-transform-runtime": "^7.16.4",
     "@carbon/icons-react": "^10.18.0",
     "axios": "^0.24.0",
-    "babel-loader": "^8.2.3",
     "carbon-components": "^10.50.0",
     "carbon-components-react": "^7.50.0",
+    "react": "^17.0.2",
     "react-async": "^10.0.1",
-    "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.6.0"
+    "react-dom": "^17.0.2"
   },
   "scripts": {
-    "start": "webpack-dev-server --mode development",
-    "build": "webpack --mode development",
+    "start": "rimraf dist && npx webpack-dev-server --mode development",
+    "build": "rimraf dist && NODE_ENV=development npx webpack --mode development",
+    "build:prod": "rimraf dist && npx webpack --mode production",
     "typescript": "tsc",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   }
 }

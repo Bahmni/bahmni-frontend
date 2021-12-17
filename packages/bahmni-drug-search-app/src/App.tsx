@@ -25,7 +25,7 @@ const App = () => {
     error: error,
   } = useAsync({
     deferFn: () => search(textInput),
-    onReject: () => error ?? console.log('searchDrug Failed: Error fetching drug names'),
+    onReject: (e) => error ?? console.log(e),
   });
 
   useEffect(() => {
@@ -63,6 +63,7 @@ const App = () => {
     <div style={styles.container}>
       <Search
         id="search"
+        data-testid="Search Drug"
         labelText="SearchDrugs"
         onChange={(e) => handleTextInput(e)}
         onClear={() => clearTextInput()}

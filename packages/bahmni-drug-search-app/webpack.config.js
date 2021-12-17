@@ -4,7 +4,7 @@ module.exports = {
   mode: 'development',
   entry: './index.tsx',
   output: {
-    path: path.resolve(__dirname, 'public'),
+    path: path.resolve(__dirname, '../../dist/drug-search-app'),
     filename: 'main.js',
   },
   devServer: {

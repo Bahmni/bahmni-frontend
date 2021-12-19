@@ -22,7 +22,19 @@ To start all applications (very resource intensive)
 yarn start
 ```
 
-Run test for all applications
+> Run test for all applications
 ```sh
 yarn test
 ```
+
+> Run test all test across applications in parallel
+```sh
+yarn test:parallel
+```
+
+> Run test for a given application
+```sh
+yarn test --scope bahmni-medication-app
+```
+Note: you can always go inside the application and just do `yarn test`
+

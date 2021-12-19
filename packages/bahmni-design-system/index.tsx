@@ -1,2 +1,4 @@
 import Button from 'carbon-components-react/es/components/Button';
-export { Button };
+import Search from 'carbon-components-react/es/components/Search';
+import { ClickableTile } from 'carbon-components-react/es/components/Tile';
+export { Button, Search, ClickableTile };

@@ -3,11 +3,8 @@
   "version": "1.0.0",
   "description": "Bahmni Design System",
   "main": "index.tsx",
-  "source": true,
   "scripts": {
-    "typescript": "tsc",
-    "build": "rimraf dist && npx webpack --mode development",
-    "build:prod": "rimraf dist && npx webpack --mode production"
+    "typescript": "tsc"
   },
   "dependencies": {
     "@carbon/icons-react": "^10.18.0",

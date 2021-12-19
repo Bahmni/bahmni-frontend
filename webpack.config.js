@@ -44,7 +44,7 @@ module.exports = (env, argv = {}) => {
       // path: resolve(root, outDir),
 
       path: resolve(__dirname, `dist/${ident}`),
-      filename: 'main.js',
+      filename: 'bundle.js',
     },
     target: 'web',
     module: {

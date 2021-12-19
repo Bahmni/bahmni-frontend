@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ClickableTile } from './design-system';
+import { Search, ClickableTile } from '@bahmni/design-system';
 import { search } from './api';
 import { useAsync } from 'react-async';
 

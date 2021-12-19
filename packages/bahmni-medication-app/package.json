@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "rimraf dist && npx webpack-dev-server --mode development",
-    "build": "rimraf dist && NODE_ENV=development npx webpack --mode development",
+    "build": "rimraf dist && npx webpack --mode development",
     "build:prod": "rimraf dist && npx webpack --mode production",
     "typescript": "tsc",
     "test": "jest --passWithNoTests"

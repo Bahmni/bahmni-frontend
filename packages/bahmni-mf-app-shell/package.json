@@ -5,14 +5,14 @@
   "license": "MIT",
   "description": "Bahmni Microfrontend Loader with Import Map",
   "scripts": {
-    "build": "webpack --mode=production --node-env=production",
-    "build:dev": "webpack --mode=development",
-    "build:prod": "webpack --mode=production --node-env=production",
+    "build": "rimraf dist && npx webpack --mode development",
+    "build:prod": "rimraf dist && npx webpack --mode production",
     "watch": "webpack --watch",
     "serve": "webpack serve",
     "test": "jest --passWithNoTests"
   },
   "devDependencies": {
+    "jsdom": "^19.0.0",
     "webpack-concat-files-plugin": "^0.5.2"
   }
 }

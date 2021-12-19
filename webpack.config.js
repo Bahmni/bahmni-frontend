@@ -38,11 +38,6 @@ module.exports = (env, argv = {}) => {
   return {
     entry: [srcFile],
     output: {
-      // filename,
-      // libraryTarget: 'system',
-      // publicPath: '',
-      // path: resolve(root, outDir),
-
       path: resolve(__dirname, `dist/${ident}`),
       filename: 'bundle.js',
     },

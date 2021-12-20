@@ -2,12 +2,12 @@ import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { when } from 'jest-when';
 import React from 'react';
-import { search } from './api';
-import App from './App';
+import { search } from '../api';
+import MedicationApp from '../index';
 
 const BASE_URL = 'https://demo.mybahmni.org';
 
-jest.mock('./api', () => ({
+jest.mock('../api', () => ({
   __esModule: true,
   search: jest.fn(),
 }));
@@ -16,7 +16,7 @@ describe('should test Medication page ', () => {
     jest.clearAllMocks();
   });
   it('should render Search Bar', () => {
-    const { getByTestId } = render(<App />);
+    const { getByTestId } = render(<MedicationApp />);
     expect(getByTestId('Search Drug')).toBeTruthy();
   });
 
@@ -34,7 +34,7 @@ describe('should test Medication page ', () => {
       ],
     };
     when(search).calledWith('Par').mockResolvedValue(result);
-    const { getByTestId, queryAllByTestId, queryByText } = render(<App />);
+    const { getByTestId, queryAllByTestId, queryByText } = render(<MedicationApp />);
     const input = await getByTestId('Search Drug');
 
     userEvent.type(input, 'Par');
@@ -51,7 +51,7 @@ describe('should test Medication page ', () => {
       results: [],
     };
     when(search).calledWith('pa').mockResolvedValue(result);
-    const { getByTestId, queryByTestId } = render(<App />);
+    const { getByTestId, queryByTestId } = render(<MedicationApp />);
     const input = await getByTestId('Search Drug');
 
     userEvent.type(input, 'pa');
@@ -63,7 +63,7 @@ describe('should test Medication page ', () => {
   });
 
   it('should not return drugs when input length is less than 2', async () => {
-    const { getByTestId } = render(<App />);
+    const { getByTestId } = render(<MedicationApp />);
     const input = await getByTestId('Search Drug');
 
     userEvent.type(input, 'p');

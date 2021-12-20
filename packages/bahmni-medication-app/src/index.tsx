@@ -16,40 +16,40 @@ const styles = {
   },
 };
 
-const App = () => {
-  const [textInput, setTextInput] = useState('');
-  const [isTextInputAvailable, setIsTextInputAvailable] = useState(false);
+const MedicationApp = () => {
+  const [userInput, setUserInput] = useState<String>('');
+  const [isUserInputAvailable, setIsUserInputAvailable] = useState<Boolean>(false);
   const {
     run: searchDrug,
     data: drugs,
     error: error,
   } = useAsync({
-    deferFn: () => search(textInput),
+    deferFn: () => search(userInput.trim()),
     onReject: (e) => error ?? console.log(e),
   });
 
   useEffect(() => {
-    if (textInput.length > 1 && textInput.length < 17) {
+    if (userInput.length > 1) {
       searchDrug();
     }
-    textInput.length == 2 ? setIsTextInputAvailable(true) : setIsTextInputAvailable(!(textInput.length < 2));
-  }, [textInput]);
+    userInput.length === 2 ? setIsUserInputAvailable(true) : setIsUserInputAvailable(!(userInput.length < 2));
+  }, [userInput]);
 
-  const handleTextInput = (e) => {
-    setTextInput(e.target.value);
+  const handleUserInput = (e) => {
+    setUserInput(e.target.value);
   };
 
-  const clearTextInput = () => {
-    setTextInput('');
-    setIsTextInputAvailable(false);
+  const clearUserInput = () => {
+    setUserInput('');
+    setIsUserInputAvailable(false);
   };
 
   const selectDrug = (e) => {
-    setTextInput(e.target.outerText);
+    setUserInput(e.target.outerText);
   };
 
-  const renderClickableTile = () => {
-    if (drugs && isTextInputAvailable) {
+  const showDrugOptions = () => {
+    if (drugs && isUserInputAvailable) {
       return drugs.results.map((drug) => (
         <ClickableTile data-testid="Clickable Tile" key={drug.uuid} onClick={(e) => selectDrug(e)}>
           {drug.name}
@@ -64,13 +64,14 @@ const App = () => {
         id="search"
         data-testid="Search Drug"
         labelText="SearchDrugs"
-        onChange={(e) => handleTextInput(e)}
-        onClear={() => clearTextInput()}
-        value={textInput}
+        placeholder="Search for drug to add in prescription"
+        onChange={(e) => handleUserInput(e)}
+        onClear={() => clearUserInput()}
+        value={userInput}
       />
-      <div style={styles.tileList}>{renderClickableTile()}</div>
+      <div style={styles.tileList}>{showDrugOptions()}</div>
     </div>
   );
 };
 
-export default App;
+export default MedicationApp;

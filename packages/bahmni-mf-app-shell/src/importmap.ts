@@ -1,3 +1,3 @@
 const importMap = {
-  medication: [{ name: 'drug-search-app', enabled: true, urls: ['/bahmni/mf/drug-search-app/main.js'] }],
+  medication: [{ name: 'medication-app', enabled: true, urls: ['/bahmni/mf/bahmni-medication/bundle.js'] }],
 };

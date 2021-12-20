@@ -5,9 +5,8 @@ import { useAsync } from 'react-async';
 
 const styles = {
   container: {
-    width: '50%',
-    padding: '10rem',
-    margin: 'auto',
+    width: '70%',
+    margin: '1rem 0 0 1rem',
   },
   tileList: {
     margin: 'auto',

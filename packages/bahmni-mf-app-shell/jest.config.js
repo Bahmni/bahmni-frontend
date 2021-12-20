@@ -8,7 +8,6 @@ module.exports = {
   transform: {
     '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest',
   },
-  // transformIgnorePatterns: ['<rootDir>/src/microFrontendLoader.js'],
   verbose: true,
   setupFilesAfterEnv: ['../../setupTests.ts'],
   testEnvironment: 'jsdom',

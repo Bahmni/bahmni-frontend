@@ -12,6 +12,7 @@
     "test": "jest --passWithNoTests"
   },
   "devDependencies": {
-    "jsdom": "^19.0.0"
+    "jsdom": "^19.0.0",
+    "webpack-concat-files-plugin": "^0.5.2"
   }
 }

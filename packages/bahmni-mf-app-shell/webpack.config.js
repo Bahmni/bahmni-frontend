@@ -1,14 +1,23 @@
-// module.exports = require('../../webpack.config');
 const path = require('path');
 
 const { merge } = require('webpack-merge');
-const common = require('../../webpack.config');
+const commonWebpack = require('../../webpack.config');
+const WebpackConcatPlugin = require('webpack-concat-files-plugin');
 
 module.exports = (env, argv = {}) => {
-  const config = common(env, argv);
-  return merge(config, {
-    entry: {
-      'bundle.js': [path.resolve(__dirname, 'src/microFrontendLoader.js'), path.resolve(__dirname, 'src/importmap.ts')],
-    },
+  let commonConfig = commonWebpack(env, argv);
+  const dist = `${commonConfig.output.path}/${commonConfig.output.filename}`;
+  commonConfig.output = {};
+  return merge(commonConfig, {
+    plugins: [
+      new WebpackConcatPlugin({
+        bundles: [
+          {
+            dest: dist,
+            src: ['./src/importmap.js', './src/microFrontendLoader.js'],
+          },
+        ],
+      }),
+    ],
   });
 };

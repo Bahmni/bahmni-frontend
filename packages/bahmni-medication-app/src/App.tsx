@@ -45,7 +45,6 @@ const App = () => {
   };
 
   const selectDrug = (e) => {
-    console.log(e.target.outerText);
     setTextInput(e.target.outerText);
   };
 

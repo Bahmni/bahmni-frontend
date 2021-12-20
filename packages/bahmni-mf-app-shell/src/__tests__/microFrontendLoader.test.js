@@ -2,7 +2,7 @@ const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const fs = require('fs');
 const path = require('path');
-const html = fs.readFileSync(path.resolve(__dirname, '../test_data/index.html'), 'utf8');
+const html = fs.readFileSync(path.resolve(__dirname, '../__tests__/index.html'), 'utf8');
 let dom;
 let domDocument;
 
@@ -11,7 +11,7 @@ function initializeDom() {
     dom = new JSDOM(html, {
       runScripts: 'dangerously',
       resources: 'usable',
-      url: `file://${path.resolve(__dirname, '../test_data')}/`,
+      url: `file://${path.resolve(__dirname, '../__tests__')}/`,
     });
     dom.window.document.addEventListener('DOMContentLoaded', () => {
       domDocument = dom.window.document;

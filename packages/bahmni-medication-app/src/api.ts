@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://demo.mybahmni.org';
+const BASE_URL = '';
 export const search = async (drugName): Promise<any> => {
   const s = 'ordered';
   const v = 'custom:(uuid,strength,name,dosageForm,concept:(uuid,name,names:(name)))';

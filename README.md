@@ -38,3 +38,9 @@ yarn test --scope bahmni-medication-app
 ```
 Note: you can always go inside the application and just do `yarn test`
 
+
+#### Running nginx container to expose MF's
+```
+docker build -t bahmni-frontend .
+docker run -d -p 8090:80 -p 443:443 --name bahmni-frontend bahmni-frontend
+```

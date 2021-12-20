@@ -1,8 +1,6 @@
 import App from './App';
 import React from 'react';
 import { render, fireEvent, waitFor, act } from '@testing-library/react';
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
 import { search } from './api';
 import { when } from 'jest-when';
 
@@ -12,7 +10,10 @@ jest.mock('./api', () => ({
   __esModule: true,
   search: jest.fn(),
 }));
-describe('should test App page ', () => {
+describe('should test Medication page ', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   it('should render Search Bar', () => {
     const { getByTestId } = render(<App />);
     expect(getByTestId('Search Drug')).toBeTruthy();
@@ -31,8 +32,25 @@ describe('should test App page ', () => {
         },
       ],
     };
+    when(search).calledWith('Par').mockResolvedValue(result);
+    const { getByTestId, findByText, findAllByTestId } = render(<App />);
+    const input = await getByTestId('Search Drug');
+    await fireEvent.change(input, {
+      target: {
+        value: 'Par',
+      },
+    });
+    expect(search).toBeCalledTimes(1);
+    expect(await findAllByTestId('Clickable Tile')).toBeTruthy();
+    expect(await findByText('Paracetomal 1')).toBeTruthy();
+  });
+
+  it('should not render Clickable tile when there is no suggestions', async () => {
+    const result = {
+      results: [],
+    };
     when(search).calledWith('par').mockResolvedValue(result);
-    const { getByTestId, findByText } = render(<App />);
+    const { getByTestId, queryByTestId } = render(<App />);
     const input = await waitFor(() => getByTestId('Search Drug'));
     await fireEvent.change(input, {
       target: {
@@ -40,6 +58,17 @@ describe('should test App page ', () => {
       },
     });
     expect(search).toBeCalledTimes(1);
-    expect(await findByText('Paracetomal 1')).toBeTruthy();
+    expect(queryByTestId('Clickable Tile')).toBeNull();
+  });
+
+  it('should not return drugs when input length is less than 2', async () => {
+    const { getByTestId } = render(<App />);
+    const input = await waitFor(() => getByTestId('Search Drug'));
+    await fireEvent.change(input, {
+      target: {
+        value: 'p',
+      },
+    });
+    expect(search).toBeCalledTimes(0);
   });
 });

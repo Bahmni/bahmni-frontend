@@ -51,7 +51,7 @@ const App = () => {
   const renderClickableTile = () => {
     if (drugs && isTextInputAvailable) {
       return drugs.results.map((drug) => (
-        <ClickableTile key={drug.uuid} onClick={(e) => selectDrug(e)}>
+        <ClickableTile data-testid="Clickable Tile" key={drug.uuid} onClick={(e) => selectDrug(e)}>
           {drug.name}
         </ClickableTile>
       ));

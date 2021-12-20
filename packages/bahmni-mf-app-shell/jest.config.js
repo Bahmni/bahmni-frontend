@@ -9,13 +9,6 @@ module.exports = {
     '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest',
   },
   verbose: true,
-  setupFilesAfterEnv: ['../../setupTests.ts'],
+  setupFilesAfterEnv: ['../../setupTests.js'],
   testEnvironment: 'jsdom',
-  globals: {
-    'ts-jest': {
-      tsconfig: {
-        allowJs: true,
-      },
-    },
-  },
 };

@@ -7,6 +7,7 @@
   ],
   "scripts": {
     "setup": "lerna bootstrap && lerna run build && lerna clean --yes && lerna bootstrap",
+    "build": "lerna run build",
     "verify": "lerna run lint && lerna run test && lerna run typescript",
     "prettier": "prettier --config prettier.config.js --write \"packages/**/*.{ts,tsx}\"",
     "test": "lerna run test",

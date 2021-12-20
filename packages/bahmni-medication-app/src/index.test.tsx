@@ -1,8 +1,9 @@
-import App from './App';
-import React from 'react';
-import { render, fireEvent, waitFor, act } from '@testing-library/react';
-import { search } from './api';
+import { render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { when } from 'jest-when';
+import React from 'react';
+import { search } from './api';
+import App from './App';
 
 const BASE_URL = 'https://demo.mybahmni.org';
 
@@ -33,42 +34,42 @@ describe('should test Medication page ', () => {
       ],
     };
     when(search).calledWith('Par').mockResolvedValue(result);
-    const { getByTestId, findByText, findAllByTestId } = render(<App />);
+    const { getByTestId, queryAllByTestId, queryByText } = render(<App />);
     const input = await getByTestId('Search Drug');
-    await fireEvent.change(input, {
-      target: {
-        value: 'Par',
-      },
+
+    userEvent.type(input, 'Par');
+
+    await waitFor(() => {
+      expect(search).toBeCalledTimes(2);
+      expect(queryAllByTestId('Clickable Tile')).toBeTruthy();
+      expect(queryByText('Paracetomal 1')).toBeTruthy();
     });
-    expect(search).toBeCalledTimes(1);
-    expect(await findAllByTestId('Clickable Tile')).toBeTruthy();
-    expect(await findByText('Paracetomal 1')).toBeTruthy();
   });
 
   it('should not render Clickable tile when there is no suggestions', async () => {
     const result = {
       results: [],
     };
-    when(search).calledWith('par').mockResolvedValue(result);
+    when(search).calledWith('pa').mockResolvedValue(result);
     const { getByTestId, queryByTestId } = render(<App />);
-    const input = await waitFor(() => getByTestId('Search Drug'));
-    await fireEvent.change(input, {
-      target: {
-        value: 'par',
-      },
+    const input = await getByTestId('Search Drug');
+
+    userEvent.type(input, 'pa');
+
+    await waitFor(() => {
+      expect(search).toBeCalledTimes(1);
+      expect(queryByTestId('Clickable Tile')).toBeNull();
     });
-    expect(search).toBeCalledTimes(1);
-    expect(queryByTestId('Clickable Tile')).toBeNull();
   });
 
   it('should not return drugs when input length is less than 2', async () => {
     const { getByTestId } = render(<App />);
-    const input = await waitFor(() => getByTestId('Search Drug'));
-    await fireEvent.change(input, {
-      target: {
-        value: 'p',
-      },
+    const input = await getByTestId('Search Drug');
+
+    userEvent.type(input, 'p');
+
+    await waitFor(() => {
+      expect(search).toBeCalledTimes(0);
     });
-    expect(search).toBeCalledTimes(0);
   });
 });

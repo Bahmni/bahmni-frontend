@@ -4,72 +4,53 @@ import { when } from 'jest-when';
 import React from 'react';
 import { search } from '../api';
 import MedicationApp from '../index';
-
-const BASE_URL = 'https://demo.mybahmni.org';
+import { mockDrugsApiResponse } from './mockHelper';
 
 jest.mock('../api', () => ({
   __esModule: true,
   search: jest.fn(),
 }));
-describe('should test Medication page ', () => {
+
+describe('Medication tab - Drugs search', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
-  it('should render Search Bar', () => {
-    const { getByTestId } = render(<MedicationApp />);
-    expect(getByTestId('Search Drug')).toBeTruthy();
+
+  it('should show matching drugs when user enters valid input in search bar', async () => {
+    when(search).calledWith('Par').mockResolvedValue(mockDrugsApiResponse.validResponse);
+    const { getByRole, getByText } = render(<MedicationApp />);
+    const searchBox = getByRole('searchbox', { name: /searchdrugs/i });
+
+    userEvent.type(searchBox, 'Par');
+
+    await waitFor(() => expect(search).toBeCalledTimes(2));
+    expect(getByText(/paracetomal 1/i)).toBeInTheDocument();
+    expect(getByText(/paracetomal 2/i)).toBeInTheDocument();
   });
 
-  it('should return drugs based on the input', async () => {
-    const result = {
-      results: [
-        {
-          uuid: 1,
-          name: 'Paracetomal 1',
-        },
-        {
-          uuid: 2,
-          name: 'Paracetomal 2',
-        },
-      ],
-    };
-    when(search).calledWith('Par').mockResolvedValue(result);
-    const { getByTestId, queryAllByTestId, queryByText } = render(<MedicationApp />);
-    const input = await getByTestId('Search Drug');
+  it('should not show any results when user input have no matching drugs', async () => {
+    when(search).calledWith('par').mockResolvedValue(mockDrugsApiResponse.emptyResponse);
+    const { getByRole, queryByTestId } = render(<MedicationApp />);
+    const searchBox = getByRole('searchbox', { name: /searchdrugs/i });
 
-    userEvent.type(input, 'Par');
+    userEvent.type(searchBox, 'par');
 
-    await waitFor(() => {
-      expect(search).toBeCalledTimes(2);
-      expect(queryAllByTestId('Clickable Tile')).toBeTruthy();
-      expect(queryByText('Paracetomal 1')).toBeTruthy();
-    });
+    await waitFor(() => expect(search).toBeCalledTimes(2));
+    expect(queryByTestId(/drugDataId/i)).toBeNull();
   });
 
-  it('should not render Clickable tile when there is no suggestions', async () => {
-    const result = {
-      results: [],
-    };
-    when(search).calledWith('pa').mockResolvedValue(result);
-    const { getByTestId, queryByTestId } = render(<MedicationApp />);
-    const input = await getByTestId('Search Drug');
+  it('should require user to enter minimum 2 character for searching drugs', async () => {
+    when(search).calledWith('Pa').mockResolvedValue(mockDrugsApiResponse.validResponse);
+    const { getByRole, getByText, queryByTestId } = render(<MedicationApp />);
+    const searchBox = getByRole('searchbox', { name: /searchdrugs/i });
 
-    userEvent.type(input, 'pa');
+    userEvent.type(searchBox, 'P');
+    await waitFor(() => expect(search).not.toBeCalled());
+    expect(queryByTestId(/drugDataId/i)).toBeNull();
 
-    await waitFor(() => {
-      expect(search).toBeCalledTimes(1);
-      expect(queryByTestId('Clickable Tile')).toBeNull();
-    });
-  });
-
-  it('should not return drugs when input length is less than 2', async () => {
-    const { getByTestId } = render(<MedicationApp />);
-    const input = await getByTestId('Search Drug');
-
-    userEvent.type(input, 'p');
-
-    await waitFor(() => {
-      expect(search).toBeCalledTimes(0);
-    });
+    userEvent.type(searchBox, 'a');
+    await waitFor(() => expect(search).toBeCalledTimes(1));
+    expect(getByText(/paracetomal 1/i)).toBeInTheDocument();
+    expect(getByText(/paracetomal 2/i)).toBeInTheDocument();
   });
 });

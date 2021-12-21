@@ -24,7 +24,7 @@ const MedicationApp = () => {
     error: error,
   } = useAsync({
     deferFn: () => search(userInput.trim()),
-    onReject: (e) => error ?? console.log(e),
+    // onReject: (e) => error ?? console.log(e),
   });
 
   useEffect(() => {
@@ -49,8 +49,8 @@ const MedicationApp = () => {
 
   const showDrugOptions = () => {
     if (drugs && isUserInputAvailable) {
-      return drugs.results.map((drug) => (
-        <ClickableTile data-testid="Clickable Tile" key={drug.uuid} onClick={(e) => selectDrug(e)}>
+      return drugs.results.map((drug, i: number) => (
+        <ClickableTile data-testid={`drugDataId ${i}`} key={drug.uuid} onClick={(e) => selectDrug(e)}>
           {drug.name}
         </ClickableTile>
       ));

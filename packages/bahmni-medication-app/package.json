@@ -1,0 +1,23 @@
+{
+  "name": "bahmni-medication-app",
+  "version": "1.0.0",
+  "main": "index.tsx",
+  "license": "MIT",
+  "dependencies": {
+    "@carbon/icons-react": "^10.18.0",
+    "axios": "^0.24.0",
+    "carbon-components": "^10.50.0",
+    "carbon-components-react": "^7.50.0",
+    "react": "^17.0.2",
+    "react-async": "^10.0.1",
+    "react-dom": "^17.0.2",
+    "@bahmni/design-system": "1.0.0"
+  },
+  "scripts": {
+    "start": "rimraf dist && npx webpack-dev-server --mode development",
+    "build": "rimraf dist && npx webpack --mode development",
+    "build:prod": "rimraf dist && npx webpack --mode production",
+    "typescript": "tsc",
+    "test": "jest --passWithNoTests"
+  }
+}

@@ -1,18 +1,14 @@
 name: bahmni-frontend CI
-
 on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
-  release:
-    types:
-      - created
-
+    branches: [ main ]
+    types: [opened, synchronize, reopened]
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
@@ -24,3 +20,27 @@ jobs:
       - run: npx lerna run typescript
       - run: npx lerna run test
       - run: npx lerna run build
+  slack-workflow-status:
+      name: Notify on Slack
+      needs:
+        - build
+      runs-on: ubuntu-latest
+      env:
+        STATUS: ${{ (needs.build.result == 'success') && 'good' || 'danger' }}
+      if: always()
+      steps:
+        - name: Slack notification
+          uses: 8398a7/action-slack@v3
+          with:
+            status: custom
+            fields: workflow,job,commit,repo,ref,author
+            custom_payload: |
+              {
+                attachments: [{
+                  color: '${{ env.STATUS }}',
+                  title: '${{ github.event_name }}',
+                  text: `${process.env.AS_WORKFLOW}\ncommit ${process.env.AS_COMMIT} of ${process.env.AS_REPO}@${process.env.AS_REF} by ${process.env.AS_AUTHOR}`,
+                }]
+              }
+          env:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

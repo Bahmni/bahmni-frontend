@@ -1,0 +1,27 @@
+{
+  "transform": {
+      "^.+\\.tsx?$": "babel-jest"
+  },
+  "moduleNameMapper": {
+      "\\.(s?css)$": "identity-obj-proxy",
+      "^@carbon/icons-react/es/(.*)$": "@carbon/icons-react/lib/$1",
+      "^@carbon/charts": "identity-obj-proxy",
+      "^carbon-components-react/es/(.*)$": "carbon-components-react/lib/$1",
+      "lodash-es": "lodash"
+  },
+  "collectCoverageFrom": [
+      "**/src/**/*.tsx",
+      "!**/node_modules/**",
+      "!**/vendor/**",
+      "!**/src/**/*.test.*",
+      "!**/src/declarations.d.tsx"
+  ],
+  "coverageThreshold": {
+      "global": {
+          "statements": 9,
+          "branches": 9,
+          "functions": 9,
+          "lines": 9
+      }
+  }
+}

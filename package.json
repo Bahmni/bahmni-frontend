@@ -19,6 +19,14 @@
   "dependencies": {
     "swr": "^1.0.1"
   },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "yarn run eslint --fix"
+    ],
+    "*.{md,json}": [
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/plugin-proposal-class-properties": "^7.12.1",
@@ -82,6 +90,8 @@
     "webpack-dev-server": "^4.6.0",
     "webpack-merge": "^5.8.0",
     "webpack-pwa-manifest": "^4.3.0",
-    "webpack-stats-plugin": "^1.0.3"
+    "webpack-stats-plugin": "^1.0.3",
+    "lint-staged": "10.3.0",
+    "audit-ci": "5.1.2"
   }
 }

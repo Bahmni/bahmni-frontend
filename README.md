@@ -1,8 +1,8 @@
-# Bahmni App on OpenMRS 3.0
+# Bahmni Frontend
 
 This is a [Lerna](https://lerna.js.org/) project containing bahmni applications. This package handles the following
 
--  [@bahmni/bahmni-patient-search-app](packages/bahmni-patient-search-app)
+-  [@bahmni/design-system](packages/bahmni-design-system)
 
 ## Repository Development
 ### Prerequisites
@@ -14,7 +14,7 @@ This is a [Lerna](https://lerna.js.org/) project containing bahmni applications.
 To install and setup the repository once cloned just use the following command
 
 ```sh
-npx lerna bootstrap
+yarn setup
 ```
 
 To start all applications (very resource intensive)
@@ -22,26 +22,25 @@ To start all applications (very resource intensive)
 yarn start
 ```
 
-To develop on a specific package e.g [@bahmni/bahmni-patient-search-app](packages/bahmni-patient-search-app)
+> Run test for all applications
 ```sh
-npx openmrs develop --sources 'packages/bahmni-patient-search-app'
+yarn test
 ```
 
-
-### Building
-
-For building the code just run
-
+> Run test all test across applications in parallel
 ```sh
-npx lerna run build
-
+yarn test:parallel
 ```
 
-
-### Tests
-
-To verify that all the test run
-
+> Run test for a given application
 ```sh
-yarn test or npm test
+yarn test --scope bahmni-medication-app
+```
+Note: you can always go inside the application and just do `yarn test`
+
+
+#### Running nginx container to expose MF's
+```
+docker build -t bahmni-frontend .
+docker run -d -p 8090:80 -p 443:443 --name bahmni-frontend bahmni-frontend
 ```

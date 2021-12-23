@@ -59,4 +59,19 @@ describe('Medication tab - Drugs search', () => {
     expect(screen.getByText(/paracetomal 1/i)).toBeInTheDocument();
     expect(screen.getByText(/paracetomal 2/i)).toBeInTheDocument();
   });
+
+  it('should show prescription dialog when user clicks a drug', async () => {
+    when(search).calledWith('Par').mockResolvedValue(mockDrugsApiResponse.validResponse);
+    render(<MedicationApp />);
+    const searchBox = screen.getByRole('searchbox', { name: /searchdrugs/i });
+    userEvent.type(searchBox, 'Par');
+    await waitFor(() => expect(search).toBeCalledTimes(2));
+
+    expect(screen.queryByTitle('prescriptionDialog')).toBeNull();
+
+    const drugOption = screen.getByText(/paracetomal 1/i);
+    userEvent.click(drugOption);
+
+    await waitFor(() => expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument());
+  });
 });

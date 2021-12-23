@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, ClickableTile } from '@bahmni/design-system';
 import { search } from './api';
 import { useAsync } from 'react-async';
+import PrescriptionDialog from './components/PrescriptionDialog';
 
 const styles = {
   container: {
@@ -18,6 +19,7 @@ const styles = {
 const MedicationApp = () => {
   const [userInput, setUserInput] = useState<String>('');
   const [isUserInputAvailable, setIsUserInputAvailable] = useState<Boolean>(false);
+  const [selectedDrug, setSelectedDrug] = useState(null);
   const {
     run: searchDrug,
     data: drugs,
@@ -31,7 +33,8 @@ const MedicationApp = () => {
     if (userInput.length > 1) {
       searchDrug();
     }
-    userInput.length === 2 ? setIsUserInputAvailable(true) : setIsUserInputAvailable(!(userInput.length < 2));
+    setIsUserInputAvailable(userInput.length >= 2);
+    setSelectedDrug(false);
   }, [userInput]);
 
   const handleUserInput = (e) => {
@@ -41,22 +44,20 @@ const MedicationApp = () => {
   const clearUserInput = () => {
     setUserInput('');
     setIsUserInputAvailable(false);
-  };
-
-  const selectDrug = (e) => {
-    setUserInput(e.target.outerText);
+    setSelectedDrug(null);
   };
 
   const showDrugOptions = () => {
-    if (drugs && isUserInputAvailable) {
+    if (drugs && isUserInputAvailable && !selectedDrug) {
       return drugs.results.map((drug, i: number) => (
-        <ClickableTile data-testid={`drugDataId ${i}`} key={drug.uuid} onClick={(e) => selectDrug(e)}>
+        <ClickableTile data-testid={`drugDataId ${i}`} key={drug.uuid} onClick={() => setSelectedDrug(drug)}>
           {drug.name}
         </ClickableTile>
       ));
     }
   };
 
+  const handlePrescriptionDialogClose = () => {};
   return (
     <div style={styles.container}>
       <Search
@@ -69,6 +70,9 @@ const MedicationApp = () => {
         value={userInput}
       />
       <div style={styles.tileList}>{showDrugOptions()}</div>
+      {selectedDrug && (
+        <PrescriptionDialog drug={selectedDrug} onClose={handlePrescriptionDialogClose}></PrescriptionDialog>
+      )}
     </div>
   );
 };

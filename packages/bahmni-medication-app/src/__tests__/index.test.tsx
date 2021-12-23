@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { render, waitFor, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { when } from 'jest-when';
 import React from 'react';
@@ -18,14 +18,14 @@ describe('Medication tab - Drugs search', () => {
 
   it('should show matching drugs when user enters valid input in search bar', async () => {
     when(search).calledWith('Par').mockResolvedValue(mockDrugsApiResponse.validResponse);
-    const { getByRole, getByText } = render(<MedicationApp />);
-    const searchBox = getByRole('searchbox', { name: /searchdrugs/i });
+    render(<MedicationApp />);
+    const searchBox = screen.getByRole('searchbox', { name: /searchdrugs/i });
 
     userEvent.type(searchBox, 'Par');
 
     await waitFor(() => expect(search).toBeCalledTimes(2));
-    expect(getByText(/paracetomal 1/i)).toBeInTheDocument();
-    expect(getByText(/paracetomal 2/i)).toBeInTheDocument();
+    expect(screen.getByText(/paracetomal 1/i)).toBeInTheDocument();
+    expect(screen.getByText(/paracetomal 2/i)).toBeInTheDocument();
   });
 
   it('should not show any results when user input have no matching drugs', async () => {

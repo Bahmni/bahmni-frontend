@@ -3,6 +3,7 @@ import { Search, ClickableTile } from '@bahmni/design-system';
 import { search, getActivePrescription } from './api';
 import { useAsync } from 'react-async';
 import ActivePrescription from './ActivePrescription';
+import { getPatientUuid } from './helper';
 
 const styles = {
   container: {
@@ -17,10 +18,8 @@ const styles = {
 };
 
 const MedicationApp = () => {
-  const url = window.location.hash;
-  const urlArray = url.split('/');
-  const patientUuid = urlArray[urlArray.indexOf('patient') + 1];
-  const [userInput, setUserInput] = useState<String>('');
+  const patientUuid = getPatientUuid();
+  const [userInput, setUserInput] = useState('');
   const [isUserInputAvailable, setIsUserInputAvailable] = useState<Boolean>(false);
   const {
     run: searchDrug,
@@ -30,17 +29,6 @@ const MedicationApp = () => {
     deferFn: () => search(userInput.trim()),
     // onReject: (e) => error ?? console.log(e),
   });
-  const {
-    run: runActivePrescription,
-    data: activePrescription,
-    error: activePrescriptionError,
-  } = useAsync({
-    deferFn: () => getActivePrescription(patientUuid),
-    //onReject: (e) => activePrescriptionError ?? console.log(e),
-  });
-  useEffect(() => {
-    runActivePrescription();
-  }, []);
 
   useEffect(() => {
     if (userInput.length > 1) {
@@ -86,7 +74,7 @@ const MedicationApp = () => {
         />
         <div style={styles.tileList}>{showDrugOptions()}</div>
       </div>
-      {activePrescription && <ActivePrescription activePrescriptionData={activePrescription}></ActivePrescription>}
+      <ActivePrescription />
     </div>
   );
 };

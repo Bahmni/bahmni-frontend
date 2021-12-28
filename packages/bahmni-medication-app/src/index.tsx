@@ -59,7 +59,10 @@ const MedicationApp = () => {
     }
   };
 
-  const handlePrescriptionDialogClose = () => {};
+  const handlePrescriptionDialogClose = () => {
+    setSelectedDrug(null);
+    clearUserInput();
+  };
   return (
     <div style={styles.container}>
       <div style={styles.search_bar}>

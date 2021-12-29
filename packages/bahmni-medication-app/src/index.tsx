@@ -3,6 +3,7 @@ import { Search, ClickableTile } from '@bahmni/design-system';
 import { search } from './api';
 import { useAsync } from 'react-async';
 import PrescriptionDialog from './components/PrescriptionDialog';
+import { Drug, DrugResult } from './types';
 
 const styles = {
   container: {
@@ -21,12 +22,12 @@ const styles = {
 const MedicationApp = () => {
   const [userInput, setUserInput] = useState<String>('');
   const [isUserInputAvailable, setIsUserInputAvailable] = useState<Boolean>(false);
-  const [selectedDrug, setSelectedDrug] = useState(null);
+  const [selectedDrug, setSelectedDrug] = useState<Drug>(null);
   const {
     run: searchDrug,
     data: drugs,
     error: error,
-  } = useAsync({
+  } = useAsync<DrugResult>({
     deferFn: () => search(userInput.trim()),
     // onReject: (e) => error ?? console.log(e),
   });
@@ -36,7 +37,7 @@ const MedicationApp = () => {
       searchDrug();
     }
     setIsUserInputAvailable(userInput.length >= 2);
-    setSelectedDrug(false);
+    setSelectedDrug(null);
   }, [userInput]);
 
   const handleUserInput = (e) => {

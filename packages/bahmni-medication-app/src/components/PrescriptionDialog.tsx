@@ -10,6 +10,12 @@ import {
   Search,
 } from '@bahmni/design-system';
 import React from 'react';
+import { Drug } from '../types';
+
+type PrescriptionDialogProps = {
+  drug: Drug;
+  onClose: Function;
+};
 
 const styles = {
   dialog_container: {
@@ -26,11 +32,11 @@ const styles = {
     textAlign: 'right',
   },
 };
-const PrescriptionDialog = (props: { drug: any; onClose }) => {
-  const dosageUnits = ['Tablet', 'Injection'];
-  const durationUnits = ['Days', 'Weeks', 'Months'];
-  const drugRoutes = ['Oral', 'Intravenous'];
-  const currentDate = new Date().toLocaleDateString();
+const PrescriptionDialog = (props: PrescriptionDialogProps) => {
+  const dosageUnits: string[] = ['Tablet', 'Injection'];
+  const durationUnits: string[] = ['Days', 'Weeks', 'Months'];
+  const drugRoutes: string[] = ['Oral', 'Intravenous'];
+  const currentDate: string = new Date().toLocaleDateString();
   return (
     <div style={styles.dialog_container} title="prescriptionDialog">
       <Grid>

@@ -30,6 +30,7 @@ const PrescriptionDialog = (props: { drug: any; onClose }) => {
   const dosageUnits = ['Tablet', 'Injection'];
   const durationUnits = ['Days', 'Weeks', 'Months'];
   const drugRoutes = ['Oral', 'Intravenous'];
+  const currentDate = new Date().toLocaleDateString();
   return (
     <div style={styles.dialog_container} title="prescriptionDialog">
       <Grid>
@@ -44,7 +45,7 @@ const PrescriptionDialog = (props: { drug: any; onClose }) => {
               <Column>
                 <Row>
                   <Column sm={1}>
-                    <NumberInput id="dosage" label="Dosage" hideSteppers={true}></NumberInput>
+                    <NumberInput id="dosage" label="Dosage" hideSteppers={true} min={0}></NumberInput>
                   </Column>
                   <Column sm={3}>
                     <Dropdown
@@ -66,7 +67,7 @@ const PrescriptionDialog = (props: { drug: any; onClose }) => {
               <Column>
                 <Row>
                   <Column sm={1}>
-                    <NumberInput id="duration" label="Duration" hideSteppers={true}></NumberInput>
+                    <NumberInput id="duration" label="Duration" hideSteppers={true} min={0}></NumberInput>
                   </Column>
                   <Column sm={3}>
                     <Dropdown
@@ -83,7 +84,12 @@ const PrescriptionDialog = (props: { drug: any; onClose }) => {
 
             <Row>
               <Column>
-                <DatePicker datePickerType="single" dateFormat="d/m/Y" short={true}>
+                <DatePicker
+                  datePickerType="single"
+                  dateFormat="d/m/Y"
+                  short={true}
+                  value={currentDate}
+                  minDate={currentDate}>
                   <DatePickerInput placeholder="dd/mm/yyyy" labelText="Start Date" id="startDate" />
                 </DatePicker>
               </Column>
@@ -91,7 +97,7 @@ const PrescriptionDialog = (props: { drug: any; onClose }) => {
               <Column>
                 <Row>
                   <Column sm={1}>
-                    <NumberInput id="quantity" label="Quantity" hideSteppers={true}></NumberInput>
+                    <NumberInput id="quantity" label="Quantity" hideSteppers={true} min={0}></NumberInput>
                   </Column>
                   <Column sm={3}>
                     <Dropdown

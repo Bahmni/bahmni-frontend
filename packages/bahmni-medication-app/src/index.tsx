@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Search, ClickableTile } from '@bahmni/design-system';
-import { search, getActivePrescription } from './api';
+import { ClickableTile, Search, Tab, Tabs } from '@bahmni/design-system';
+import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-async';
 import ActivePrescription from './ActivePrescription';
-import { getPatientUuid } from './helper';
+import { search } from './api';
 
 const styles = {
   container: {
     width: '70%',
     margin: '1rem 0 0 1rem',
-  },
+    position: 'absolute',
+  } as React.CSSProperties,
   tileList: {
     margin: 'auto',
     overflow: 'scroll',
     maxHeight: '20rem',
   },
+  tablePosition: { paddingTop: '10rem' } as React.CSSProperties,
 };
 
 const MedicationApp = () => {
-  const patientUuid = getPatientUuid();
   const [userInput, setUserInput] = useState('');
   const [isUserInputAvailable, setIsUserInputAvailable] = useState<Boolean>(false);
   const {
@@ -74,7 +74,15 @@ const MedicationApp = () => {
         />
         <div style={styles.tileList}>{showDrugOptions()}</div>
       </div>
-      <ActivePrescription />
+      <div style={styles.tablePosition}>
+        <Tabs>
+          <Tab label="Active Prescription">
+            <ActivePrescription />
+          </Tab>
+          <Tab label="Schedule" />
+          <Tab label="Show all" />
+        </Tabs>
+      </div>
     </div>
   );
 };

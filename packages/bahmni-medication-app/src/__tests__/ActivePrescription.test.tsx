@@ -4,14 +4,14 @@ import { when } from 'jest-when';
 import React from 'react';
 import ActivePrescription from '../ActivePrescription';
 import { getActivePrescription } from '../api';
-import { getPatientUuid } from '../helper';
+import { getPatientUuid } from '../utils/helper';
 
 test('should pass hygene accessibility tests', async () => {
   const { container } = render(<ActivePrescription />);
   expect(await axe(container)).toHaveNoViolations();
 });
 
-jest.mock('../helper', () => ({
+jest.mock('../utils/helper', () => ({
   __esModule: true,
   getPatientUuid: jest.fn(),
 }));

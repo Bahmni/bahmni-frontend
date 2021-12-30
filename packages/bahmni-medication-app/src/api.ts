@@ -1,5 +1,9 @@
 import axios from 'axios';
 
+interface ActivePrescription {
+  patientUuid: String;
+}
+
 const BASE_URL = '';
 export const search = async (drugName): Promise<any> => {
   const s = 'ordered';
@@ -11,7 +15,7 @@ export const search = async (drugName): Promise<any> => {
 };
 
 export const getActivePrescription = async (patientUuid): Promise<any> => {
-  const res = await axios.get<any>(`${BASE_URL}/openmrs/ws/rest/v1/bahmnicore/drugOrders/active`, {
+  const res = await axios.get<ActivePrescription>(`${BASE_URL}/openmrs/ws/rest/v1/bahmnicore/drugOrders/active`, {
     params: {
       patientUuid,
     },

@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { useAsync } from 'react-async';
 import { getActivePrescription } from './api';
-import { getPatientUuid } from './helper';
-import PrescriptionTable from './PrescriptionTable';
+import { getPatientUuid } from './utils/helper';
+import PrescriptionTable from './common/PrescriptionTable';
+import { ActiveDrug } from './types/activePrescriptionTypes';
 
 const ActivePrescription = () => {
-  const patientUuid = getPatientUuid();
+  const patientUuid: String = getPatientUuid();
 
-  const { run: runActivePrescription, data: activePrescriptionData } = useAsync({
+  const { run: runActivePrescription, data: activePrescriptionData } = useAsync<ActiveDrug[]>({
     deferFn: () => getActivePrescription(patientUuid),
-    //onReject: (e) => activePrescriptionError ?? console.log(e),
   });
 
   useEffect(() => {

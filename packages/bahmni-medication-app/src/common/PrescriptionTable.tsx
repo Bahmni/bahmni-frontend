@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Link } from '@bahmni/design-system';
 import React from 'react';
-import { headerData } from './constants';
+import { headerData } from '../utils/constants';
+import { ActiveDrug } from '../types/activePrescriptionTypes';
 
 const styles = {
   providerName: { fontSize: '0.7rem', float: 'right', paddingTop: '10px' } as React.CSSProperties,
@@ -8,13 +9,13 @@ const styles = {
 };
 
 const schedule = (drugInfo) => {
-  const doseInfo = drugInfo.dosingInstructions;
-  const startDate = new Date(drugInfo.effectiveStartDate).toLocaleDateString();
-  const schedule = `${doseInfo.dose} ${doseInfo.doseUnits}, ${doseInfo.frequency} for ${drugInfo.duration} ${drugInfo.durationUnits} started on ${startDate}`;
+  const doseInfo: any = drugInfo.dosingInstructions;
+  const startDate: String = new Date(drugInfo.effectiveStartDate).toLocaleDateString();
+  const schedule: String = `${doseInfo.dose} ${doseInfo.doseUnits}, ${doseInfo.frequency} for ${drugInfo.duration} ${drugInfo.durationUnits} started on ${startDate}`;
   return schedule;
 };
 
-let lastVisitDate;
+let lastVisitDate: String;
 const getSubHeading = (visitDate) => {
   if (lastVisitDate === null || lastVisitDate != visitDate) {
     lastVisitDate = visitDate;
@@ -37,7 +38,11 @@ const getStatus = (row) => {
   if (!row.dateStopped) return 'active';
 };
 
-const PrescriptionTable = ({ data }) => {
+interface PrescriptionData {
+  data: ActiveDrug[];
+}
+
+const PrescriptionTable = (props: PrescriptionData) => {
   return (
     <Table title="prescription">
       <TableHead>
@@ -48,7 +53,7 @@ const PrescriptionTable = ({ data }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {data
+        {props.data
           .slice()
           .reverse()
           .map((row) => (

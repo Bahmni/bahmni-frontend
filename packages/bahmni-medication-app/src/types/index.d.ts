@@ -9,3 +9,7 @@ export type Drug = {
 export type DrugResult = {
   results: Drug[];
 };
+
+export type DrugName = {
+  name: String;
+};

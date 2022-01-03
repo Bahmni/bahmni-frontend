@@ -10,10 +10,10 @@ import {
   Search,
 } from '@bahmni/design-system';
 import React from 'react';
-import { Drug } from '../types';
+import type { Drug, DrugName } from '../types';
 
 type PrescriptionDialogProps = {
-  drug: Drug;
+  drug: Drug | DrugName;
   onClose: Function;
 };
 

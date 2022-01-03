@@ -6,4 +6,5 @@ import NumberInput from 'carbon-components-react/es/components/NumberInput';
 import Dropdown from 'carbon-components-react/es/components/Dropdown';
 import DatePicker from 'carbon-components-react/es/components/DatePicker';
 import DatePickerInput from 'carbon-components-react/es/components/DatePickerInput';
-export { Button, Search, ClickableTile, Grid, Row, Column, NumberInput, Dropdown, DatePicker, DatePickerInput };
+import { Add20 } from '@carbon/icons-react';
+export { Button, Search, ClickableTile, Grid, Row, Column, NumberInput, Dropdown, DatePicker, DatePickerInput, Add20 };

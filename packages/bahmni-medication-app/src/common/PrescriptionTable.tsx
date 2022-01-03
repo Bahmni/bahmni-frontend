@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Link } from '@bahmni/design-system';
 import React from 'react';
 import { headerData } from '../utils/constants';
-import { ActiveDrug } from '../types/activePrescriptionTypes';
+import type { ActiveDrug } from '../types/medication';
 
 const styles = {
   providerName: { fontSize: '0.7rem', float: 'right', paddingTop: '10px' } as React.CSSProperties,

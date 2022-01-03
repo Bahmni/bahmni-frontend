@@ -3,7 +3,7 @@ import { useAsync } from 'react-async';
 import { getActivePrescription } from './api';
 import { getPatientUuid } from './utils/helper';
 import PrescriptionTable from './common/PrescriptionTable';
-import { ActiveDrug } from './types/activePrescriptionTypes';
+import type { ActiveDrug } from './types/medication';
 
 const ActivePrescription = () => {
   const patientUuid: String = getPatientUuid();

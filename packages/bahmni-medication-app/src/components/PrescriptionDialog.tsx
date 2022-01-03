@@ -51,7 +51,12 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
               <Column>
                 <Row>
                   <Column sm={1}>
-                    <NumberInput id="dosage" label="Dosage" hideSteppers={true} min={0}></NumberInput>
+                    <NumberInput
+                      id="dosage"
+                      label="Dosage"
+                      hideSteppers={true}
+                      min={0}
+                      invalidText="Dosage cannot be less than 0"></NumberInput>
                   </Column>
                   <Column sm={3}>
                     <Dropdown
@@ -73,7 +78,12 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
               <Column>
                 <Row>
                   <Column sm={1}>
-                    <NumberInput id="duration" label="Duration" hideSteppers={true} min={0}></NumberInput>
+                    <NumberInput
+                      id="duration"
+                      label="Duration"
+                      hideSteppers={true}
+                      min={0}
+                      invalidText="Duration cannot be less than 0"></NumberInput>
                   </Column>
                   <Column sm={3}>
                     <Dropdown
@@ -92,7 +102,7 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
               <Column>
                 <DatePicker
                   datePickerType="single"
-                  dateFormat="d/m/Y"
+                  dateFormat="m/d/Y"
                   short={true}
                   value={currentDate}
                   minDate={currentDate}>
@@ -103,7 +113,12 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
               <Column>
                 <Row>
                   <Column sm={1}>
-                    <NumberInput id="quantity" label="Quantity" hideSteppers={true} min={0}></NumberInput>
+                    <NumberInput
+                      id="quantity"
+                      label="Quantity"
+                      hideSteppers={true}
+                      min={0}
+                      invalidText="Quantity cannot be less than 0"></NumberInput>
                   </Column>
                   <Column sm={3}>
                     <Dropdown

@@ -40,10 +40,6 @@ const MedicationApp = () => {
     setSelectedDrug(null);
   }, [userInput]);
 
-  const handleUserInput = (e) => {
-    setUserInput(e.target.value);
-  };
-
   const clearUserInput = () => {
     setUserInput('');
     setIsUserInputAvailable(false);
@@ -60,10 +56,6 @@ const MedicationApp = () => {
     }
   };
 
-  const handlePrescriptionDialogClose = () => {
-    setSelectedDrug(null);
-    clearUserInput();
-  };
   return (
     <div style={styles.container}>
       <div style={styles.search_bar}>
@@ -72,15 +64,13 @@ const MedicationApp = () => {
           data-testid="Search Drug"
           labelText="SearchDrugs"
           placeholder="Search for drug to add in prescription"
-          onChange={(e) => handleUserInput(e)}
+          onChange={(e: { target: HTMLInputElement }) => setUserInput(e.target.value)}
           onClear={() => clearUserInput()}
           value={userInput}
         />
         <div style={styles.tileList}>{showDrugOptions()}</div>
       </div>
-      {selectedDrug && (
-        <PrescriptionDialog drug={selectedDrug} onClose={handlePrescriptionDialogClose}></PrescriptionDialog>
-      )}
+      {selectedDrug && <PrescriptionDialog drug={selectedDrug} onClose={clearUserInput}></PrescriptionDialog>}
     </div>
   );
 };

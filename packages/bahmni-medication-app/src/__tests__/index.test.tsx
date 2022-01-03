@@ -104,6 +104,52 @@ describe('Medication tab - Add Prescription Dialog', () => {
 
     expect(screen.queryByTitle('prescriptionDialog')).not.toBeInTheDocument();
   });
+
+  it('should require user to enter atleast 1 character to enable Add To Prescription button', () => {
+    render(<MedicationApp />);
+    const button = screen.getByRole('button', {
+      name: /add prescription/i,
+    });
+
+    expect(button).toBeDisabled();
+
+    const searchBox = screen.getByRole('searchbox', { name: /searchdrugs/i });
+    userEvent.type(searchBox, 'P');
+
+    expect(button).toBeEnabled();
+  });
+
+  it('should disable Add To Prescription button when user select drug from the drop down', async () => {
+    when(search).calledWith('Pa').mockResolvedValue(mockDrugsApiResponse.validResponse);
+    render(<MedicationApp />);
+
+    const searchBox = screen.getByRole('searchbox', { name: /searchdrugs/i });
+    userEvent.type(searchBox, 'Pa');
+    await waitFor(() => expect(search).toBeCalledTimes(1));
+    const drugOption = screen.getByText(/paracetomal 1/i);
+    userEvent.click(drugOption);
+    const button = screen.getByRole('button', {
+      name: /add prescription/i,
+    });
+
+    expect(button).toBeDisabled();
+  });
+
+  it('should show prescription dialog and disable button when user clicks Add To Prescription button', async () => {
+    render(<MedicationApp />);
+
+    const searchBox = screen.getByRole('searchbox', { name: /searchdrugs/i });
+    userEvent.type(searchBox, 'Pa');
+
+    const button = screen.getByRole('button', {
+      name: /add prescription/i,
+    });
+    userEvent.click(button);
+
+    await waitFor(() => expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument());
+
+    expect(button).toBeDisabled();
+  });
 });
 
 async function searchDrug(durgName: string) {

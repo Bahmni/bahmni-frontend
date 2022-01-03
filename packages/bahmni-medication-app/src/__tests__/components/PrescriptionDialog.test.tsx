@@ -57,7 +57,7 @@ describe('Medication Tab - Prescription Dialog', () => {
     function getFormatedDate(addDays: number): string {
       let date = new Date();
       date.setDate(date.getDate() + addDays);
-      return date.toLocaleDateString('en-US', {
+      return date.toLocaleDateString('en', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',

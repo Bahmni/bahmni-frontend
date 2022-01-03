@@ -36,7 +36,8 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
   const dosageUnits: string[] = ['Tablet', 'Injection'];
   const durationUnits: string[] = ['Days', 'Weeks', 'Months'];
   const drugRoutes: string[] = ['Oral', 'Intravenous'];
-  const currentDate: string = new Date().toLocaleDateString();
+  const locale: string = 'en';
+  const currentDate: string = new Date().toLocaleDateString(locale);
   return (
     <div style={styles.dialog_container} title="prescriptionDialog">
       <Grid>
@@ -102,7 +103,7 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
               <Column>
                 <DatePicker
                   datePickerType="single"
-                  dateFormat="m/d/Y"
+                  locale={locale}
                   short={true}
                   value={currentDate}
                   minDate={currentDate}>

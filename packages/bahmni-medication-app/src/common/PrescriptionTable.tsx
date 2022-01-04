@@ -8,7 +8,7 @@ const styles = {
   tableSubHeading: { textAlign: 'center' },
 };
 
-const schedule = (drugInfo) => {
+const schedule = (drugInfo: any) => {
   const doseInfo: any = drugInfo.dosingInstructions;
   const startDate: String = new Date(drugInfo.effectiveStartDate).toLocaleDateString();
   const schedule: String = `${doseInfo.dose} ${doseInfo.doseUnits}, ${doseInfo.frequency} for ${drugInfo.duration} ${drugInfo.durationUnits} started on ${startDate}`;
@@ -29,12 +29,12 @@ const getSubHeading = (visitDate) => {
   }
 };
 
-const getAdditionalInstruction = (row) => {
+const getAdditionalInstruction = (row: ActiveDrug) => {
   const instructionJson = JSON.parse(row.dosingInstructions.administrationInstructions);
   return instructionJson.additionalInstructions ? instructionJson.additionalInstructions : '';
 };
 
-const getStatus = (row) => {
+const getStatus = (row: ActiveDrug) => {
   if (!row.dateStopped) return 'active';
 };
 
@@ -42,7 +42,7 @@ interface PrescriptionData {
   data: ActiveDrug[];
 }
 
-const PrescriptionTable = (props: PrescriptionData) => {
+const PrescriptionTable = React.memo((props: PrescriptionData) => {
   return (
     <Table title="prescription">
       <TableHead>
@@ -81,6 +81,6 @@ const PrescriptionTable = (props: PrescriptionData) => {
       </TableBody>
     </Table>
   );
-};
+});
 
 export default PrescriptionTable;

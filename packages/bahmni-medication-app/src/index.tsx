@@ -73,6 +73,7 @@ const MedicationApp = () => {
         />
         <div style={styles.tileList}>{showDrugOptions()}</div>
       </div>
+      {selectedDrug && <PrescriptionDialog drug={selectedDrug} onClose={clearUserInput}></PrescriptionDialog>}
       <div style={styles.tablePosition}>
         <Tabs>
           <Tab label="Active Prescription">
@@ -82,7 +83,6 @@ const MedicationApp = () => {
           <Tab label="Show all" />
         </Tabs>
       </div>
-      {selectedDrug && <PrescriptionDialog drug={selectedDrug} onClose={clearUserInput}></PrescriptionDialog>}
     </div>
   );
 };

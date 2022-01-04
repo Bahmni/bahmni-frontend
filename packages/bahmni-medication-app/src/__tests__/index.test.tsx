@@ -27,23 +27,19 @@ describe('Medication tab - Drugs search', () => {
   it('should show matching drugs when user enters valid input in search bar', async () => {
     when(search).calledWith('Par').mockResolvedValue(mockDrugsApiResponse.validResponse);
     render(<MedicationApp />);
-    const searchBox = screen.getByRole('searchbox', { name: /searchdrugs/i });
 
-    userEvent.type(searchBox, 'Par');
+    await searchDrug('Par');
 
-    await waitFor(() => expect(search).toBeCalledTimes(2));
     expect(screen.getByText(/paracetomal 1/i)).toBeInTheDocument();
     expect(screen.getByText(/paracetomal 2/i)).toBeInTheDocument();
   });
 
   it('should not show any results when user input have no matching drugs', async () => {
-    when(search).calledWith('par').mockResolvedValue(mockDrugsApiResponse.emptyResponse);
+    when(search).calledWith('bogus').mockResolvedValue(mockDrugsApiResponse.emptyResponse);
     render(<MedicationApp />);
-    const searchBox = screen.getByRole('searchbox', { name: /searchdrugs/i });
 
-    userEvent.type(searchBox, 'par');
+    await searchDrug('bogus');
 
-    await waitFor(() => expect(search).toBeCalledTimes(2));
     expect(screen.queryByTestId(/drugDataId/i)).toBeNull();
   });
 
@@ -104,3 +100,58 @@ describe('Medication tab - Drugs search', () => {
     expect(screen.getByTestId('activePrescription')).toBeVisible();
   });
 });
+
+describe('Medication tab - Add Prescription Dialog', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  beforeEach(() => {
+    when(search).calledWith('Par').mockResolvedValue(mockDrugsApiResponse.validResponse);
+  });
+  it('should show prescription dialog when user clicks a drug', async () => {
+    render(<MedicationApp />);
+    await searchDrug('Par');
+
+    expect(screen.queryByTitle('prescriptionDialog')).toBeNull();
+
+    const drugOption = screen.getByText(/paracetomal 1/i);
+    userEvent.click(drugOption);
+
+    await waitFor(() => expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument());
+  });
+
+  //FIXME this test would change after implmenting Add Prescription button
+  it('should hide prescription dialog when user clicks cancel', async () => {
+    render(<MedicationApp />);
+    await searchDrug('Par');
+
+    userEvent.click(screen.getByText(/paracetomal 1/i));
+
+    await waitFor(() => expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument());
+    const cancelButton = screen.getByText(/cancel/i);
+    userEvent.click(cancelButton);
+
+    expect(screen.queryByTitle('prescriptionDialog')).not.toBeInTheDocument();
+  });
+
+  //FIXME Done is currently placeholder and would be implemented in future stories
+  it('WIP: should add prescription when user click Done', async () => {
+    render(<MedicationApp />);
+    await searchDrug('Par');
+
+    userEvent.click(screen.getByText(/paracetomal 1/i));
+
+    await waitFor(() => expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument());
+    const doneButton = screen.getByText(/done/i);
+    userEvent.click(doneButton);
+
+    expect(screen.queryByTitle('prescriptionDialog')).not.toBeInTheDocument();
+  });
+});
+
+async function searchDrug(durgName: string) {
+  const searchBox = screen.getByRole('searchbox', { name: /searchdrugs/i });
+  userEvent.type(searchBox, durgName);
+  await waitFor(() => expect(search).toBeCalledTimes(durgName.length - 1));
+}

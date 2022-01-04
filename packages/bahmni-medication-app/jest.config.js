@@ -18,4 +18,9 @@ module.exports = {
   verbose: true,
   setupFilesAfterEnv: ['../../setupTests.js'],
   testEnvironment: 'jsdom',
+  resetMocks: true,
+  coveragePathIgnorePatterns: [],
+  collectCoverageFrom: ['**/src/**/*.{js,ts,tsx}'],
+  coverageThreshold: null,
+  watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
 };

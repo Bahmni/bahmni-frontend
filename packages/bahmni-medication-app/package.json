@@ -18,6 +18,8 @@
     "build": "rimraf dist && npx webpack --mode development",
     "build:prod": "rimraf dist && npx webpack --mode production",
     "typescript": "tsc",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --passWithNoTests --watch",
+    "coverage": "jest --passWithNoTests --coverage --watchAll=false"
   }
 }

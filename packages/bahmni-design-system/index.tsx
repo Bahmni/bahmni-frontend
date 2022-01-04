@@ -6,4 +6,21 @@ import NumberInput from 'carbon-components-react/es/components/NumberInput';
 import Dropdown from 'carbon-components-react/es/components/Dropdown';
 import DatePicker from 'carbon-components-react/es/components/DatePicker';
 import DatePickerInput from 'carbon-components-react/es/components/DatePickerInput';
-export { Button, Search, ClickableTile, Grid, Row, Column, NumberInput, Dropdown, DatePicker, DatePickerInput };
+import ComboBox from 'carbon-components-react/es/components/ComboBox';
+import InlineLoading from 'carbon-components-react/es/components/InlineLoading';
+import { InlineNotification } from 'carbon-components-react/es/components/Notification';
+export {
+  Button,
+  Search,
+  ClickableTile,
+  Grid,
+  Row,
+  Column,
+  NumberInput,
+  Dropdown,
+  DatePicker,
+  DatePickerInput,
+  ComboBox,
+  InlineLoading,
+  InlineNotification,
+};

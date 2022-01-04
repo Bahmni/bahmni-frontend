@@ -3,27 +3,33 @@ import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import React from 'react';
 import PrescriptionDialog from '../../components/PrescriptionDialog';
-import { mockDrugsApiResponse } from '../mockHelper';
+import { mockDrugOrderConfigApiResponse, mockDrugsApiResponse } from '../mockHelper';
 
 const mockDrug = mockDrugsApiResponse.validResponse.results[0];
 
 test('should pass hygene accessibility tests', async () => {
-  const { container } = render(<PrescriptionDialog drug={mockDrug} onClose={() => {}}></PrescriptionDialog>);
+  const { container } = render(
+    <PrescriptionDialog
+      drug={mockDrug}
+      onClose={() => {}}
+      drugOrderConfig={mockDrugOrderConfigApiResponse}></PrescriptionDialog>,
+  );
   expect(await axe(container)).toHaveNoViolations();
 });
 
 describe('Medication Tab - Prescription Dialog', () => {
   it('should display prescription details input controls', () => {
-    render(<PrescriptionDialog drug={mockDrug} onClose={() => {}}></PrescriptionDialog>);
+    render(
+      <PrescriptionDialog
+        drug={mockDrug}
+        onClose={() => {}}
+        drugOrderConfig={mockDrugOrderConfigApiResponse}></PrescriptionDialog>,
+    );
 
     expect(screen.getByText(mockDrug.name)).toBeInTheDocument();
     expect(screen.getByLabelText('Dosage')).toBeInTheDocument();
     expect(screen.getByLabelText('Dosage Unit')).toBeInTheDocument();
-    expect(
-      screen.getByRole('search', {
-        name: 'Frequency Search',
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Frequency')).toBeInTheDocument();
     expect(screen.getByLabelText('Duration')).toBeInTheDocument();
     expect(screen.getByLabelText('Duration Unit')).toBeInTheDocument();
     expect(screen.getByLabelText('Start Date')).toBeInTheDocument();
@@ -33,21 +39,36 @@ describe('Medication Tab - Prescription Dialog', () => {
   });
 
   it('should show error message when user enter drugs Quantity less then 0', () => {
-    render(<PrescriptionDialog drug={mockDrug} onClose={() => {}}></PrescriptionDialog>);
+    render(
+      <PrescriptionDialog
+        drug={mockDrug}
+        onClose={() => {}}
+        drugOrderConfig={mockDrugOrderConfigApiResponse}></PrescriptionDialog>,
+    );
     const quantityInput = screen.getByLabelText('Quantity');
     userEvent.type(quantityInput, '-1');
     expect(screen.getByText(/quantity cannot be less than 0/i)).toBeInTheDocument();
   });
 
   it('should show error message when user enter drugs Dosage less then 0', () => {
-    render(<PrescriptionDialog drug={mockDrug} onClose={() => {}}></PrescriptionDialog>);
+    render(
+      <PrescriptionDialog
+        drug={mockDrug}
+        onClose={() => {}}
+        drugOrderConfig={mockDrugOrderConfigApiResponse}></PrescriptionDialog>,
+    );
     const dosageInput = screen.getByLabelText('Dosage');
     userEvent.type(dosageInput, '-1');
     expect(screen.getByText(/dosage cannot be less than 0/i)).toBeInTheDocument();
   });
 
   it('should show error message when user enter drugs Duration less then 0', () => {
-    render(<PrescriptionDialog drug={mockDrug} onClose={() => {}}></PrescriptionDialog>);
+    render(
+      <PrescriptionDialog
+        drug={mockDrug}
+        onClose={() => {}}
+        drugOrderConfig={mockDrugOrderConfigApiResponse}></PrescriptionDialog>,
+    );
     const durationInput = screen.getByLabelText('Duration');
     userEvent.type(durationInput, '-1');
     expect(screen.getByText(/duration cannot be less than 0/i)).toBeInTheDocument();
@@ -64,7 +85,12 @@ describe('Medication Tab - Prescription Dialog', () => {
       });
     }
 
-    render(<PrescriptionDialog drug={mockDrug} onClose={() => {}}></PrescriptionDialog>);
+    render(
+      <PrescriptionDialog
+        drug={mockDrug}
+        onClose={() => {}}
+        drugOrderConfig={mockDrugOrderConfigApiResponse}></PrescriptionDialog>,
+    );
     const startDateInput = screen.getByLabelText('Start Date');
     userEvent.click(startDateInput);
 
@@ -73,5 +99,75 @@ describe('Medication Tab - Prescription Dialog', () => {
 
     expect(currentDay.className).not.toMatch(/-disabled/i);
     expect(pastDate.className).toMatch(/-disabled/i);
+  });
+
+  it('should display dosage units from drug order config when user clicks on dosage unit dropdown', () => {
+    render(
+      <PrescriptionDialog
+        drug={mockDrug}
+        onClose={() => {}}
+        drugOrderConfig={mockDrugOrderConfigApiResponse}></PrescriptionDialog>,
+    );
+
+    userEvent.click(screen.getByTitle('Dosage Unit'));
+    mockDrugOrderConfigApiResponse.doseUnits.forEach((doseUnit) => {
+      expect(screen.getByText(doseUnit.name)).toBeInTheDocument();
+    });
+  });
+
+  it('should display duration units from drug order config when user clicks on duration unit dropdown', () => {
+    render(
+      <PrescriptionDialog
+        drug={mockDrug}
+        onClose={() => {}}
+        drugOrderConfig={mockDrugOrderConfigApiResponse}></PrescriptionDialog>,
+    );
+
+    userEvent.click(screen.getByTitle('Duration Unit'));
+    mockDrugOrderConfigApiResponse.durationUnits.forEach((durationUnit) => {
+      expect(screen.getByText(durationUnit.name)).toBeInTheDocument();
+    });
+  });
+
+  it('should display quantity units from drug order config when user clicks on quantity unit dropdown', () => {
+    render(
+      <PrescriptionDialog
+        drug={mockDrug}
+        onClose={() => {}}
+        drugOrderConfig={mockDrugOrderConfigApiResponse}></PrescriptionDialog>,
+    );
+
+    userEvent.click(screen.getByTitle('Quantity Unit'));
+    mockDrugOrderConfigApiResponse.doseUnits.forEach((doseUnit) => {
+      expect(screen.getByText(doseUnit.name)).toBeInTheDocument();
+    });
+  });
+
+  it('should display route from drug order config when user clicks on route dropdown', () => {
+    render(
+      <PrescriptionDialog
+        drug={mockDrug}
+        onClose={() => {}}
+        drugOrderConfig={mockDrugOrderConfigApiResponse}></PrescriptionDialog>,
+    );
+
+    userEvent.click(screen.getByTitle('Route'));
+    mockDrugOrderConfigApiResponse.routes.forEach((route) => {
+      expect(screen.getByText(route.name)).toBeInTheDocument();
+    });
+  });
+
+  it('should display frequency options from drug order config when user clicks on frequency dropdown', () => {
+    render(
+      <PrescriptionDialog
+        drug={mockDrug}
+        onClose={() => {}}
+        drugOrderConfig={mockDrugOrderConfigApiResponse}></PrescriptionDialog>,
+    );
+
+    userEvent.click(screen.getByLabelText('Frequency'));
+    mockDrugOrderConfigApiResponse.frequencies.forEach((frequency) => {
+      expect(screen.getByText(frequency.name)).toBeInTheDocument();
+    });
   });
 });

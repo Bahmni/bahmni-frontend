@@ -1,6 +1,7 @@
 import {
   Button,
   Column,
+  ComboBox,
   DatePicker,
   DatePickerInput,
   Dropdown,
@@ -10,11 +11,12 @@ import {
   Search,
 } from '@bahmni/design-system';
 import React from 'react';
-import { Drug } from '../types';
+import { Drug, DrugOrderConfig, Frequency, Route, Unit } from '../types';
 
 type PrescriptionDialogProps = {
   drug: Drug;
   onClose: Function;
+  drugOrderConfig: DrugOrderConfig;
 };
 
 const styles = {
@@ -33,9 +35,10 @@ const styles = {
   },
 };
 const PrescriptionDialog = (props: PrescriptionDialogProps) => {
-  const dosageUnits: string[] = ['Tablet', 'Injection'];
-  const durationUnits: string[] = ['Days', 'Weeks', 'Months'];
-  const drugRoutes: string[] = ['Oral', 'Intravenous'];
+  const dosageUnits = props.drugOrderConfig.doseUnits;
+  const durationUnits = props.drugOrderConfig.durationUnits;
+  const drugRoutes = props.drugOrderConfig.routes;
+  const frequencyOptions = props.drugOrderConfig.frequencies;
   const locale: string = 'en';
   const currentDate: string = new Date().toLocaleDateString(locale);
   return (
@@ -66,15 +69,19 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
                       titleText="Units"
                       items={dosageUnits}
                       ariaLabel="Dosage Unit"
+                      itemToString={(item: Unit) => item.name}
                     />
                   </Column>
                 </Row>
               </Column>
-              <Column style={{ color: '#525252' }}>
-                Frequency
-                <br></br>
-                <br></br>
-                <Search size="lg" id="frequencySearch" labelText="Frequency Search"></Search>
+              <Column>
+                <ComboBox
+                  id="frequencySearch"
+                  titleText="Frequency"
+                  placeholder="Select Frequency"
+                  onChange={() => {}}
+                  items={frequencyOptions}
+                  itemToString={(item: Frequency) => (item ? item.name : '')}></ComboBox>
               </Column>
               <Column>
                 <Row>
@@ -93,6 +100,7 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
                       titleText="Units"
                       items={durationUnits}
                       ariaLabel="Duration Unit"
+                      itemToString={(item: Unit) => item.name}
                     />
                   </Column>
                 </Row>
@@ -128,12 +136,19 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
                       titleText="Units"
                       items={dosageUnits}
                       ariaLabel="Quantity Unit"
+                      itemToString={(item: Unit) => item.name}
                     />
                   </Column>
                 </Row>
               </Column>
               <Column>
-                <Dropdown id="route" label="Route" titleText="Route" items={drugRoutes} />
+                <Dropdown
+                  id="route"
+                  label="Route"
+                  titleText="Route"
+                  items={drugRoutes}
+                  itemToString={(item: Route) => item.name}
+                />
               </Column>
             </Row>
           </Column>

@@ -9,3 +9,25 @@ export type Drug = {
 export type DrugResult = {
   results: Drug[];
 };
+export type Unit = {
+  name: string;
+  rootConcept: any;
+};
+
+export type Route = {
+  name: string;
+  rootConcept: any;
+};
+
+export type Frequency = {
+  uuid: string;
+  frequencyPerDay: number;
+  name: string;
+};
+
+export type DrugOrderConfig = {
+  doseUnits: Unit[];
+  durationUnits: Unit[];
+  routes: Route[];
+  frequencies: Frequency[];
+};

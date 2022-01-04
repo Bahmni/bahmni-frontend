@@ -1,3 +1,5 @@
+import { DrugOrderConfig } from '../types';
+
 export const mockDrugsApiResponse = {
   validResponse: {
     results: [
@@ -20,4 +22,14 @@ export const mockDrugsApiResponse = {
   emptyResponse: {
     results: [],
   },
+};
+
+export const mockDrugOrderConfigApiResponse: DrugOrderConfig = {
+  doseUnits: [
+    { name: 'Tablet', rootConcept: null },
+    { name: 'Drop', rootConcept: null },
+  ],
+  durationUnits: [{ name: 'Days', rootConcept: null }],
+  frequencies: [{ name: 'Immediately', frequencyPerDay: 1, uuid: '1' }],
+  routes: [{ name: 'Oral', rootConcept: null }],
 };

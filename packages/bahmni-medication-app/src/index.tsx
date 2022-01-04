@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Search, ClickableTile } from '@bahmni/design-system';
-import { search } from './api';
+import { ClickableTile, Search, Tab, Tabs } from '@bahmni/design-system';
+import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-async';
+import ActivePrescription from './ActivePrescription';
+import { search } from './api';
 import PrescriptionDialog from './components/PrescriptionDialog';
 import { Drug, DrugResult } from './types';
 
 const styles = {
   container: {
     margin: '1rem 0 0 1rem',
-  },
+    position: 'absolute',
+  } as React.CSSProperties,
   search_bar: {
     width: '70%',
   },
@@ -17,10 +19,11 @@ const styles = {
     overflow: 'scroll',
     maxHeight: '20rem',
   },
+  tablePosition: { paddingTop: '10rem' } as React.CSSProperties,
 };
 
 const MedicationApp = () => {
-  const [userInput, setUserInput] = useState<String>('');
+  const [userInput, setUserInput] = useState('');
   const [isUserInputAvailable, setIsUserInputAvailable] = useState<Boolean>(false);
   const [selectedDrug, setSelectedDrug] = useState<Drug>(null);
   const {
@@ -69,6 +72,15 @@ const MedicationApp = () => {
           value={userInput}
         />
         <div style={styles.tileList}>{showDrugOptions()}</div>
+      </div>
+      <div style={styles.tablePosition}>
+        <Tabs>
+          <Tab label="Active Prescription">
+            <ActivePrescription />
+          </Tab>
+          <Tab label="Schedule" />
+          <Tab label="Show all" />
+        </Tabs>
       </div>
       {selectedDrug && <PrescriptionDialog drug={selectedDrug} onClose={clearUserInput}></PrescriptionDialog>}
     </div>

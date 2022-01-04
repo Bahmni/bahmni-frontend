@@ -12,6 +12,8 @@ jest.mock('../api', () => ({
   search: jest.fn(),
 }));
 
+Element.prototype.scrollIntoView = jest.fn();
+
 test('should pass hygene accessibility tests', async () => {
   const { container } = render(<MedicationApp />);
   expect(await axe(container)).toHaveNoViolations();
@@ -54,6 +56,48 @@ describe('Medication tab - Drugs search', () => {
     await waitFor(() => expect(search).toBeCalledTimes(1));
     expect(screen.getByText(/paracetomal 1/i)).toBeInTheDocument();
     expect(screen.getByText(/paracetomal 2/i)).toBeInTheDocument();
+  });
+
+  it('should display all the tabs', async () => {
+    render(<MedicationApp />);
+    expect(
+      screen.getByRole('tab', {
+        name: /active prescription/i,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', {
+        name: /schedule/i,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', {
+        name: /show all/i,
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it('should display active prescription table by default', async () => {
+    render(<MedicationApp />);
+    expect(screen.getByTestId('activePrescription')).toBeVisible();
+  });
+
+  it('should display active prescription table when user clicks on active prescription tab', async () => {
+    render(<MedicationApp />);
+
+    userEvent.click(
+      screen.getByRole('tab', {
+        name: /schedule/i,
+      }),
+    );
+    expect(screen.getByTestId('activePrescription')).not.toBeVisible();
+
+    userEvent.click(
+      screen.getByRole('tab', {
+        name: /active prescription/i,
+      }),
+    );
+    expect(screen.getByTestId('activePrescription')).toBeVisible();
   });
 });
 

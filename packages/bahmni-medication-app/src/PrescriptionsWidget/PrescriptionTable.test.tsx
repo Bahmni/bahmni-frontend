@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { axe } from 'jest-axe';
 import React from 'react';
-import ActivePrescription from '../ActivePrescription';
+import ActivePrescription from './ActivePrescription';
 import { headerData } from '../utils/constants';
-import PrescriptionTable from '../common/PrescriptionTable';
-import { mockActivePrescriptionResponse, mockPrescriptionResponse } from './mockHelper/mockApiContract';
+import PrescriptionTable from './PrescriptionTable';
+import { mockActivePrescriptionResponse, mockPrescriptionResponse } from '../utils/tests-utils/mockApiContract';
 
 test('should pass hygene accessibility tests', async () => {
   const { container } = render(<ActivePrescription />);

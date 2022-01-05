@@ -3,10 +3,10 @@ import MockAdapter from 'axios-mock-adapter/types';
 import { axe } from 'jest-axe';
 import { when } from 'jest-when';
 import React from 'react';
-import ActivePrescription from '../ActivePrescription';
+import ActivePrescription from './ActivePrescription';
 import { getPatientUuid } from '../utils/helper';
-import { initMockApi } from '../__tests__/mockHelper/baseApiSetup';
-import { durgOrdersUrl, mockActivePrescriptionResponse } from '../__tests__/mockHelper/mockApiContract';
+import { initMockApi } from '../utils/tests-utils/baseApiSetup';
+import { durgOrdersUrl, mockActivePrescriptionResponse } from '../utils/tests-utils/mockApiContract';
 
 jest.mock('../utils/helper', () => ({
   __esModule: true,

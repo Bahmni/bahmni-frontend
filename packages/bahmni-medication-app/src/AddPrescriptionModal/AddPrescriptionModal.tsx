@@ -12,7 +12,7 @@ import {
 import React from 'react';
 import { Drug } from '../types';
 
-type PrescriptionDialogProps = {
+type AddPrescriptionModalProps = {
   drug: Drug;
   onClose: Function;
 };
@@ -32,7 +32,7 @@ const styles = {
     textAlign: 'right',
   },
 };
-const PrescriptionDialog = (props: PrescriptionDialogProps) => {
+const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
   const dosageUnits: string[] = ['Tablet', 'Injection'];
   const durationUnits: string[] = ['Days', 'Weeks', 'Months'];
   const drugRoutes: string[] = ['Oral', 'Intravenous'];
@@ -158,4 +158,4 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
   );
 };
 
-export default PrescriptionDialog;
+export default AddPrescriptionModal;

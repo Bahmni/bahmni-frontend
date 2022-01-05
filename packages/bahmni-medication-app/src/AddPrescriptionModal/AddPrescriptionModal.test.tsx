@@ -2,19 +2,19 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import React from 'react';
-import PrescriptionDialog from '../../components/PrescriptionDialog';
-import { mockDrugsApiResponse } from '../mockHelper/mockApiContract';
+import AddPrescriptionModal from './AddPrescriptionModal';
+import { mockDrugsApiResponse } from '../utils/tests-utils/mockApiContract';
 
 const mockDrug = mockDrugsApiResponse.validResponse.results[0];
 
 test('should pass hygene accessibility tests', async () => {
-  const { container } = render(<PrescriptionDialog drug={mockDrug} onClose={() => {}}></PrescriptionDialog>);
+  const { container } = render(<AddPrescriptionModal drug={mockDrug} onClose={() => {}}></AddPrescriptionModal>);
   expect(await axe(container)).toHaveNoViolations();
 });
 
 describe('Medication Tab - Prescription Dialog', () => {
   it('should display prescription details input controls', () => {
-    render(<PrescriptionDialog drug={mockDrug} onClose={() => {}}></PrescriptionDialog>);
+    render(<AddPrescriptionModal drug={mockDrug} onClose={() => {}}></AddPrescriptionModal>);
 
     expect(screen.getByText(mockDrug.name)).toBeInTheDocument();
     expect(screen.getByLabelText('Dosage')).toBeInTheDocument();
@@ -33,21 +33,21 @@ describe('Medication Tab - Prescription Dialog', () => {
   });
 
   it('should show error message when user enter drugs Quantity less then 0', () => {
-    render(<PrescriptionDialog drug={mockDrug} onClose={() => {}}></PrescriptionDialog>);
+    render(<AddPrescriptionModal drug={mockDrug} onClose={() => {}}></AddPrescriptionModal>);
     const quantityInput = screen.getByLabelText('Quantity');
     userEvent.type(quantityInput, '-1');
     expect(screen.getByText(/quantity cannot be less than 0/i)).toBeInTheDocument();
   });
 
   it('should show error message when user enter drugs Dosage less then 0', () => {
-    render(<PrescriptionDialog drug={mockDrug} onClose={() => {}}></PrescriptionDialog>);
+    render(<AddPrescriptionModal drug={mockDrug} onClose={() => {}}></AddPrescriptionModal>);
     const dosageInput = screen.getByLabelText('Dosage');
     userEvent.type(dosageInput, '-1');
     expect(screen.getByText(/dosage cannot be less than 0/i)).toBeInTheDocument();
   });
 
   it('should show error message when user enter drugs Duration less then 0', () => {
-    render(<PrescriptionDialog drug={mockDrug} onClose={() => {}}></PrescriptionDialog>);
+    render(<AddPrescriptionModal drug={mockDrug} onClose={() => {}}></AddPrescriptionModal>);
     const durationInput = screen.getByLabelText('Duration');
     userEvent.type(durationInput, '-1');
     expect(screen.getByText(/duration cannot be less than 0/i)).toBeInTheDocument();
@@ -64,7 +64,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       });
     }
 
-    render(<PrescriptionDialog drug={mockDrug} onClose={() => {}}></PrescriptionDialog>);
+    render(<AddPrescriptionModal drug={mockDrug} onClose={() => {}}></AddPrescriptionModal>);
     const startDateInput = screen.getByLabelText('Start Date');
     userEvent.click(startDateInput);
 

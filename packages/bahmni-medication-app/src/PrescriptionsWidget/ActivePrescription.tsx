@@ -1,9 +1,9 @@
 import React from 'react';
 import { useAsync } from 'react-async';
 import { getActivePrescription } from '../services/bahmnicore';
-import { getPatientUuid } from './utils/helper';
-import PrescriptionTable from './common/PrescriptionTable';
-import type { ActiveDrug } from './types/medication';
+import { getPatientUuid } from '../utils/helper';
+import PrescriptionTable from './PrescriptionTable';
+import type { ActiveDrug } from '../types/medication';
 
 const ActivePrescription = () => {
   const { data, error, isPending } = useAsync<ActiveDrug[]>({

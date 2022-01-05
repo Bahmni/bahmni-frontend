@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import React from 'react';
 import PrescriptionDialog from '../../components/PrescriptionDialog';
-import { mockDrugsApiResponse } from '../mockHelper';
+import { mockDrugsApiResponse } from '../mockHelper/mockApiContract';
 
 const mockDrug = mockDrugsApiResponse.validResponse.results[0];
 

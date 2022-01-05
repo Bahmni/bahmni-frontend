@@ -1,54 +1,62 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import MockAdapter from 'axios-mock-adapter/types';
 import { axe } from 'jest-axe';
 import { when } from 'jest-when';
 import React from 'react';
 import ActivePrescription from '../ActivePrescription';
-import { getActivePrescription } from '../api';
 import { getPatientUuid } from '../utils/helper';
-
-test('should pass hygene accessibility tests', async () => {
-  const { container } = render(<ActivePrescription />);
-  expect(await axe(container)).toHaveNoViolations();
-});
+import { initMockApi } from '../__tests__/mockHelper/baseApiSetup';
+import { durgOrdersUrl, mockActivePrescriptionResponse } from '../__tests__/mockHelper/mockApiContract';
 
 jest.mock('../utils/helper', () => ({
   __esModule: true,
   getPatientUuid: jest.fn(),
 }));
 
-jest.mock('../api', () => ({
-  __esModule: true,
-  getActivePrescription: jest.fn(),
-}));
+let adapter: MockAdapter, waitForApiCalls: Function, apiParams: Function;
 
 afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('Prescription', () => {
-  it('should call get active prescription once patientUuid exists', async () => {
-    when(getPatientUuid).mockReturnValue('patientUuid');
+test('should pass hygene accessibility tests', async () => {
+  const { container } = render(<ActivePrescription />);
+  expect(await axe(container)).toHaveNoViolations();
+});
 
-    await waitFor(() => render(<ActivePrescription />));
+beforeEach(() => {
+  ({ adapter, waitForApiCalls, apiParams } = initMockApi());
+});
 
-    expect(getActivePrescription).toBeCalledWith('patientUuid');
-    expect(getActivePrescription).toBeCalledTimes(1);
-  });
-
-  it('should not call get active prescription once patientUuid is undefined', () => {
-    when(getPatientUuid).mockReturnValue('');
+describe('Active Prescription', () => {
+  it('should display active prescriptions for a given patient', async () => {
+    const mockPatientUuid = 'patientUuid123';
+    when(getPatientUuid).mockReturnValue(mockPatientUuid);
+    adapter.onGet(durgOrdersUrl).reply(200, mockActivePrescriptionResponse);
 
     render(<ActivePrescription />);
 
-    expect(getActivePrescription).not.toBeCalled();
+    await waitForApiCalls({ apiURL: durgOrdersUrl, times: 1 });
+    expect(apiParams(durgOrdersUrl).some((p) => p.patientUuid === mockPatientUuid)).toBeTruthy();
+    expect(screen.queryByRole('table', { name: /prescription/i })).toBeInTheDocument();
   });
 
-  it('should not display table when active prescription data is unavailable', async () => {
+  it('should not display active prescriptions when the patientId is invalid', async () => {
+    when(getPatientUuid).mockReturnValue('someInvalidId');
+    adapter.onGet(durgOrdersUrl).reply(404);
+
+    render(<ActivePrescription />);
+
+    await waitForApiCalls({ apiURL: durgOrdersUrl, times: 1 });
+    expect(screen.queryByRole('table', { name: /prescription/i })).not.toBeInTheDocument();
+  });
+
+  it('should not show active prescription table whnen there are no active prescription for the patient', async () => {
     when(getPatientUuid).mockReturnValue('patientUuid');
-    when(getActivePrescription).calledWith('patientUuid').mockResolvedValue('');
+    adapter.onGet(durgOrdersUrl).reply(200, []);
 
-    await waitFor(() => render(<ActivePrescription />));
-
+    render(<ActivePrescription />);
+    await waitForApiCalls({ apiURL: durgOrdersUrl, times: 1 });
     expect(screen.queryByRole('table', { name: /prescription/i })).not.toBeInTheDocument();
   });
 });

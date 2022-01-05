@@ -4,7 +4,7 @@ import React from 'react';
 import ActivePrescription from '../ActivePrescription';
 import { headerData } from '../utils/constants';
 import PrescriptionTable from '../common/PrescriptionTable';
-import { mockActivePrescriptionResponse, mockPrescriptionResponse } from './mockHelper';
+import { mockActivePrescriptionResponse, mockPrescriptionResponse } from './mockHelper/mockApiContract';
 
 test('should pass hygene accessibility tests', async () => {
   const { container } = render(<ActivePrescription />);
@@ -12,11 +12,6 @@ test('should pass hygene accessibility tests', async () => {
 });
 
 describe('Prescription Table', () => {
-  it('should display table when active prescription data is available', () => {
-    render(<PrescriptionTable data={mockPrescriptionResponse} />);
-    expect(screen.getByRole('table', { name: /prescription/i })).toBeInTheDocument();
-  });
-
   it('should display all the heading', () => {
     render(<PrescriptionTable data={mockPrescriptionResponse} />);
     headerData.map((i) => {

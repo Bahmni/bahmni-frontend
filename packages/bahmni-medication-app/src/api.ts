@@ -14,7 +14,7 @@ export const search = async (drugName): Promise<any> => {
   return res.data;
 };
 
-export const getActivePrescription = async (patientUuid): Promise<any> => {
+export const getActivePrescription = async ({ patientUuid }): Promise<any> => {
   const res = await axios.get<ActivePrescription>(`${BASE_URL}/openmrs/ws/rest/v1/bahmnicore/drugOrders/active`, {
     params: {
       patientUuid,

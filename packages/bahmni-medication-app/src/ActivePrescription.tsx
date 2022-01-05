@@ -1,28 +1,27 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAsync } from 'react-async';
-import { getActivePrescription } from './api';
+import { getActivePrescription } from '../services/bahmnicore';
 import { getPatientUuid } from './utils/helper';
 import PrescriptionTable from './common/PrescriptionTable';
 import type { ActiveDrug } from './types/medication';
 
 const ActivePrescription = () => {
-  const patientUuid: String = getPatientUuid();
-
-  const { run: runActivePrescription, data: activePrescriptionData } = useAsync<ActiveDrug[]>({
-    deferFn: () => getActivePrescription(patientUuid),
+  const { data, error, isPending } = useAsync<ActiveDrug[]>({
+    promiseFn: getActivePrescription,
+    patientUuid: getPatientUuid(),
   });
 
-  useEffect(() => {
-    if (patientUuid) {
-      runActivePrescription();
-    }
-  }, []);
+  //TODO add a common loader and error
+  if (isPending) return <p>Loading...</p>;
+  if (error) return <p>{`something went wrong ${error.message}`}</p>;
+  if (data && data.length > 0)
+    return (
+      <div data-testid="activePrescription">
+        <PrescriptionTable data={data}></PrescriptionTable>
+      </div>
+    );
 
-  return (
-    <div data-testid="activePrescription">
-      {activePrescriptionData && <PrescriptionTable data={activePrescriptionData}></PrescriptionTable>}
-    </div>
-  );
+  return <></>;
 };
 
 export default ActivePrescription;

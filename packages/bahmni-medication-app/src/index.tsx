@@ -1,9 +1,9 @@
 import { ClickableTile, Search, Tab, Tabs } from '@bahmni/design-system';
 import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-async';
-import ActivePrescription from './ActivePrescription';
-import { search } from './api';
-import PrescriptionDialog from './components/PrescriptionDialog';
+import ActivePrescription from './PrescriptionsWidget/ActivePrescription';
+import { search } from './services/drugs';
+import AddPrescriptionModal from './AddPrescriptionModal/AddPrescriptionModal';
 import { Drug, DrugResult } from './types';
 
 const styles = {
@@ -75,7 +75,7 @@ const MedicationApp = () => {
         />
         <div style={styles.tileList}>{showDrugOptions()}</div>
       </div>
-      {selectedDrug && <PrescriptionDialog drug={selectedDrug} onClose={clearUserInput}></PrescriptionDialog>}
+      {selectedDrug && <AddPrescriptionModal drug={selectedDrug} onClose={clearUserInput}></AddPrescriptionModal>}
       <div style={styles.tablePosition}>
         <Tabs>
           <Tab label="Active Prescription">

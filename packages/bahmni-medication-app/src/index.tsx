@@ -2,7 +2,7 @@ import { ClickableTile, Search, Tab, Tabs } from '@bahmni/design-system';
 import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-async';
 import ActivePrescription from './PrescriptionsWidget/ActivePrescription';
-import { search } from './api';
+import { search } from './services/drugs';
 import AddPrescriptionModal from './AddPrescriptionModal/AddPrescriptionModal';
 import { Drug, DrugResult } from './types';
 

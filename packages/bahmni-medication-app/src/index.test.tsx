@@ -2,12 +2,12 @@ import { render, waitFor, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { when } from 'jest-when';
 import React from 'react';
-import { search } from './api';
+import { search } from './services/drugs';
 import MedicationApp from './index';
 import { mockDrugsApiResponse } from './utils/tests-utils/mockApiContract';
 import { axe } from 'jest-axe';
 
-jest.mock('./api', () => ({
+jest.mock('./services/drugs', () => ({
   __esModule: true,
   search: jest.fn(),
 }));

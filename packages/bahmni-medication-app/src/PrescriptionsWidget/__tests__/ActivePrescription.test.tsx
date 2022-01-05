@@ -3,12 +3,12 @@ import MockAdapter from 'axios-mock-adapter/types';
 import { axe } from 'jest-axe';
 import { when } from 'jest-when';
 import React from 'react';
-import ActivePrescription from './ActivePrescription';
-import { getPatientUuid } from '../utils/helper';
-import { initMockApi } from '../utils/tests-utils/baseApiSetup';
-import { durgOrdersUrl, mockActivePrescriptionResponse } from '../utils/tests-utils/mockApiContract';
+import ActivePrescription from '../ActivePrescription';
+import { getPatientUuid } from '../../utils/helper';
+import { initMockApi } from '../../utils/tests-utils/baseApiSetup';
+import { durgOrdersUrl, mockActivePrescriptionResponse } from '../../utils/tests-utils/mockApiContract';
 
-jest.mock('../utils/helper', () => ({
+jest.mock('../../utils/helper', () => ({
   __esModule: true,
   getPatientUuid: jest.fn(),
 }));
@@ -51,7 +51,7 @@ describe('Active Prescription', () => {
     expect(screen.queryByRole('table', { name: /prescription/i })).not.toBeInTheDocument();
   });
 
-  it('should not show active prescription table whnen there are no active prescription for the patient', async () => {
+  it('should not show active prescription table when there are no active prescription for the patient', async () => {
     when(getPatientUuid).mockReturnValue('patientUuid');
     adapter.onGet(durgOrdersUrl).reply(200, []);
 

@@ -4,7 +4,11 @@ import { headerData } from '../utils/constants';
 import type { ActiveDrug } from '../types/medication';
 
 const styles = {
-  providerName: { fontSize: '0.7rem', float: 'right', paddingTop: '10px' } as React.CSSProperties,
+  providerName: {
+    fontSize: '0.7rem',
+    float: 'right',
+    paddingTop: '10px',
+  } as React.CSSProperties,
   tableSubHeading: { textAlign: 'center' },
 };
 

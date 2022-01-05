@@ -19,7 +19,9 @@ const styles = {
     overflow: 'scroll',
     maxHeight: '20rem',
   },
-  tablePosition: { paddingTop: '10rem' } as React.CSSProperties,
+  tablePosition: {
+    paddingTop: '10rem',
+  },
 };
 
 const MedicationApp = () => {
@@ -79,7 +81,7 @@ const MedicationApp = () => {
           <Tab label="Active Prescription">
             <ActivePrescription />
           </Tab>
-          <Tab label="Schedule" />
+          <Tab label="Scheduled Prescription" />
           <Tab label="Show all" />
         </Tabs>
       </div>

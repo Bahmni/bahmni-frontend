@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Link } from '@bahmni/design-system';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Link, Tag } from '@bahmni/design-system';
 import React from 'react';
 import { headerData } from '../utils/constants';
 import type { ActiveDrug } from '../types/medication';
@@ -14,7 +14,9 @@ const schedule = (drugInfo: any) => {
   const schedule: String = `${doseInfo.dose} ${doseInfo.doseUnits}, ${doseInfo.frequency} for ${drugInfo.duration} ${drugInfo.durationUnits} started on ${startDate}`;
   return schedule;
 };
-
+enum StatusColor {
+  'active' = 'orange',
+}
 let lastVisitDate: String;
 const getSubHeading = (visitDate) => {
   if (lastVisitDate === null || lastVisitDate != visitDate) {
@@ -31,7 +33,20 @@ const getSubHeading = (visitDate) => {
 
 const getAdditionalInstruction = (row: ActiveDrug) => {
   const instructionJson = JSON.parse(row.dosingInstructions.administrationInstructions);
-  return instructionJson.additionalInstructions ? instructionJson.additionalInstructions : '';
+  return (
+    <>
+      <Tag type="green" title="Instruction">
+        {' '}
+        {instructionJson.instructions}{' '}
+      </Tag>
+      {instructionJson.additionalInstructions && (
+        <Tag type="blue" title="Instruction">
+          {' '}
+          {instructionJson.additionalInstructions}{' '}
+        </Tag>
+      )}
+    </>
+  );
 };
 
 const getStatus = (row: ActiveDrug) => {
@@ -71,7 +86,9 @@ const PrescriptionTable = React.memo((props: PrescriptionData) => {
                   {row.dosingInstructions.quantity} {row.dosingInstructions.quantityUnits}
                 </TableCell>
                 <TableCell>{getAdditionalInstruction(row)}</TableCell>
-                <TableCell>{getStatus(row)}</TableCell>
+                <TableCell style={{ color: StatusColor[getStatus(row)], fontWeight: 'bold' }}>
+                  {getStatus(row)}
+                </TableCell>
                 <TableCell>
                   <Link inline>revise</Link> <Link inline>stop</Link> <Link inline>renew</Link>{' '}
                 </TableCell>

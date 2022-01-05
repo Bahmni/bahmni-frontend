@@ -26,13 +26,18 @@ describe('Prescription Table', () => {
 
   it('should display drug and provider information', () => {
     render(<PrescriptionTable data={mockPrescriptionResponse} />);
-    expect(screen.getByRole('cell', { name: 'Aspirin 75mg, Tablet, Oral' })).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: /Aspirin 75mg, Tablet, Oral/i })).toBeInTheDocument();
     expect(
       screen.getByRole('cell', {
-        name: '5 Capsule(s), Thrice a day for undefined Day(s) started on 12/22/2021 by Super Man',
+        name: /5 Capsule\(s\), Thrice a day for undefined Day\(s\) started on 12\/22\/2021 by Super Man/i,
       }),
     ).toBeInTheDocument();
-    expect(screen.getByRole('cell', { name: '150 Capsule(s)' })).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: /150 Capsule\(s\)/i })).toBeInTheDocument();
+  });
+
+  it('should display instructions for active prescription', () => {
+    render(<PrescriptionTable data={mockPrescriptionResponse} />);
+    expect(screen.getByRole('cell', { name: /As directed Test Data/i })).toBeInTheDocument();
   });
 
   it('should display status as active for active prescription', () => {
@@ -42,7 +47,7 @@ describe('Prescription Table', () => {
 
   it('should not display status for in-active prescription', () => {
     render(<PrescriptionTable data={mockPrescriptionResponse} />);
-    expect(screen.queryByRole('cell', { name: 'active' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('cell', { name: /active/i })).not.toBeInTheDocument();
   });
 
   it('should display all the actions', () => {

@@ -1,4 +1,4 @@
-export const durgOrdersUrl = '/openmrs/ws/rest/v1/bahmnicore/drugOrders/active';
+export const durgOrdersUrl = '/openmrs/ws/rest/v1/bahmnicore/drugOrders/active'
 
 export const mockDrugsApiResponse = {
   validResponse: {
@@ -22,7 +22,7 @@ export const mockDrugsApiResponse = {
   emptyResponse: {
     results: [],
   },
-};
+}
 
 export const mockActivePrescriptionResponse = [
   {
@@ -42,14 +42,15 @@ export const mockActivePrescriptionResponse = [
       doseUnits: 'Capsule(s)',
       route: 'Oral',
       frequency: 'Thrice a day',
-      administrationInstructions: '{"instructions":"As directed","additionalInstructions":"Test Data"}',
+      administrationInstructions:
+        '{"instructions":"As directed","additionalInstructions":"Test Data"}',
       quantity: 150.0,
       quantityUnits: 'Capsule(s)',
     },
     durationUnits: 'Day(s)',
     effectiveStartDate: 1640164841000,
   },
-];
+]
 
 export const mockPrescriptionResponse = [
   {
@@ -69,11 +70,12 @@ export const mockPrescriptionResponse = [
       doseUnits: 'Capsule(s)',
       route: 'Oral',
       frequency: 'Thrice a day',
-      administrationInstructions: '{"instructions":"As directed","additionalInstructions":"Test Data"}',
+      administrationInstructions:
+        '{"instructions":"As directed","additionalInstructions":"Test Data"}',
       quantity: 150.0,
       quantityUnits: 'Capsule(s)',
     },
     durationUnits: 'Day(s)',
     effectiveStartDate: 1640164841000,
   },
-];
+]

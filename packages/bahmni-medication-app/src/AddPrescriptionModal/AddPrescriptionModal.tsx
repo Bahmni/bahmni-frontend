@@ -8,14 +8,14 @@ import {
   NumberInput,
   Row,
   Search,
-} from '@bahmni/design-system';
-import React from 'react';
-import { Drug } from '../types';
+} from '@bahmni/design-system'
+import React from 'react'
+import {Drug} from '../types'
 
 type AddPrescriptionModalProps = {
-  drug: Drug;
-  onClose: Function;
-};
+  drug: Drug
+  onClose: Function
+}
 
 const styles = {
   dialog_container: {
@@ -31,13 +31,13 @@ const styles = {
   right_align: {
     textAlign: 'right',
   },
-};
+}
 const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
-  const dosageUnits: string[] = ['Tablet', 'Injection'];
-  const durationUnits: string[] = ['Days', 'Weeks', 'Months'];
-  const drugRoutes: string[] = ['Oral', 'Intravenous'];
-  const locale: string = 'en';
-  const currentDate: string = new Date().toLocaleDateString(locale);
+  const dosageUnits: string[] = ['Tablet', 'Injection']
+  const durationUnits: string[] = ['Days', 'Weeks', 'Months']
+  const drugRoutes: string[] = ['Oral', 'Intravenous']
+  const locale: string = 'en'
+  const currentDate: string = new Date().toLocaleDateString(locale)
   return (
     <div style={styles.dialog_container} title="prescriptionDialog">
       <Grid>
@@ -57,7 +57,8 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                       label="Dosage"
                       hideSteppers={true}
                       min={0}
-                      invalidText="Dosage cannot be less than 0"></NumberInput>
+                      invalidText="Dosage cannot be less than 0"
+                    ></NumberInput>
                   </Column>
                   <Column sm={3}>
                     <Dropdown
@@ -70,11 +71,15 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                   </Column>
                 </Row>
               </Column>
-              <Column style={{ color: '#525252' }}>
+              <Column style={{color: '#525252'}}>
                 Frequency
                 <br></br>
                 <br></br>
-                <Search size="lg" id="frequencySearch" labelText="Frequency Search"></Search>
+                <Search
+                  size="lg"
+                  id="frequencySearch"
+                  labelText="Frequency Search"
+                ></Search>
               </Column>
               <Column>
                 <Row>
@@ -84,7 +89,8 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                       label="Duration"
                       hideSteppers={true}
                       min={0}
-                      invalidText="Duration cannot be less than 0"></NumberInput>
+                      invalidText="Duration cannot be less than 0"
+                    ></NumberInput>
                   </Column>
                   <Column sm={3}>
                     <Dropdown
@@ -106,8 +112,13 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                   locale={locale}
                   short={true}
                   value={currentDate}
-                  minDate={currentDate}>
-                  <DatePickerInput placeholder="dd/mm/yyyy" labelText="Start Date" id="startDate" />
+                  minDate={currentDate}
+                >
+                  <DatePickerInput
+                    placeholder="dd/mm/yyyy"
+                    labelText="Start Date"
+                    id="startDate"
+                  />
                 </DatePicker>
               </Column>
 
@@ -119,7 +130,8 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                       label="Quantity"
                       hideSteppers={true}
                       min={0}
-                      invalidText="Quantity cannot be less than 0"></NumberInput>
+                      invalidText="Quantity cannot be less than 0"
+                    ></NumberInput>
                   </Column>
                   <Column sm={3}>
                     <Dropdown
@@ -133,7 +145,12 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                 </Row>
               </Column>
               <Column>
-                <Dropdown id="route" label="Route" titleText="Route" items={drugRoutes} />
+                <Dropdown
+                  id="route"
+                  label="Route"
+                  titleText="Route"
+                  items={drugRoutes}
+                />
               </Column>
             </Row>
           </Column>
@@ -155,7 +172,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
         </Row>
       </Grid>
     </div>
-  );
-};
+  )
+}
 
-export default AddPrescriptionModal;
+export default AddPrescriptionModal

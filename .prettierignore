@@ -5,3 +5,10 @@ node_modules/
 **/*.md
 **/*.json
 **/*.html
+
+.vscode/
+.DS_Store
+
+/.cache
+/build
+/coverage

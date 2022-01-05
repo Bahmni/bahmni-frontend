@@ -1,4 +1,24 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": ["ts-react-important-stuff", "plugin:prettier/recommended", "plugin:jsx-a11y/strict"]
+  "extends": ["ts-react-important-stuff", "plugin:prettier/recommended", "plugin:jsx-a11y/strict"],
+  "rules": {
+    "no-console": "off",
+
+    // meh...
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/sort-type-union-intersection-members": "off",
+    "jsx-a11y/media-has-caption": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/alt-text": "off", // it"s not smart enough...
+    "@babel/new-cap": "off",
+    "react/jsx-filename-extension": "off",
+    "@typescript-eslint/no-namespace": "off",
+
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+
+    // for CatchBoundaries
+    "@typescript-eslint/no-throw-literal": "off"
+  }
 }

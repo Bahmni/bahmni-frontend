@@ -1,8 +1,14 @@
-const { defaults } = require('jest-config');
+const {defaults} = require('jest-config')
 
 module.exports = {
   bail: true,
-  moduleFileExtensions: [...defaults.moduleFileExtensions, 'ts', 'tsx', 'js', 'jsx'],
+  moduleFileExtensions: [
+    ...defaults.moduleFileExtensions,
+    'ts',
+    'tsx',
+    'js',
+    'jsx',
+  ],
   moduleNameMapper: {
     '\\.(s?css)$': 'identity-obj-proxy',
     '^@carbon/icons-react/es/(.*)$': '@carbon/icons-react/lib/$1',
@@ -22,5 +28,8 @@ module.exports = {
   coveragePathIgnorePatterns: [],
   collectCoverageFrom: ['**/src/**/*.{js,ts,tsx}'],
   coverageThreshold: null,
-  watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
-};
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname',
+  ],
+}

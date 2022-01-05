@@ -1,13 +1,13 @@
-const path = require('path');
+const path = require('path')
 
-const { merge } = require('webpack-merge');
-const commonWebpack = require('../../webpack.config');
-const WebpackConcatPlugin = require('webpack-concat-files-plugin');
+const {merge} = require('webpack-merge')
+const commonWebpack = require('../../webpack.config')
+const WebpackConcatPlugin = require('webpack-concat-files-plugin')
 
 module.exports = (env, argv = {}) => {
-  let commonConfig = commonWebpack(env, argv);
-  const dist = `${commonConfig.output.path}/${commonConfig.output.filename}`;
-  commonConfig.output = {};
+  let commonConfig = commonWebpack(env, argv)
+  const dist = `${commonConfig.output.path}/${commonConfig.output.filename}`
+  commonConfig.output = {}
   return merge(commonConfig, {
     plugins: [
       new WebpackConcatPlugin({
@@ -19,5 +19,5 @@ module.exports = (env, argv = {}) => {
         ],
       }),
     ],
-  });
-};
+  })
+}

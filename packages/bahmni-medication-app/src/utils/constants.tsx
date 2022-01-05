@@ -5,4 +5,4 @@ export const headerData = [
   'Instruction',
   'Status',
   'Action',
-];
+]

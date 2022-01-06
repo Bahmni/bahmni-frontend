@@ -1,8 +1,14 @@
-const { defaults } = require('jest-config');
+const {defaults} = require('jest-config')
 
 module.exports = {
   bail: true,
-  moduleFileExtensions: [...defaults.moduleFileExtensions, 'ts', 'tsx', 'js', 'jsx'],
+  moduleFileExtensions: [
+    ...defaults.moduleFileExtensions,
+    'ts',
+    'tsx',
+    'js',
+    'jsx',
+  ],
   roots: ['src'],
   testMatch: ['<rootDir>/src/**/?(*.)test.{ts,tsx,js,jsx}'],
   transform: {
@@ -11,4 +17,4 @@ module.exports = {
   verbose: true,
   setupFilesAfterEnv: ['../../setupTests.js'],
   testEnvironment: 'jsdom',
-};
+}

@@ -8,16 +8,15 @@ import {
   Grid,
   NumberInput,
   Row,
-  Search,
-} from '@bahmni/design-system';
-import React from 'react';
-import { Drug, DrugOrderConfig, Frequency, Route, Unit } from '../types';
+} from '@bahmni/design-system'
+import React from 'react'
+import {Drug, DrugOrderConfig, Frequency, Route, Unit} from '../types'
 
-type PrescriptionDialogProps = {
-  drug: Drug;
-  onClose: Function;
-  drugOrderConfig: DrugOrderConfig;
-};
+type AddPrescriptionModalProps = {
+  drug: Drug
+  onClose: Function
+  drugOrderConfig: DrugOrderConfig
+}
 
 const styles = {
   dialog_container: {
@@ -33,14 +32,14 @@ const styles = {
   right_align: {
     textAlign: 'right',
   },
-};
-const PrescriptionDialog = (props: PrescriptionDialogProps) => {
-  const dosageUnits = props.drugOrderConfig.doseUnits;
-  const durationUnits = props.drugOrderConfig.durationUnits;
-  const drugRoutes = props.drugOrderConfig.routes;
-  const frequencyOptions = props.drugOrderConfig.frequencies;
-  const locale: string = 'en';
-  const currentDate: string = new Date().toLocaleDateString(locale);
+}
+const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
+  const dosageUnits = props.drugOrderConfig.doseUnits
+  const durationUnits = props.drugOrderConfig.durationUnits
+  const drugRoutes = props.drugOrderConfig.routes
+  const frequencyOptions = props.drugOrderConfig.frequencies
+  const locale: string = 'en'
+  const currentDate: string = new Date().toLocaleDateString(locale)
   return (
     <div style={styles.dialog_container} title="prescriptionDialog">
       <Grid>
@@ -60,7 +59,8 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
                       label="Dosage"
                       hideSteppers={true}
                       min={0}
-                      invalidText="Dosage cannot be less than 0"></NumberInput>
+                      invalidText="Dosage cannot be less than 0"
+                    ></NumberInput>
                   </Column>
                   <Column sm={3}>
                     <Dropdown
@@ -81,7 +81,8 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
                   placeholder="Select Frequency"
                   onChange={() => {}}
                   items={frequencyOptions}
-                  itemToString={(item: Frequency) => (item ? item.name : '')}></ComboBox>
+                  itemToString={(item: Frequency) => (item ? item.name : '')}
+                ></ComboBox>
               </Column>
               <Column>
                 <Row>
@@ -91,7 +92,8 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
                       label="Duration"
                       hideSteppers={true}
                       min={0}
-                      invalidText="Duration cannot be less than 0"></NumberInput>
+                      invalidText="Duration cannot be less than 0"
+                    ></NumberInput>
                   </Column>
                   <Column sm={3}>
                     <Dropdown
@@ -114,8 +116,13 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
                   locale={locale}
                   short={true}
                   value={currentDate}
-                  minDate={currentDate}>
-                  <DatePickerInput placeholder="dd/mm/yyyy" labelText="Start Date" id="startDate" />
+                  minDate={currentDate}
+                >
+                  <DatePickerInput
+                    placeholder="dd/mm/yyyy"
+                    labelText="Start Date"
+                    id="startDate"
+                  />
                 </DatePicker>
               </Column>
 
@@ -127,7 +134,8 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
                       label="Quantity"
                       hideSteppers={true}
                       min={0}
-                      invalidText="Quantity cannot be less than 0"></NumberInput>
+                      invalidText="Quantity cannot be less than 0"
+                    ></NumberInput>
                   </Column>
                   <Column sm={3}>
                     <Dropdown
@@ -170,7 +178,7 @@ const PrescriptionDialog = (props: PrescriptionDialogProps) => {
         </Row>
       </Grid>
     </div>
-  );
-};
+  )
+}
 
-export default PrescriptionDialog;
+export default AddPrescriptionModal

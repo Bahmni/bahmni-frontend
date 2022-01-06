@@ -1,14 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Search, ClickableTile, InlineLoading, InlineNotification } from '@bahmni/design-system';
-import { fetchDrugOrderConfig, search } from './api';
-import { useAsync } from 'react-async';
-import PrescriptionDialog from './components/PrescriptionDialog';
-import { Drug, DrugOrderConfig, DrugResult } from './types';
+import {Drug, DrugOrderConfig, DrugResult} from './types'
+import {
+  ClickableTile,
+  Search,
+  Tab,
+  Tabs,
+  InlineLoading,
+  InlineNotification,
+} from '@bahmni/design-system'
+import React, {useEffect, useState} from 'react'
+import {useAsync} from 'react-async'
+import ActivePrescription from './PrescriptionsWidget/ActivePrescription'
+import {search} from './services/drugs'
+import AddPrescriptionModal from './AddPrescriptionModal/AddPrescriptionModal'
+import {fetchDrugOrderConfig} from './services/bahmnicore'
 
 const styles = {
   container: {
     margin: '1rem 0 0 1rem',
-  },
+    position: 'absolute',
+  } as React.CSSProperties,
   search_bar: {
     width: '70%',
   },
@@ -17,12 +27,16 @@ const styles = {
     overflow: 'scroll',
     maxHeight: '20rem',
   },
-};
+  tablePosition: {
+    paddingTop: '10rem',
+  },
+}
 
 const MedicationApp = () => {
-  const [userInput, setUserInput] = useState<String>('');
-  const [isUserInputAvailable, setIsUserInputAvailable] = useState<Boolean>(false);
-  const [selectedDrug, setSelectedDrug] = useState<Drug>(null);
+  const [userInput, setUserInput] = useState('')
+  const [isUserInputAvailable, setIsUserInputAvailable] =
+    useState<Boolean>(false)
+  const [selectedDrug, setSelectedDrug] = useState<Drug>(null)
   const {
     run: searchDrug,
     data: drugs,
@@ -30,7 +44,7 @@ const MedicationApp = () => {
   } = useAsync<DrugResult>({
     deferFn: () => search(userInput.trim()),
     // onReject: (e) => error ?? console.log(e),
-  });
+  })
   const {
     run: getDrugOrderConfig,
     data: drugOrderConfig,
@@ -39,53 +53,63 @@ const MedicationApp = () => {
   } = useAsync<DrugOrderConfig>({
     deferFn: () => fetchDrugOrderConfig(),
     // onReject: (e) => error ?? console.log(e),
-  });
+  })
 
   useEffect(() => {
-    getDrugOrderConfig();
-  }, []);
+    getDrugOrderConfig()
+  }, [])
 
   useEffect(() => {
     if (userInput.length > 1) {
-      searchDrug();
+      searchDrug()
     }
-    setIsUserInputAvailable(userInput.length >= 2);
-    setSelectedDrug(null);
-  }, [userInput]);
+    setIsUserInputAvailable(userInput.length >= 2)
+    setSelectedDrug(null)
+  }, [userInput])
 
   const clearUserInput = () => {
-    setUserInput('');
-    setIsUserInputAvailable(false);
-    setSelectedDrug(null);
-  };
+    setUserInput('')
+    setIsUserInputAvailable(false)
+    setSelectedDrug(null)
+  }
 
   const showDrugOptions = () => {
     if (drugs && isUserInputAvailable && !selectedDrug) {
       return drugs.results.map((drug, i: number) => (
-        <ClickableTile data-testid={`drugDataId ${i}`} key={drug.uuid} onClick={() => setSelectedDrug(drug)}>
+        <ClickableTile
+          data-testid={`drugDataId ${i}`}
+          key={drug.uuid}
+          onClick={() => setSelectedDrug(drug)}
+        >
           {drug.name}
         </ClickableTile>
-      ));
+      ))
     }
-  };
+  }
 
   const renderPrescriptionDialog = () => {
     switch (isDrugOrderConfigLoaded) {
       case 'pending':
-        return <InlineLoading description="Loading Data..."></InlineLoading>;
+        return <InlineLoading description="Loading Data..."></InlineLoading>
       case 'rejected':
-        return <InlineNotification kind="error" title="Something went wrong"></InlineNotification>;
+        return (
+          <InlineNotification
+            kind="error"
+            title="Something went wrong"
+          ></InlineNotification>
+        )
       case 'fulfilled':
         return (
-          <PrescriptionDialog
+          <AddPrescriptionModal
             drug={selectedDrug}
             onClose={clearUserInput}
-            drugOrderConfig={drugOrderConfig}></PrescriptionDialog>
-        );
+            drugOrderConfig={drugOrderConfig}
+          ></AddPrescriptionModal>
+        )
       default:
-        break;
+        break
     }
-  };
+  }
 
   return (
     <div style={styles.container}>
@@ -95,15 +119,26 @@ const MedicationApp = () => {
           data-testid="Search Drug"
           labelText="SearchDrugs"
           placeholder="Search for drug to add in prescription"
-          onChange={(e: { target: HTMLInputElement }) => setUserInput(e.target.value)}
+          onChange={(e: {target: HTMLInputElement}) =>
+            setUserInput(e.target.value)
+          }
           onClear={() => clearUserInput()}
           value={userInput}
         />
         <div style={styles.tileList}>{showDrugOptions()}</div>
       </div>
       {selectedDrug && renderPrescriptionDialog()}
+      <div style={styles.tablePosition}>
+        <Tabs>
+          <Tab label="Active Prescription">
+            <ActivePrescription />
+          </Tab>
+          <Tab label="Scheduled Prescription" />
+          <Tab label="Show all" />
+        </Tabs>
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default MedicationApp;
+export default MedicationApp

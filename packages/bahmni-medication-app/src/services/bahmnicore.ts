@@ -8,7 +8,7 @@ interface ActivePrescription {
 
 export const getActivePrescription = async ({patientUuid}): Promise<any> => {
   const response = await api.get<ActivePrescription>(
-    `/openmrs/ws/rest/v1/bahmnicore/drugOrders/active`,
+    REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
     {
       params: {
         patientUuid,

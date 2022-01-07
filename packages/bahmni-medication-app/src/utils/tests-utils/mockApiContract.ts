@@ -1,7 +1,5 @@
 import {DrugOrderConfig} from '../../types'
 
-export const durgOrdersUrl = '/openmrs/ws/rest/v1/bahmnicore/drugOrders/active'
-
 export const mockDrugsApiResponse = {
   validResponse: {
     results: [

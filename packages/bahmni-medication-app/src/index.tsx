@@ -1,23 +1,14 @@
-import {Drug, DrugOrderConfig, DrugResult} from './types'
-import {
-  ClickableTile,
-  Search,
-  Tab,
-  Tabs,
-  InlineLoading,
-  InlineNotification,
-} from '@bahmni/design-system'
+import {Drug, DrugResult} from './types'
+import {ClickableTile, Search, Tab, Tabs} from '@bahmni/design-system'
 import React, {useEffect, useState} from 'react'
 import {useAsync} from 'react-async'
 import ActivePrescription from './PrescriptionsWidget/ActivePrescription'
 import {search} from './services/drugs'
 import AddPrescriptionModal from './AddPrescriptionModal/AddPrescriptionModal'
-import {fetchDrugOrderConfig} from './services/bahmnicore'
 
 const styles = {
   container: {
     margin: '1rem 0 0 1rem',
-    position: 'absolute',
   } as React.CSSProperties,
   search_bar: {
     width: '70%',
@@ -45,19 +36,6 @@ const MedicationApp = () => {
     deferFn: () => search(userInput.trim()),
     // onReject: (e) => error ?? console.log(e),
   })
-  const {
-    run: getDrugOrderConfig,
-    data: drugOrderConfig,
-    error: drugOrderConfigError,
-    status: isDrugOrderConfigLoaded,
-  } = useAsync<DrugOrderConfig>({
-    deferFn: () => fetchDrugOrderConfig(),
-    // onReject: (e) => error ?? console.log(e),
-  })
-
-  useEffect(() => {
-    getDrugOrderConfig()
-  }, [])
 
   useEffect(() => {
     if (userInput.length > 1) {
@@ -87,30 +65,6 @@ const MedicationApp = () => {
     }
   }
 
-  const renderPrescriptionDialog = () => {
-    switch (isDrugOrderConfigLoaded) {
-      case 'pending':
-        return <InlineLoading description="Loading Data..."></InlineLoading>
-      case 'rejected':
-        return (
-          <InlineNotification
-            kind="error"
-            title="Something went wrong"
-          ></InlineNotification>
-        )
-      case 'fulfilled':
-        return (
-          <AddPrescriptionModal
-            drug={selectedDrug}
-            onClose={clearUserInput}
-            drugOrderConfig={drugOrderConfig}
-          ></AddPrescriptionModal>
-        )
-      default:
-        break
-    }
-  }
-
   return (
     <div style={styles.container}>
       <div style={styles.search_bar}>
@@ -127,7 +81,12 @@ const MedicationApp = () => {
         />
         <div style={styles.tileList}>{showDrugOptions()}</div>
       </div>
-      {selectedDrug && renderPrescriptionDialog()}
+      {selectedDrug && (
+        <AddPrescriptionModal
+          drug={selectedDrug}
+          onClose={clearUserInput}
+        ></AddPrescriptionModal>
+      )}
       <div style={styles.tablePosition}>
         <Tabs>
           <Tab label="Active Prescription">

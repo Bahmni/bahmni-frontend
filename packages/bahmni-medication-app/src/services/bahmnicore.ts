@@ -1,4 +1,5 @@
 import {DrugOrderConfig} from '../types'
+import {REST_ENDPOINTS} from '../utils/constants'
 import {api, responseBody} from './axios'
 
 interface ActivePrescription {
@@ -19,7 +20,7 @@ export const getActivePrescription = async ({patientUuid}): Promise<any> => {
 
 export const fetchDrugOrderConfig = async (): Promise<DrugOrderConfig> => {
   const response = await api.get<DrugOrderConfig>(
-    `/openmrs/ws/rest/v1/bahmnicore/config/drugOrders`,
+    REST_ENDPOINTS.DRUG_ORDER_CONFIG,
   )
   return responseBody(response)
 }

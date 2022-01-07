@@ -7,29 +7,44 @@ import {
   mockDrugOrderConfigApiResponse,
   mockDrugsApiResponse,
 } from '../utils/tests-utils/mockApiContract'
+import MockAdapter from 'axios-mock-adapter/types'
+import {initMockApi} from '../utils/tests-utils/baseApiSetup'
+import {REST_ENDPOINTS} from '../utils/constants'
 
 const mockDrug = mockDrugsApiResponse.validResponse.results[0]
-
+let adapter: MockAdapter, waitForApiCalls: Function, apiParams: Function
+beforeEach(() => {
+  ;({adapter, waitForApiCalls, apiParams} = initMockApi())
+})
 test('should pass hygene accessibility tests', async () => {
+  adapter
+    .onGet(REST_ENDPOINTS.DRUG_ORDER_CONFIG)
+    .reply(200, mockDrugOrderConfigApiResponse)
   const {container} = render(
     <AddPrescriptionModal
       drug={mockDrug}
       onClose={() => {}}
-      drugOrderConfig={mockDrugOrderConfigApiResponse}
     ></AddPrescriptionModal>,
   )
+  await waitForDrugOrderConfig()
   expect(await axe(container)).toHaveNoViolations()
 })
 
 describe('Medication Tab - Prescription Dialog', () => {
-  it('should display prescription details input controls', () => {
+  beforeEach(() => {
+    sessionStorage.clear()
+    adapter
+      .onGet(REST_ENDPOINTS.DRUG_ORDER_CONFIG)
+      .reply(200, mockDrugOrderConfigApiResponse)
+  })
+  it('should display prescription details input controls', async () => {
     render(
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
-        drugOrderConfig={mockDrugOrderConfigApiResponse}
       ></AddPrescriptionModal>,
     )
+    await waitForDrugOrderConfig()
 
     expect(screen.getByText(mockDrug.name)).toBeInTheDocument()
     expect(screen.getByLabelText('Dosage')).toBeInTheDocument()
@@ -43,14 +58,15 @@ describe('Medication Tab - Prescription Dialog', () => {
     expect(screen.getByRole('button', {name: 'Route'}))
   })
 
-  it('should show error message when user enter drugs Quantity less then 0', () => {
+  it('should show error message when user enter drugs Quantity less then 0', async () => {
     render(
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
-        drugOrderConfig={mockDrugOrderConfigApiResponse}
       ></AddPrescriptionModal>,
     )
+    await waitForDrugOrderConfig()
+
     const quantityInput = screen.getByLabelText('Quantity')
     userEvent.type(quantityInput, '-1')
     expect(
@@ -58,14 +74,15 @@ describe('Medication Tab - Prescription Dialog', () => {
     ).toBeInTheDocument()
   })
 
-  it('should show error message when user enter drugs Dosage less then 0', () => {
+  it('should show error message when user enter drugs Dosage less then 0', async () => {
     render(
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
-        drugOrderConfig={mockDrugOrderConfigApiResponse}
       ></AddPrescriptionModal>,
     )
+    await waitForDrugOrderConfig()
+
     const dosageInput = screen.getByLabelText('Dosage')
     userEvent.type(dosageInput, '-1')
     expect(
@@ -73,14 +90,15 @@ describe('Medication Tab - Prescription Dialog', () => {
     ).toBeInTheDocument()
   })
 
-  it('should show error message when user enter drugs Duration less then 0', () => {
+  it('should show error message when user enter drugs Duration less then 0', async () => {
     render(
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
-        drugOrderConfig={mockDrugOrderConfigApiResponse}
       ></AddPrescriptionModal>,
     )
+    await waitForDrugOrderConfig()
+
     const durationInput = screen.getByLabelText('Duration')
     userEvent.type(durationInput, '-1')
     expect(
@@ -88,7 +106,7 @@ describe('Medication Tab - Prescription Dialog', () => {
     ).toBeInTheDocument()
   })
 
-  it('should not allow user to select past date as prescription start date', () => {
+  it('should not allow user to select past date as prescription start date', async () => {
     function getFormatedDate(addDays: number): string {
       let date = new Date()
       date.setDate(date.getDate() + addDays)
@@ -103,9 +121,10 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
-        drugOrderConfig={mockDrugOrderConfigApiResponse}
       ></AddPrescriptionModal>,
     )
+    await waitForDrugOrderConfig()
+
     const startDateInput = screen.getByLabelText('Start Date')
     userEvent.click(startDateInput)
 
@@ -115,14 +134,14 @@ describe('Medication Tab - Prescription Dialog', () => {
     expect(currentDay.className).not.toMatch(/-disabled/i)
     expect(pastDate.className).toMatch(/-disabled/i)
   })
-  it('should display dosage units from drug order config when user clicks on dosage unit dropdown', () => {
+  it('should display dosage units from drug order config when user clicks on dosage unit dropdown', async () => {
     render(
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
-        drugOrderConfig={mockDrugOrderConfigApiResponse}
       ></AddPrescriptionModal>,
     )
+    await waitForDrugOrderConfig()
 
     userEvent.click(screen.getByTitle('Dosage Unit'))
     mockDrugOrderConfigApiResponse.doseUnits.forEach(doseUnit => {
@@ -130,14 +149,14 @@ describe('Medication Tab - Prescription Dialog', () => {
     })
   })
 
-  it('should display duration units from drug order config when user clicks on duration unit dropdown', () => {
+  it('should display duration units from drug order config when user clicks on duration unit dropdown', async () => {
     render(
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
-        drugOrderConfig={mockDrugOrderConfigApiResponse}
       ></AddPrescriptionModal>,
     )
+    await waitForDrugOrderConfig()
 
     userEvent.click(screen.getByTitle('Duration Unit'))
     mockDrugOrderConfigApiResponse.durationUnits.forEach(durationUnit => {
@@ -145,14 +164,14 @@ describe('Medication Tab - Prescription Dialog', () => {
     })
   })
 
-  it('should display quantity units from drug order config when user clicks on quantity unit dropdown', () => {
+  it('should display quantity units from drug order config when user clicks on quantity unit dropdown', async () => {
     render(
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
-        drugOrderConfig={mockDrugOrderConfigApiResponse}
       ></AddPrescriptionModal>,
     )
+    await waitForDrugOrderConfig()
 
     userEvent.click(screen.getByTitle('Quantity Unit'))
     mockDrugOrderConfigApiResponse.doseUnits.forEach(doseUnit => {
@@ -160,14 +179,14 @@ describe('Medication Tab - Prescription Dialog', () => {
     })
   })
 
-  it('should display route from drug order config when user clicks on route dropdown', () => {
+  it('should display route from drug order config when user clicks on route dropdown', async () => {
     render(
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
-        drugOrderConfig={mockDrugOrderConfigApiResponse}
       ></AddPrescriptionModal>,
     )
+    await waitForDrugOrderConfig()
 
     userEvent.click(screen.getByTitle('Route'))
     mockDrugOrderConfigApiResponse.routes.forEach(route => {
@@ -175,14 +194,14 @@ describe('Medication Tab - Prescription Dialog', () => {
     })
   })
 
-  it('should display frequency options from drug order config when user clicks on frequency dropdown', () => {
+  it('should display frequency options from drug order config when user clicks on frequency dropdown', async () => {
     render(
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
-        drugOrderConfig={mockDrugOrderConfigApiResponse}
       ></AddPrescriptionModal>,
     )
+    await waitForDrugOrderConfig()
 
     userEvent.click(screen.getByLabelText('Frequency'))
     mockDrugOrderConfigApiResponse.frequencies.forEach(frequency => {
@@ -190,3 +209,10 @@ describe('Medication Tab - Prescription Dialog', () => {
     })
   })
 })
+
+async function waitForDrugOrderConfig() {
+  await waitForApiCalls({
+    apiURL: REST_ENDPOINTS.DRUG_ORDER_CONFIG,
+    times: 1,
+  })
+}

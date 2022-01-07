@@ -6,16 +6,17 @@ import {
   DatePickerInput,
   Dropdown,
   Grid,
+  InlineLoading,
   NumberInput,
   Row,
 } from '@bahmni/design-system'
 import React from 'react'
-import {Drug, DrugOrderConfig, Frequency, Route, Unit} from '../types'
+import useDrugOrderConfig from '../hooks/useDrugOrderConfig'
+import {Drug, Frequency, Route, Unit} from '../types'
 
 type AddPrescriptionModalProps = {
   drug: Drug
   onClose: Function
-  drugOrderConfig: DrugOrderConfig
 }
 
 const styles = {
@@ -34,12 +35,12 @@ const styles = {
   },
 }
 const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
-  const dosageUnits = props.drugOrderConfig.doseUnits
-  const durationUnits = props.drugOrderConfig.durationUnits
-  const drugRoutes = props.drugOrderConfig.routes
-  const frequencyOptions = props.drugOrderConfig.frequencies
+  const {drugOrderConfig, isLoading, error} = useDrugOrderConfig()
   const locale: string = 'en'
   const currentDate: string = new Date().toLocaleDateString(locale)
+  if (error) return <p>Something went wrong..</p>
+  if (isLoading)
+    return <InlineLoading description="Loading Data..."></InlineLoading>
   return (
     <div style={styles.dialog_container} title="prescriptionDialog">
       <Grid>
@@ -67,7 +68,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                       id="dosageUnit"
                       label="Dosage Unit"
                       titleText="Units"
-                      items={dosageUnits}
+                      items={drugOrderConfig.doseUnits}
                       ariaLabel="Dosage Unit"
                       itemToString={(item: Unit) => item.name}
                     />
@@ -80,7 +81,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                   titleText="Frequency"
                   placeholder="Select Frequency"
                   onChange={() => {}}
-                  items={frequencyOptions}
+                  items={drugOrderConfig.frequencies}
                   itemToString={(item: Frequency) => (item ? item.name : '')}
                 ></ComboBox>
               </Column>
@@ -100,7 +101,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                       id="durationUnit"
                       label="Duration Unit"
                       titleText="Units"
-                      items={durationUnits}
+                      items={drugOrderConfig.durationUnits}
                       ariaLabel="Duration Unit"
                       itemToString={(item: Unit) => item.name}
                     />
@@ -142,7 +143,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                       id="quantityUnit"
                       label="Quantity Unit"
                       titleText="Units"
-                      items={dosageUnits}
+                      items={drugOrderConfig.doseUnits}
                       ariaLabel="Quantity Unit"
                       itemToString={(item: Unit) => item.name}
                     />
@@ -154,7 +155,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                   id="route"
                   label="Route"
                   titleText="Route"
-                  items={drugRoutes}
+                  items={drugOrderConfig.routes}
                   itemToString={(item: Route) => item.name}
                 />
               </Column>

@@ -6,3 +6,7 @@ export const headerData = [
   'Status',
   'Action',
 ]
+
+export const REST_ENDPOINTS = {
+  DRUG_ORDER_CONFIG: '/openmrs/ws/rest/v1/bahmnicore/config/drugOrders',
+}

@@ -24,6 +24,7 @@ afterEach(() => {
 
 test('should pass hygene accessibility tests', async () => {
   const {container} = render(<ActivePrescription />)
+  await waitForApiCalls({apiURL: durgOrdersUrl, times: 1})
   expect(await axe(container)).toHaveNoViolations()
 })
 

@@ -5,6 +5,7 @@ export interface ActiveDrug {
   concept?: any
   drug: any
   dosingInstructions: any
+  duration: number
   durationUnits: String
   effectiveStartDate: Number
 }

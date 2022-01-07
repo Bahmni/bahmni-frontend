@@ -10,7 +10,9 @@ import {
 } from '../../utils/tests-utils/mockApiContract'
 
 test('should pass hygene accessibility tests', async () => {
-  const {container} = render(<ActivePrescription />)
+  const {container} = render(
+    <PrescriptionTable data={mockPrescriptionResponse} />,
+  )
   expect(await axe(container)).toHaveNoViolations()
 })
 
@@ -29,7 +31,7 @@ describe('Prescription Table', () => {
     ).toBeInTheDocument()
     expect(
       screen.getByRole('cell', {
-        name: /5 Capsule\(s\), Thrice a day for undefined Day\(s\) started on 12\/22\/2021 by Super Man/i,
+        name: /5 Capsule\(s\), Thrice a day for 5 Day\(s\) started on 12\/22\/2021 by Super Man/i,
       }),
     ).toBeInTheDocument()
     expect(

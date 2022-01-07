@@ -1,10 +1,10 @@
-import {Drug, DrugResult} from './types'
-import {ClickableTile, Search, Tab, Tabs} from '@bahmni/design-system'
+import {ClickableTile, Search} from '@bahmni/design-system'
 import React, {useEffect, useState} from 'react'
 import {useAsync} from 'react-async'
-import ActivePrescription from './PrescriptionsWidget/ActivePrescription'
-import {search} from './services/drugs'
 import AddPrescriptionModal from './AddPrescriptionModal/AddPrescriptionModal'
+import {PrescriptionWidget} from './PrescriptionsWidget/PrescriptionWidget'
+import {search} from './services/drugs'
+import {Drug, DrugResult} from './types'
 
 const styles = {
   container: {
@@ -17,9 +17,6 @@ const styles = {
     margin: 'auto',
     overflow: 'scroll',
     maxHeight: '20rem',
-  },
-  tablePosition: {
-    paddingTop: '10rem',
   },
 }
 
@@ -87,15 +84,7 @@ const MedicationApp = () => {
           onClose={clearUserInput}
         ></AddPrescriptionModal>
       )}
-      <div style={styles.tablePosition}>
-        <Tabs>
-          <Tab label="Active Prescription">
-            <ActivePrescription />
-          </Tab>
-          <Tab label="Scheduled Prescription" />
-          <Tab label="Show all" />
-        </Tabs>
-      </div>
+      <PrescriptionWidget />
     </div>
   )
 }

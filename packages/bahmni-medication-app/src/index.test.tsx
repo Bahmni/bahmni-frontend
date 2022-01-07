@@ -75,51 +75,10 @@ describe('Medication tab - Drugs search', () => {
     expect(screen.getByText(/paracetomal 2/i)).toBeInTheDocument()
   })
 
-  it('should display all the tabs', async () => {
+  it('should show prescription widget', () => {
     render(<MedicationApp />)
 
-    expect(
-      screen.getByRole('tab', {
-        name: /active prescription/i,
-      }),
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('tab', {
-        name: /schedule/i,
-      }),
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('tab', {
-        name: /show all/i,
-      }),
-    ).toBeInTheDocument()
-  })
-
-  it('should display prescription table headers', async () => {
-    render(<MedicationApp />)
-
-    expect(screen.getByText(/Active Prescription/i)).toBeInTheDocument()
-    expect(screen.getByText(/Scheduled Prescription/i)).toBeInTheDocument()
-    expect(screen.getByText(/Show all/i)).toBeInTheDocument()
-  })
-
-  //FIXME: should rewrite the test - would need code refactor - SOC violation
-  it.skip('should display active prescription table when user clicks on active prescription tab', async () => {
-    render(<MedicationApp />)
-
-    userEvent.click(
-      screen.getByRole('tab', {
-        name: /schedule/i,
-      }),
-    )
-    expect(screen.getByTestId('activePrescription')).not.toBeVisible()
-
-    userEvent.click(
-      screen.getByRole('tab', {
-        name: /active prescription/i,
-      }),
-    )
-    expect(screen.getByTestId('activePrescription')).toBeVisible()
+    expect(screen.getByTitle('prescriptionWidget')).toBeInTheDocument()
   })
 })
 

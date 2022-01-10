@@ -394,6 +394,21 @@ describe('Medication Tab - Prescription Dialog', () => {
 
     expect(screen.getByLabelText('Quantity')).toHaveValue(2)
   })
+
+  it.only('should update quantity unit when dose unit is changed', async () => {
+    render(
+      <AddPrescriptionModal
+        drug={mockDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+
+    userEvent.click(screen.getByTitle('Dosage Unit'))
+    userEvent.click(screen.getByText('Tablet'))
+
+    expect(screen.getByLabelText('Quantity Unit')).toHaveTextContent('Tablet')
+  })
 })
 
 async function waitForDrugOrderConfig() {

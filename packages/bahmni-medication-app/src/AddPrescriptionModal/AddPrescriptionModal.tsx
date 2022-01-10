@@ -108,6 +108,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                         itemToString={(item: Unit) => item.name}
                         onChange={(event: {selectedItem: Unit}) => {
                           setDoseUnit(event.selectedItem)
+                          setQuantityUnit(event.selectedItem)
                         }}
                       />
                     </Column>
@@ -199,6 +200,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                         items={drugOrderConfig.doseUnits}
                         ariaLabel="Quantity Unit"
                         itemToString={(item: Unit) => item.name}
+                        selectedItem={quantityUnit}
                         onChange={(event: {selectedItem: Unit}) => {
                           setQuantityUnit(event.selectedItem)
                         }}

@@ -4,7 +4,7 @@ import {useAsync} from 'react-async'
 import AddPrescriptionModal from './AddPrescriptionModal/AddPrescriptionModal'
 import {PrescriptionWidget} from './PrescriptionsWidget/PrescriptionWidget'
 import {search} from './services/drugs'
-import {Drug, DrugResult} from './types'
+import {Drug, DrugResult, NonCodedDrug} from './types'
 
 const styles = {
   container: {
@@ -24,7 +24,8 @@ const MedicationApp = () => {
   const [userInput, setUserInput] = useState('')
   const [isUserInputAvailable, setIsUserInputAvailable] =
     useState<Boolean>(false)
-  const [selectedDrug, setSelectedDrug] = useState<Drug>(null)
+  const [selectedDrug, setSelectedDrug] = useState<Drug | NonCodedDrug>(null)
+
   const {
     run: searchDrug,
     data: drugs,
@@ -49,7 +50,12 @@ const MedicationApp = () => {
   }
 
   const showDrugOptions = () => {
-    if (drugs && isUserInputAvailable && !selectedDrug) {
+    if (
+      drugs &&
+      drugs.results.length > 0 &&
+      isUserInputAvailable &&
+      !selectedDrug
+    ) {
       return drugs.results.map((drug, i: number) => (
         <ClickableTile
           data-testid={`drugDataId ${i}`}
@@ -59,6 +65,17 @@ const MedicationApp = () => {
           {drug.name}
         </ClickableTile>
       ))
+    } else if (
+      drugs &&
+      drugs.results.length === 0 &&
+      isUserInputAvailable &&
+      !selectedDrug
+    ) {
+      return (
+        <ClickableTile onClick={() => setSelectedDrug({name: userInput})}>
+          "{userInput}"
+        </ClickableTile>
+      )
     }
   }
 

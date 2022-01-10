@@ -10,10 +10,10 @@ import {
   Search,
 } from '@bahmni/design-system'
 import React from 'react'
-import {Drug} from '../types'
+import {Drug, NonCodedDrug} from '../types'
 
 type AddPrescriptionModalProps = {
-  drug: Drug
+  drug: Drug | NonCodedDrug
   onClose: Function
 }
 

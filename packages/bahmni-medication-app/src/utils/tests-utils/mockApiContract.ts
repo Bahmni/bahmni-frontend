@@ -91,3 +91,10 @@ export const mockDrugOrderConfigApiResponse: DrugOrderConfig = {
   frequencies: [{name: 'Immediately', frequencyPerDay: 1, uuid: '1'}],
   routes: [{name: 'Oral', rootConcept: null}],
 }
+
+export const mockDrugOrderConfigBadApiResponse: DrugOrderConfig = {
+  doseUnits: undefined,
+  durationUnits: [{name: 'Days', rootConcept: null}],
+  frequencies: [{name: 'Immediately', frequencyPerDay: 1, uuid: '1'}],
+  routes: [{name: 'Oral', rootConcept: null}],
+}

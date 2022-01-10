@@ -20,9 +20,7 @@ jest.mock('./services/drugs', () => ({
 
 Element.prototype.scrollIntoView = jest.fn()
 let adapter: MockAdapter, waitForApiCalls: Function, apiParams: Function
-beforeEach(() => {
-  ;({adapter, waitForApiCalls, apiParams} = initMockApi())
-})
+
 test('should pass hygene accessibility tests', async () => {
   const {container} = render(<MedicationApp />)
 
@@ -88,6 +86,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
   })
 
   beforeEach(() => {
+    ;({adapter, waitForApiCalls, apiParams} = initMockApi())
     sessionStorage.clear()
     adapter
       .onGet(REST_ENDPOINTS.DRUG_ORDER_CONFIG)

@@ -23,8 +23,8 @@ const useDrugOrderConfig = (): {
           setIsLoading(false)
         })
         .catch(error => {
-          setIsLoading(false)
           setError(error)
+          setIsLoading(false)
         })
   }, [])
   return {

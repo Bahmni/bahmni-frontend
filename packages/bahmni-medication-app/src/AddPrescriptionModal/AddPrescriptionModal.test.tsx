@@ -5,6 +5,7 @@ import React from 'react'
 import AddPrescriptionModal from './AddPrescriptionModal'
 import {
   mockDrugOrderConfigApiResponse,
+  mockDrugOrderConfigBadApiResponse,
   mockDrugsApiResponse,
 } from '../utils/tests-utils/mockApiContract'
 import MockAdapter from 'axios-mock-adapter/types'
@@ -207,6 +208,45 @@ describe('Medication Tab - Prescription Dialog', () => {
     mockDrugOrderConfigApiResponse.frequencies.forEach(frequency => {
       expect(screen.getByText(frequency.name)).toBeInTheDocument()
     })
+  })
+
+  it('should display error message when fetching drug order config fails', async () => {
+    adapter.onGet(REST_ENDPOINTS.DRUG_ORDER_CONFIG).reply(404)
+    render(
+      <AddPrescriptionModal
+        drug={mockDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+    expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
+  })
+
+  it('should display loading message while fetching drug order config', async () => {
+    adapter.onGet(REST_ENDPOINTS.DRUG_ORDER_CONFIG).timeout()
+    render(
+      <AddPrescriptionModal
+        drug={mockDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    expect(screen.getByText(/loading data/i)).toBeInTheDocument()
+    await waitForDrugOrderConfig()
+    expect(screen.queryByText(/loading data/i)).not.toBeInTheDocument()
+  })
+
+  it('should display error message when any of the config value is not defined in drug order config', async () => {
+    adapter
+      .onGet(REST_ENDPOINTS.DRUG_ORDER_CONFIG)
+      .reply(200, mockDrugOrderConfigBadApiResponse)
+    render(
+      <AddPrescriptionModal
+        drug={mockDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+    expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
   })
 })
 

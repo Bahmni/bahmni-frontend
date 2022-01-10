@@ -48,12 +48,10 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
   const [quantity, setQuantity] = useState<number>(0)
   const [quantityUnit, setQuantityUnit] = useState<Unit>()
   const [route, setRoute] = useState<Route>()
+  const [isDataValid, setIsDataValid] = useState<boolean>(false)
 
   useEffect(() => {
-    if (dose && duration && durationUnit && frequency) {
-      console.log(
-        dose * duration * durationUnit.factor * frequency.frequencyPerDay,
-      )
+    if (dose > 0 && duration > 0 && durationUnit && frequency) {
       setQuantity(
         Math.ceil(
           dose * duration * durationUnit.factor * frequency.frequencyPerDay,
@@ -63,6 +61,30 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
       setQuantity(0)
     }
   }, [dose, duration, durationUnit, frequency])
+
+  useEffect(() => {
+    dose > 0 &&
+    doseUnit &&
+    duration > 0 &&
+    durationUnit &&
+    frequency &&
+    startDate &&
+    quantity > 0 &&
+    quantityUnit &&
+    route
+      ? setIsDataValid(true)
+      : setIsDataValid(false)
+  }, [
+    dose,
+    doseUnit,
+    duration,
+    durationUnit,
+    frequency,
+    startDate,
+    quantity,
+    quantityUnit,
+    route,
+  ])
 
   if (error) return <p>Something went wrong..</p>
   if (isLoading)
@@ -235,6 +257,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
             <Column style={styles.right_align}>
               <Button
                 className="confirm"
+                disabled={!isDataValid}
                 onClick={() => {
                   console.log(
                     dose,

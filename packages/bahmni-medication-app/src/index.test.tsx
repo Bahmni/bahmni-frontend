@@ -139,6 +139,16 @@ describe('Medication tab - Add Prescription Dialog', () => {
     await waitFor(() =>
       expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument(),
     )
+    userEvent.type(screen.getByLabelText('Dosage'), '1')
+    userEvent.click(screen.getByTitle('Dosage Unit'))
+    userEvent.click(screen.getByText('Tablet'))
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Immediately'))
+    userEvent.type(screen.getByLabelText('Duration'), '1')
+    userEvent.click(screen.getByTitle('Duration Unit'))
+    userEvent.click(screen.getByText('Day(s)'))
+    userEvent.click(screen.getByTitle('Route'))
+    userEvent.click(screen.getByText('Oral'))
     const doneButton = screen.getByText(/done/i)
     userEvent.click(doneButton)
 

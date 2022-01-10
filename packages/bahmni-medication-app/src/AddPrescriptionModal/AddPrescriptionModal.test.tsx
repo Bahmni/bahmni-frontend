@@ -395,7 +395,7 @@ describe('Medication Tab - Prescription Dialog', () => {
     expect(screen.getByLabelText('Quantity')).toHaveValue(2)
   })
 
-  it.only('should update quantity unit when dose unit is changed', async () => {
+  it('should update quantity unit when dose unit is changed', async () => {
     render(
       <AddPrescriptionModal
         drug={mockDrug}
@@ -408,6 +408,31 @@ describe('Medication Tab - Prescription Dialog', () => {
     userEvent.click(screen.getByText('Tablet'))
 
     expect(screen.getByLabelText('Quantity Unit')).toHaveTextContent('Tablet')
+  })
+
+  it('should enable done button only when all the input values are given', async () => {
+    render(
+      <AddPrescriptionModal
+        drug={mockDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+
+    expect(screen.getByRole('button', {name: 'Done'})).toBeDisabled()
+
+    userEvent.type(screen.getByLabelText('Dosage'), '1')
+    userEvent.click(screen.getByTitle('Dosage Unit'))
+    userEvent.click(screen.getByText('Tablet'))
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Immediately'))
+    userEvent.type(screen.getByLabelText('Duration'), '1')
+    userEvent.click(screen.getByTitle('Duration Unit'))
+    userEvent.click(screen.getByText('Day(s)'))
+    userEvent.click(screen.getByTitle('Route'))
+    userEvent.click(screen.getByText('Oral'))
+
+    expect(screen.getByRole('button', {name: 'Done'})).toBeEnabled()
   })
 })
 

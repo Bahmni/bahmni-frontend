@@ -12,3 +12,8 @@ export const REST_ENDPOINTS = {
   ACTIVE_PRESCRIPTION: '/openmrs/ws/rest/v1/bahmnicore/drugOrders/active',
   DRUG_SEARCH: '/openmrs/ws/rest/v1/drug',
 }
+export const defaultDurationUnits = [
+  {name: 'Day(s)', factor: 1},
+  {name: 'Week(s)', factor: 7},
+  {name: 'Month(s)', factor: 30},
+]

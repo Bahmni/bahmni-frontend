@@ -10,7 +10,7 @@ import {
 } from '../utils/tests-utils/mockApiContract'
 import MockAdapter from 'axios-mock-adapter/types'
 import {initMockApi} from '../utils/tests-utils/baseApiSetup'
-import {REST_ENDPOINTS} from '../utils/constants'
+import {defaultDurationUnits, REST_ENDPOINTS} from '../utils/constants'
 
 const mockDrug = mockDrugsApiResponse.validResponse.results[0]
 let adapter: MockAdapter, waitForApiCalls: Function, apiParams: Function
@@ -150,7 +150,7 @@ describe('Medication Tab - Prescription Dialog', () => {
     })
   })
 
-  it('should display duration units from drug order config when user clicks on duration unit dropdown', async () => {
+  it('should display default duration units when user clicks on duration unit dropdown', async () => {
     render(
       <AddPrescriptionModal
         drug={mockDrug}
@@ -160,7 +160,7 @@ describe('Medication Tab - Prescription Dialog', () => {
     await waitForDrugOrderConfig()
 
     userEvent.click(screen.getByTitle('Duration Unit'))
-    mockDrugOrderConfigApiResponse.durationUnits.forEach(durationUnit => {
+    defaultDurationUnits.forEach(durationUnit => {
       expect(screen.getByText(durationUnit.name)).toBeInTheDocument()
     })
   })
@@ -247,6 +247,152 @@ describe('Medication Tab - Prescription Dialog', () => {
     )
     await waitForDrugOrderConfig()
     expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
+  })
+
+  it('should display total quantity when dose, frequency, duration, duration unit are entered', async () => {
+    render(
+      <AddPrescriptionModal
+        drug={mockDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+    userEvent.type(screen.getByLabelText('Dosage'), '1')
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Immediately'))
+    userEvent.type(screen.getByLabelText('Duration'), '1')
+    userEvent.click(screen.getByTitle('Duration Unit'))
+    userEvent.click(screen.getByText('Day(s)'))
+
+    expect(screen.getByLabelText('Quantity')).toHaveValue(1)
+  })
+
+  it('should recalculate total quantity when dose is changed', async () => {
+    render(
+      <AddPrescriptionModal
+        drug={mockDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+    userEvent.type(screen.getByLabelText('Dosage'), '1')
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Immediately'))
+    userEvent.type(screen.getByLabelText('Duration'), '1')
+    userEvent.click(screen.getByTitle('Duration Unit'))
+    userEvent.click(screen.getByText('Day(s)'))
+
+    expect(screen.getByLabelText('Quantity')).toHaveValue(1)
+
+    userEvent.clear(screen.getByLabelText('Dosage'))
+    userEvent.type(screen.getByLabelText('Dosage'), '2')
+    expect(screen.getByLabelText('Quantity')).toHaveValue(2)
+  })
+
+  it('should recalculate total quantity when duration is changed', async () => {
+    render(
+      <AddPrescriptionModal
+        drug={mockDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+    userEvent.type(screen.getByLabelText('Dosage'), '1')
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Immediately'))
+    userEvent.type(screen.getByLabelText('Duration'), '1')
+    userEvent.click(screen.getByTitle('Duration Unit'))
+    userEvent.click(screen.getByText('Day(s)'))
+
+    expect(screen.getByLabelText('Quantity')).toHaveValue(1)
+
+    userEvent.clear(screen.getByLabelText('Duration'))
+    userEvent.type(screen.getByLabelText('Duration'), '2')
+    expect(screen.getByLabelText('Quantity')).toHaveValue(2)
+  })
+
+  it('should recalculate total quantity when duration unit is changed', async () => {
+    render(
+      <AddPrescriptionModal
+        drug={mockDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+    userEvent.type(screen.getByLabelText('Dosage'), '1')
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Immediately'))
+    userEvent.type(screen.getByLabelText('Duration'), '1')
+    userEvent.click(screen.getByTitle('Duration Unit'))
+    userEvent.click(screen.getByText('Day(s)'))
+
+    expect(screen.getByLabelText('Quantity')).toHaveValue(1)
+
+    userEvent.click(screen.getByTitle('Day(s)'))
+    userEvent.click(screen.getByText('Week(s)'))
+    expect(screen.getByLabelText('Quantity')).toHaveValue(7)
+  })
+
+  it('should recalculate total quantity when frequency is changed', async () => {
+    render(
+      <AddPrescriptionModal
+        drug={mockDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+    userEvent.type(screen.getByLabelText('Dosage'), '1')
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Immediately'))
+    userEvent.type(screen.getByLabelText('Duration'), '1')
+    userEvent.click(screen.getByTitle('Duration Unit'))
+    userEvent.click(screen.getByText('Day(s)'))
+
+    expect(screen.getByLabelText('Quantity')).toHaveValue(1)
+
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Twice a day'))
+    expect(screen.getByLabelText('Quantity')).toHaveValue(2)
+  })
+
+  it('should reset total quantity when frequency input is cleared', async () => {
+    render(
+      <AddPrescriptionModal
+        drug={mockDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+    userEvent.type(screen.getByLabelText('Dosage'), '1')
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Immediately'))
+    userEvent.type(screen.getByLabelText('Duration'), '1')
+    userEvent.click(screen.getByTitle('Duration Unit'))
+    userEvent.click(screen.getByText('Day(s)'))
+
+    expect(screen.getByLabelText('Quantity')).toHaveValue(1)
+
+    userEvent.click(screen.getByRole('button', {name: 'Clear selected item'}))
+
+    expect(screen.getByLabelText('Quantity')).toHaveValue(0)
+  })
+
+  it('should display total quantity in whole numbers rounded to next integer', async () => {
+    render(
+      <AddPrescriptionModal
+        drug={mockDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+    userEvent.type(screen.getByLabelText('Dosage'), '1.5')
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Immediately'))
+    userEvent.type(screen.getByLabelText('Duration'), '1')
+    userEvent.click(screen.getByTitle('Duration Unit'))
+    userEvent.click(screen.getByText('Day(s)'))
+
+    expect(screen.getByLabelText('Quantity')).toHaveValue(2)
   })
 })
 

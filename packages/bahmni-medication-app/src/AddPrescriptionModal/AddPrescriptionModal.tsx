@@ -10,9 +10,10 @@ import {
   NumberInput,
   Row,
 } from '@bahmni/design-system'
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import useDrugOrderConfig from '../hooks/useDrugOrderConfig'
-import {Drug, Frequency, Route, Unit} from '../types'
+import {Drug, DurationUnit, Frequency, Route, Unit} from '../types'
+import {defaultDurationUnits} from '../utils/constants'
 
 type AddPrescriptionModalProps = {
   drug: Drug
@@ -38,6 +39,31 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
   const {drugOrderConfig, isLoading, error} = useDrugOrderConfig()
   const locale: string = 'en'
   const currentDate: string = new Date().toLocaleDateString(locale)
+  const [dose, setDose] = useState<number>(0)
+  const [doseUnit, setDoseUnit] = useState<Unit>()
+  const [duration, setDuration] = useState<number>(0)
+  const [durationUnit, setDurationUnit] = useState<DurationUnit>()
+  const [frequency, setFrequency] = useState<Frequency>()
+  const [startDate, setStartDate] = useState<Date>(new Date())
+  const [quantity, setQuantity] = useState<number>(0)
+  const [quantityUnit, setQuantityUnit] = useState<Unit>()
+  const [route, setRoute] = useState<Route>()
+
+  useEffect(() => {
+    if (dose && duration && durationUnit && frequency) {
+      console.log(
+        dose * duration * durationUnit.factor * frequency.frequencyPerDay,
+      )
+      setQuantity(
+        Math.ceil(
+          dose * duration * durationUnit.factor * frequency.frequencyPerDay,
+        ),
+      )
+    } else {
+      setQuantity(0)
+    }
+  }, [dose, duration, durationUnit, frequency])
+
   if (error) return <p>Something went wrong..</p>
   if (isLoading)
     return <InlineLoading description="Loading Data..."></InlineLoading>
@@ -67,6 +93,9 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                         hideSteppers={true}
                         min={0}
                         invalidText="Dosage cannot be less than 0"
+                        onChange={(event: {target: HTMLInputElement}) =>
+                          setDose(parseFloat(event.target.value))
+                        }
                       ></NumberInput>
                     </Column>
                     <Column sm={3}>
@@ -77,6 +106,9 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                         items={drugOrderConfig.doseUnits}
                         ariaLabel="Dosage Unit"
                         itemToString={(item: Unit) => item.name}
+                        onChange={(event: {selectedItem: Unit}) => {
+                          setDoseUnit(event.selectedItem)
+                        }}
                       />
                     </Column>
                   </Row>
@@ -86,7 +118,9 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                     id="frequencySearch"
                     titleText="Frequency"
                     placeholder="Select Frequency"
-                    onChange={() => {}}
+                    onChange={(event: {selectedItem: Frequency}) => {
+                      setFrequency(event.selectedItem)
+                    }}
                     items={drugOrderConfig.frequencies}
                     itemToString={(item: Frequency) => (item ? item.name : '')}
                   ></ComboBox>
@@ -100,6 +134,9 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                         hideSteppers={true}
                         min={0}
                         invalidText="Duration cannot be less than 0"
+                        onChange={(event: {target: HTMLInputElement}) =>
+                          setDuration(parseFloat(event.target.value))
+                        }
                       ></NumberInput>
                     </Column>
                     <Column sm={3}>
@@ -107,9 +144,12 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                         id="durationUnit"
                         label="Duration Unit"
                         titleText="Units"
-                        items={drugOrderConfig.durationUnits}
+                        items={defaultDurationUnits}
                         ariaLabel="Duration Unit"
-                        itemToString={(item: Unit) => item.name}
+                        itemToString={(item: DurationUnit) => item.name}
+                        onChange={(event: {selectedItem: DurationUnit}) => {
+                          setDurationUnit(event.selectedItem)
+                        }}
                       />
                     </Column>
                   </Row>
@@ -124,9 +164,12 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                     short={true}
                     value={currentDate}
                     minDate={currentDate}
+                    onChange={(selectedDate: Date[]) => {
+                      setStartDate(selectedDate[0])
+                    }}
                   >
                     <DatePickerInput
-                      placeholder="dd/mm/yyyy"
+                      placeholder="mm/dd/yyyy"
                       labelText="Start Date"
                       id="startDate"
                     />
@@ -142,6 +185,10 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                         hideSteppers={true}
                         min={0}
                         invalidText="Quantity cannot be less than 0"
+                        value={isNaN(quantity) ? 0 : quantity}
+                        onChange={(event: {target: HTMLInputElement}) =>
+                          setQuantity(parseFloat(event.target.value))
+                        }
                       ></NumberInput>
                     </Column>
                     <Column sm={3}>
@@ -152,6 +199,9 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                         items={drugOrderConfig.doseUnits}
                         ariaLabel="Quantity Unit"
                         itemToString={(item: Unit) => item.name}
+                        onChange={(event: {selectedItem: Unit}) => {
+                          setQuantityUnit(event.selectedItem)
+                        }}
                       />
                     </Column>
                   </Row>
@@ -163,6 +213,9 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                     titleText="Route"
                     items={drugOrderConfig.routes}
                     itemToString={(item: Route) => item.name}
+                    onChange={(event: {selectedItem: Route}) => {
+                      setRoute(event.selectedItem)
+                    }}
                   />
                 </Column>
               </Row>
@@ -178,7 +231,23 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
               </Button>
             </Column>
             <Column style={styles.right_align}>
-              <Button className="confirm" onClick={props.onClose}>
+              <Button
+                className="confirm"
+                onClick={() => {
+                  console.log(
+                    dose,
+                    doseUnit,
+                    duration,
+                    durationUnit,
+                    quantity,
+                    quantityUnit,
+                    frequency,
+                    route,
+                    startDate,
+                  )
+                  props.onClose()
+                }}
+              >
                 Done
               </Button>
             </Column>
@@ -186,6 +255,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
         </Grid>
       </div>
     )
+
   return <p>Something went wrong..</p>
 }
 

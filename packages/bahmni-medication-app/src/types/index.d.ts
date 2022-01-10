@@ -31,3 +31,8 @@ export type DrugOrderConfig = {
   routes: Route[]
   frequencies: Frequency[]
 }
+
+export type DurationUnit = {
+  name: string
+  factor: number
+}

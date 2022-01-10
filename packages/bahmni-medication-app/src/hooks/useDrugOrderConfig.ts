@@ -1,4 +1,5 @@
-import {useEffect, useState} from 'react'
+import {useEffect} from 'react'
+import {useAsync} from 'react-async'
 import createPersistedState from 'use-persisted-state'
 import {fetchDrugOrderConfig} from '../services/bahmnicore'
 import {DrugOrderConfig} from '../types'
@@ -13,19 +14,18 @@ const useDrugOrderConfig = (): {
   error: any
 } => {
   const [drugOrderConfig, setDrugOrderConfig] = useDrugOrderConfigState()
-  const [isLoading, setIsLoading] = useState<boolean>(!drugOrderConfig)
-  const [error, setError] = useState()
+  const {
+    run: getDrugOrderConfig,
+    error,
+    isLoading,
+  } = useAsync<any>({
+    deferFn: fetchDrugOrderConfig,
+    onResolve: data => setDrugOrderConfig(data),
+  })
   useEffect(() => {
-    if (!drugOrderConfig)
-      fetchDrugOrderConfig()
-        .then(drugOrderConfig => {
-          setDrugOrderConfig(drugOrderConfig)
-          setIsLoading(false)
-        })
-        .catch(error => {
-          setError(error)
-          setIsLoading(false)
-        })
+    if (!drugOrderConfig) {
+      getDrugOrderConfig()
+    }
   }, [])
   return {
     isLoading: isLoading,

@@ -90,6 +90,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
   if (isLoading)
     return <InlineLoading description="Loading Data..."></InlineLoading>
   if (
+    drugOrderConfig &&
     drugOrderConfig.doseUnits &&
     drugOrderConfig.durationUnits &&
     drugOrderConfig.frequencies &&

@@ -1,6 +1,5 @@
 import ComboBox from 'carbon-components-react/es/components/ComboBox'
 import InlineLoading from 'carbon-components-react/es/components/InlineLoading'
-import {InlineNotification} from 'carbon-components-react/es/components/Notification'
 import Button from 'carbon-components-react/es/components/Button'
 import Search from 'carbon-components-react/es/components/Search'
 import {ClickableTile} from 'carbon-components-react/es/components/Tile'
@@ -35,7 +34,6 @@ export {
   DatePickerInput,
   ComboBox,
   InlineLoading,
-  InlineNotification,
   Table,
   TableBody,
   TableCell,

@@ -3,11 +3,11 @@ export type DosageForm = {
   display: string
 }
 export type Drug = {
-  uuid: string
+  uuid?: string
   name: string
-  strength: string
-  concept: any
-  dosageForm: DosageForm
+  strength?: string
+  concept?: any
+  dosageForm?: DosageForm
 }
 
 export type DrugResult = {

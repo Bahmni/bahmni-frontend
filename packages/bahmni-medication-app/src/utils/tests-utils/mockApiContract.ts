@@ -116,3 +116,7 @@ export const mockMedicationConfig = {
     },
   },
 }
+
+export const mockNonCodedDrug = {
+  name: 'Non-Coded Drug',
+}

@@ -8,6 +8,7 @@ import {
   mockDrugOrderConfigBadApiResponse,
   mockDrugsApiResponse,
   mockMedicationConfig,
+  mockNonCodedDrug,
 } from '../utils/tests-utils/mockApiContract'
 import MockAdapter from 'axios-mock-adapter/types'
 import {initMockApi} from '../utils/tests-utils/baseApiSetup'
@@ -463,6 +464,31 @@ describe('Medication Tab - Prescription Dialog', () => {
         .getAllByLabelText('Route')
         .find(item => item instanceof HTMLButtonElement),
     ).toHaveTextContent('Oral')
+  })
+
+  it('should not pre-select dose unit and route when a non-coded drug is given', async () => {
+    adapter
+      .onGet(CONFIG_URLS.MEDICATION_CONFIG)
+      .reply(200, mockMedicationConfig)
+    render(
+      <AddPrescriptionModal
+        drug={mockNonCodedDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+    expect(screen.getByLabelText('Dosage Unit')).toHaveTextContent(
+      'Dosage Unit',
+    )
+    expect(screen.getByLabelText('Quantity Unit')).toHaveTextContent(
+      'Quantity Unit',
+    )
+    //TODO : Find a better way of asserting on Route dropdown value
+    expect(
+      screen
+        .getAllByLabelText('Route')
+        .find(item => item instanceof HTMLButtonElement),
+    ).toHaveTextContent('Route')
   })
 })
 

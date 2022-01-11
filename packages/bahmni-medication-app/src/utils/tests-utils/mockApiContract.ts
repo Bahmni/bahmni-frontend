@@ -81,3 +81,24 @@ export const mockPrescriptionResponse = [
     effectiveStartDate: 1640164841000,
   },
 ]
+
+export const mockMedicationConfigRespone = {
+  commonConfig: {},
+  tabConfig: {
+    allMedicationTabConfig: {
+      inputOptionsConfig: {
+        allowOnlyCodedDrugs: false,
+      },
+    },
+  },
+}
+export const mockNonCodedDrugConfigResponse = {
+  commonConfig: {},
+  tabConfig: {
+    allMedicationTabConfig: {
+      inputOptionsConfig: {
+        allowOnlyCodedDrugs: true,
+      },
+    },
+  },
+}

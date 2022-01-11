@@ -89,7 +89,10 @@ const MedicationApp = () => {
       !selectedDrug
     ) {
       return (
-        <ClickableTile onClick={updateStatesForNonCodedDrug}>
+        <ClickableTile
+          data-testid="nonCodedDrug"
+          onClick={updateStatesForNonCodedDrug}
+        >
           "{userInput}"
         </ClickableTile>
       )

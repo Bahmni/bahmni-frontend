@@ -12,6 +12,7 @@ import {
 } from '@bahmni/design-system'
 import React, {useEffect, useState} from 'react'
 import useDrugOrderConfig from '../hooks/useDrugOrderConfig'
+import useMedicationConfig from '../hooks/useMedicationConfig'
 import {Drug, DurationUnit, Frequency, Route, Unit} from '../types'
 import {defaultDurationUnits} from '../utils/constants'
 
@@ -36,6 +37,8 @@ const styles = {
   },
 }
 const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
+  const {medicationConfig, isMedicationConfigLoading, medicationConfigError} =
+    useMedicationConfig()
   const {drugOrderConfig, isLoading, error} = useDrugOrderConfig()
   const locale: string = 'en'
   const currentDate: string = new Date().toLocaleDateString(locale)
@@ -86,8 +89,43 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
     route,
   ])
 
+  useEffect(() => {
+    if (props.drug.dosageForm && drugOrderConfig && medicationConfig) {
+      setDefaultUnitAndRoute()
+    }
+  }, [drugOrderConfig, medicationConfig])
+
+  const setDefaultUnitAndRoute = () => {
+    // TODO: Refactor to get drugFormDefaults based on tabConfigName
+    let drugFormDefaults, dosageFormMapping
+    try {
+      drugFormDefaults =
+        medicationConfig.tabConfig.allMedicationTabConfig.inputOptionsConfig
+          .drugFormDefaults
+      dosageFormMapping = drugFormDefaults[props.drug.dosageForm.display]
+    } catch (error) {
+      console.error('Drug Form Defaults not Found', error)
+    }
+    if (dosageFormMapping) {
+      if (dosageFormMapping.doseUnits) {
+        let defaultDoseUnit = drugOrderConfig.doseUnits.find(
+          unit => unit.name === dosageFormMapping.doseUnits,
+        )
+
+        setDoseUnit(defaultDoseUnit)
+        setQuantityUnit(defaultDoseUnit)
+      }
+      if (dosageFormMapping.route) {
+        let defaultRoute = drugOrderConfig.routes.find(
+          unit => unit.name === dosageFormMapping.route,
+        )
+        setRoute(defaultRoute)
+      }
+    }
+  }
+
   if (error) return <p>Something went wrong..</p>
-  if (isLoading)
+  if (isLoading || isMedicationConfigLoading)
     return <InlineLoading description="Loading Data..."></InlineLoading>
   if (
     drugOrderConfig &&
@@ -129,6 +167,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                         items={drugOrderConfig.doseUnits}
                         ariaLabel="Dosage Unit"
                         itemToString={(item: Unit) => item.name}
+                        selectedItem={doseUnit}
                         onChange={(event: {selectedItem: Unit}) => {
                           setDoseUnit(event.selectedItem)
                           setQuantityUnit(event.selectedItem)
@@ -238,6 +277,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                     titleText="Route"
                     items={drugOrderConfig.routes}
                     itemToString={(item: Route) => item.name}
+                    selectedItem={route}
                     onChange={(event: {selectedItem: Route}) => {
                       setRoute(event.selectedItem)
                     }}

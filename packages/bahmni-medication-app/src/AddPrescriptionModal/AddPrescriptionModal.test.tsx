@@ -7,10 +7,15 @@ import {
   mockDrugOrderConfigApiResponse,
   mockDrugOrderConfigBadApiResponse,
   mockDrugsApiResponse,
+  mockMedicationConfig,
 } from '../utils/tests-utils/mockApiContract'
 import MockAdapter from 'axios-mock-adapter/types'
 import {initMockApi} from '../utils/tests-utils/baseApiSetup'
-import {defaultDurationUnits, REST_ENDPOINTS} from '../utils/constants'
+import {
+  CONFIG_URLS,
+  defaultDurationUnits,
+  REST_ENDPOINTS,
+} from '../utils/constants'
 
 const mockDrug = mockDrugsApiResponse.validResponse.results[0]
 let adapter: MockAdapter, waitForApiCalls: Function, apiParams: Function
@@ -405,9 +410,11 @@ describe('Medication Tab - Prescription Dialog', () => {
     await waitForDrugOrderConfig()
 
     userEvent.click(screen.getByTitle('Dosage Unit'))
-    userEvent.click(screen.getByText('Tablet'))
+    userEvent.click(screen.getByText('Tablet(s)'))
 
-    expect(screen.getByLabelText('Quantity Unit')).toHaveTextContent('Tablet')
+    expect(screen.getByLabelText('Quantity Unit')).toHaveTextContent(
+      'Tablet(s)',
+    )
   })
 
   it('should enable done button only when all the input values are given', async () => {
@@ -423,7 +430,7 @@ describe('Medication Tab - Prescription Dialog', () => {
 
     userEvent.type(screen.getByLabelText('Dosage'), '1')
     userEvent.click(screen.getByTitle('Dosage Unit'))
-    userEvent.click(screen.getByText('Tablet'))
+    userEvent.click(screen.getByText('Tablet(s)'))
     userEvent.click(screen.getByLabelText('Frequency'))
     userEvent.click(screen.getByText('Immediately'))
     userEvent.type(screen.getByLabelText('Duration'), '1')
@@ -433,6 +440,29 @@ describe('Medication Tab - Prescription Dialog', () => {
     userEvent.click(screen.getByText('Oral'))
 
     expect(screen.getByRole('button', {name: 'Done'})).toBeEnabled()
+  })
+
+  it('should pre-select dose unit and route when a coded drug is given and a matching config is found', async () => {
+    adapter
+      .onGet(CONFIG_URLS.MEDICATION_CONFIG)
+      .reply(200, mockMedicationConfig)
+    render(
+      <AddPrescriptionModal
+        drug={mockDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+    expect(screen.getByLabelText('Dosage Unit')).toHaveTextContent('Tablet(s)')
+    expect(screen.getByLabelText('Quantity Unit')).toHaveTextContent(
+      'Tablet(s)',
+    )
+    //TODO : Find a better way of asserting on Route dropdown value
+    expect(
+      screen
+        .getAllByLabelText('Route')
+        .find(item => item instanceof HTMLButtonElement),
+    ).toHaveTextContent('Oral')
   })
 })
 

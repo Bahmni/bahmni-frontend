@@ -12,6 +12,9 @@ export const REST_ENDPOINTS = {
   ACTIVE_PRESCRIPTION: '/openmrs/ws/rest/v1/bahmnicore/drugOrders/active',
   DRUG_SEARCH: '/openmrs/ws/rest/v1/drug',
 }
+export const CONFIG_URLS = {
+  MEDICATION_CONFIG: '/bahmni_config/openmrs/apps/clinical/medication.json',
+}
 export const defaultDurationUnits = [
   {name: 'Day(s)', factor: 1},
   {name: 'Week(s)', factor: 7},

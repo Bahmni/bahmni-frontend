@@ -8,14 +8,14 @@ export const mockDrugsApiResponse = {
         name: 'Paracetomal 1',
         strength: '',
         concept: '',
-        dosageForm: '',
+        dosageForm: {uuid: '1', display: 'Tablet'},
       },
       {
         uuid: '2',
         name: 'Paracetomal 2',
         strength: '',
         concept: '',
-        dosageForm: '',
+        dosageForm: {uuid: '1', display: 'Tablet'},
       },
     ],
   },
@@ -84,7 +84,7 @@ export const mockPrescriptionResponse = [
 
 export const mockDrugOrderConfigApiResponse: DrugOrderConfig = {
   doseUnits: [
-    {name: 'Tablet', rootConcept: null},
+    {name: 'Tablet(s)', rootConcept: null},
     {name: 'Drop', rootConcept: null},
   ],
   durationUnits: [{name: 'Day(s)', rootConcept: null}],
@@ -100,4 +100,19 @@ export const mockDrugOrderConfigBadApiResponse: DrugOrderConfig = {
   durationUnits: [{name: 'Days', rootConcept: null}],
   frequencies: [{name: 'Immediately', frequencyPerDay: 1, uuid: '1'}],
   routes: [{name: 'Oral', rootConcept: null}],
+}
+
+export const mockMedicationConfig = {
+  tabConfig: {
+    allMedicationTabConfig: {
+      inputOptionsConfig: {
+        drugFormDefaults: {
+          Tablet: {
+            doseUnits: 'Tablet(s)',
+            route: 'Oral',
+          },
+        },
+      },
+    },
+  },
 }

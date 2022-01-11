@@ -141,7 +141,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
     )
     userEvent.type(screen.getByLabelText('Dosage'), '1')
     userEvent.click(screen.getByTitle('Dosage Unit'))
-    userEvent.click(screen.getByText('Tablet'))
+    userEvent.click(screen.getByText('Tablet(s)'))
     userEvent.click(screen.getByLabelText('Frequency'))
     userEvent.click(screen.getByText('Immediately'))
     userEvent.type(screen.getByLabelText('Duration'), '1')

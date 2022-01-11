@@ -1,7 +1,9 @@
 name: bahmni-frontend CI
 on:
   push:
-    branches: [main]
+    branches: 
+      - main
+      - githubActions
   pull_request:
     branches: [ main ]
     types: [opened, synchronize, reopened]
@@ -20,27 +22,32 @@ jobs:
       - run: npx lerna run typescript
       - run: npx lerna run test
       - run: npx lerna run build
-  slack-workflow-status:
-      name: Notify on Slack
-      needs:
-        - build
-      runs-on: ubuntu-latest
-      env:
-        STATUS: ${{ (needs.build.result == 'success') && 'good' || 'danger' }}
-      if: always()
-      steps:
-        - name: Slack notification
-          uses: 8398a7/action-slack@v3
-          with:
-            status: custom
-            fields: workflow,job,commit,repo,ref,author
-            custom_payload: |
-              {
-                attachments: [{
-                  color: '${{ env.STATUS }}',
-                  title: '${{ github.event_name }}',
-                  text: `${process.env.AS_WORKFLOW}\ncommit ${process.env.AS_COMMIT} of ${process.env.AS_REPO}@${process.env.AS_REF} by ${process.env.AS_AUTHOR}`,
-                }]
-              }
-          env:
-            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist-${{ github.sha }}
+          path: ./dist
+  # slack-workflow-status:
+  #     name: Notify on Slack
+  #     needs:
+  #       - build
+  #     runs-on: ubuntu-latest
+  #     env:
+  #       STATUS: ${{ (needs.build.result == 'success') && 'good' || 'danger' }}
+  #     if: always()
+  #     steps:
+  #       - name: Slack notification
+  #         uses: 8398a7/action-slack@v3
+  #         with:
+  #           status: custom
+  #           fields: workflow,job,commit,repo,ref,author
+  #           custom_payload: |
+  #             {
+  #               attachments: [{
+  #                 color: '${{ env.STATUS }}',
+  #                 title: '${{ github.event_name }}',
+  #                 text: `${process.env.AS_WORKFLOW}\ncommit ${process.env.AS_COMMIT} of ${process.env.AS_REPO}@${process.env.AS_REF} by ${process.env.AS_AUTHOR}`,
+  #               }]
+  #             }
+  #         env:
+  #           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

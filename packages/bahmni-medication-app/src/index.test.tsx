@@ -24,21 +24,60 @@ let adapter: MockAdapter, waitForApiCalls: Function, apiParams: Function
 Element.prototype.scrollIntoView = jest.fn()
 
 test('should pass hygene accessibility tests', async () => {
+  ;({adapter, waitForApiCalls, apiParams} = initMockApi())
   const {container} = render(<MedicationApp />)
+  adapter
+    .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
+    .reply(200, mockMedicationConfigRespone)
+
+  await waitForMedicationConfig()
   expect(await axe(container)).toHaveNoViolations()
 })
 
+describe('Medication Tab', () => {
+  beforeEach(() => {
+    ;({adapter, waitForApiCalls, apiParams} = initMockApi())
+  })
+  it('should show error message when fetching medication config fails', async () => {
+    adapter
+      .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
+      .reply(404)
+    render(<MedicationApp />)
+
+    await waitForMedicationConfig()
+
+    expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
+  })
+
+  it('should show Loading message while fetching medication config', async () => {
+    adapter
+      .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
+      .timeout()
+    render(<MedicationApp />)
+
+    expect(screen.getByText(/loading data/i)).toBeInTheDocument()
+    await waitForMedicationConfig()
+    expect(screen.queryByText(/loading data/i)).not.toBeInTheDocument()
+  })
+})
 describe('Medication tab - Drugs search', () => {
   afterEach(() => {
     jest.clearAllMocks()
   })
-
+  beforeEach(() => {
+    ;({adapter, waitForApiCalls, apiParams} = initMockApi())
+    sessionStorage.clear()
+    adapter
+      .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
+      .reply(200, mockMedicationConfigRespone)
+  })
   it('should show matching drugs when user enters valid input in search bar', async () => {
     when(search)
       .calledWith('Par')
       .mockResolvedValue(mockDrugsApiResponse.validResponse)
     render(<MedicationApp />)
 
+    await waitForMedicationConfig()
     await searchDrug('Par')
 
     expect(screen.getByText(/paracetomal 1/i)).toBeInTheDocument()
@@ -51,6 +90,7 @@ describe('Medication tab - Drugs search', () => {
       .mockResolvedValue(mockDrugsApiResponse.emptyResponse)
     render(<MedicationApp />)
 
+    await waitForMedicationConfig()
     await searchDrug('bogus')
 
     expect(screen.queryByTestId(/drugDataId/i)).toBeNull()
@@ -61,6 +101,9 @@ describe('Medication tab - Drugs search', () => {
       .calledWith('Pa')
       .mockResolvedValue(mockDrugsApiResponse.validResponse)
     render(<MedicationApp />)
+
+    await waitForMedicationConfig()
+
     const searchBox = screen.getByRole('searchbox', {name: /searchdrugs/i})
 
     userEvent.type(searchBox, 'P')
@@ -73,8 +116,10 @@ describe('Medication tab - Drugs search', () => {
     expect(screen.getByText(/paracetomal 2/i)).toBeInTheDocument()
   })
 
-  it('should show prescription widget', () => {
+  it('should show prescription widget', async () => {
     render(<MedicationApp />)
+
+    await waitForMedicationConfig()
 
     expect(screen.getByTitle('prescriptionWidget')).toBeInTheDocument()
   })
@@ -86,12 +131,19 @@ describe('Medication tab - Add Prescription Dialog', () => {
   })
 
   beforeEach(() => {
+    ;({adapter, waitForApiCalls, apiParams} = initMockApi())
+    sessionStorage.clear()
+    adapter
+      .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
+      .reply(200, mockMedicationConfigRespone)
     when(search)
       .calledWith('Par')
       .mockResolvedValue(mockDrugsApiResponse.validResponse)
   })
   it('should show prescription dialog when user clicks a drug', async () => {
     render(<MedicationApp />)
+
+    await waitForMedicationConfig()
     await searchDrug('Par')
 
     expect(screen.queryByTitle('prescriptionDialog')).toBeNull()
@@ -107,6 +159,8 @@ describe('Medication tab - Add Prescription Dialog', () => {
   //FIXME: this test would change after implmenting Add Prescription button
   it('should hide prescription dialog when user clicks cancel', async () => {
     render(<MedicationApp />)
+
+    await waitForMedicationConfig()
     await searchDrug('Par')
 
     userEvent.click(screen.getByText(/paracetomal 1/i))
@@ -123,6 +177,8 @@ describe('Medication tab - Add Prescription Dialog', () => {
   //FIXME Done is currently placeholder and would be implemented in future stories
   it('WIP: should add prescription when user click Done', async () => {
     render(<MedicationApp />)
+
+    await waitForMedicationConfig()
     await searchDrug('Par')
 
     userEvent.click(screen.getByText(/paracetomal 1/i))
@@ -154,8 +210,8 @@ describe('Medication Tab - Prescribe non coded drugs', () => {
       .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
       .reply(200, mockMedicationConfigRespone)
     render(<MedicationApp />)
+    await waitForMedicationConfig()
     await searchDrug('Paz')
-    await waitForFetchMedicationConfig()
 
     expect(screen.getByText('"Paz"')).toBeInTheDocument()
     expect(screen.getByTestId('nonCodedDrug')).not.toBeNull()
@@ -167,8 +223,8 @@ describe('Medication Tab - Prescribe non coded drugs', () => {
         .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
         .reply(200, mockMedicationConfigRespone)
       render(<MedicationApp />)
+      await waitForMedicationConfig()
       await searchDrug('Paz')
-      await waitForFetchMedicationConfig()
 
       userEvent.click(screen.getByTestId('nonCodedDrug'))
       await waitFor(() =>
@@ -183,8 +239,8 @@ describe('Medication Tab - Prescribe non coded drugs', () => {
         .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
         .reply(200, mockNonCodedDrugConfigResponse)
       render(<MedicationApp />)
+      await waitForMedicationConfig()
       await searchDrug('Paz')
-      await waitForFetchMedicationConfig()
 
       userEvent.click(screen.getByTestId('nonCodedDrug'))
 
@@ -205,7 +261,7 @@ async function searchDrug(durgName: string) {
   await waitFor(() => expect(search).toBeCalledTimes(durgName.length - 1))
 }
 
-async function waitForFetchMedicationConfig() {
+async function waitForMedicationConfig() {
   await waitForApiCalls({
     apiURL: '/bahmni_config/openmrs/apps/clinical/medication.json',
     times: 1,

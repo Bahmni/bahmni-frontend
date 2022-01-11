@@ -1,4 +1,4 @@
-import {ClickableTile, Search} from '@bahmni/design-system'
+import {ClickableTile, InlineLoading, Search} from '@bahmni/design-system'
 import React, {useEffect, useState} from 'react'
 import {useAsync} from 'react-async'
 import AddPrescriptionModal from './AddPrescriptionModal/AddPrescriptionModal'
@@ -99,6 +99,10 @@ const MedicationApp = () => {
     }
   }
 
+  if (medicationConfigError)
+    return <p>{`something went wrong ${medicationConfigError.message}`}</p>
+  if (isMedicationConfigLoading)
+    return <InlineLoading description="Loading Data..." />
   return (
     <div style={styles.container}>
       <div style={styles.search_bar}>

@@ -2,6 +2,7 @@ import {ClickableTile, Search} from '@bahmni/design-system'
 import React, {useEffect, useState} from 'react'
 import {useAsync} from 'react-async'
 import AddPrescriptionModal from './AddPrescriptionModal/AddPrescriptionModal'
+import useMedicationConfig from './hooks/useMedicationConfig'
 import {PrescriptionWidget} from './PrescriptionsWidget/PrescriptionWidget'
 import {search} from './services/drugs'
 import {Drug, DrugResult, NonCodedDrug} from './types'
@@ -25,6 +26,9 @@ const MedicationApp = () => {
   const [isUserInputAvailable, setIsUserInputAvailable] =
     useState<Boolean>(false)
   const [selectedDrug, setSelectedDrug] = useState<Drug | NonCodedDrug>(null)
+  const [allowOnlyCodedDrug, setAllowOnlyCodedDrug] = useState(false)
+  const {medicationConfig, isMedicationConfigLoading, medicationConfigError} =
+    useMedicationConfig()
 
   const {
     run: searchDrug,
@@ -40,6 +44,7 @@ const MedicationApp = () => {
       searchDrug()
     }
     setIsUserInputAvailable(userInput.length >= 2)
+    setAllowOnlyCodedDrug(false)
     setSelectedDrug(null)
   }, [userInput])
 
@@ -47,6 +52,18 @@ const MedicationApp = () => {
     setUserInput('')
     setIsUserInputAvailable(false)
     setSelectedDrug(null)
+  }
+
+  const updateStatesForNonCodedDrug = () => {
+    if (
+      medicationConfig?.tabConfig?.allMedicationTabConfig?.inputOptionsConfig
+        ?.allowOnlyCodedDrugs
+    )
+      setAllowOnlyCodedDrug(true)
+    else {
+      setSelectedDrug({name: userInput})
+      setAllowOnlyCodedDrug(false)
+    }
   }
 
   const showDrugOptions = () => {
@@ -72,7 +89,7 @@ const MedicationApp = () => {
       !selectedDrug
     ) {
       return (
-        <ClickableTile onClick={() => setSelectedDrug({name: userInput})}>
+        <ClickableTile onClick={updateStatesForNonCodedDrug}>
           "{userInput}"
         </ClickableTile>
       )
@@ -95,6 +112,12 @@ const MedicationApp = () => {
         />
         <div style={styles.tileList}>{showDrugOptions()}</div>
       </div>
+      {allowOnlyCodedDrug && userInput && (
+        <p style={{color: 'red'}}>
+          This drug is not available in the system. Please select from the list
+          of drugs available in the system{' '}
+        </p>
+      )}
       {selectedDrug && (
         <AddPrescriptionModal
           drug={selectedDrug}

@@ -23,8 +23,6 @@ const styles = {
 
 const MedicationApp = () => {
   const [userInput, setUserInput] = useState('')
-  const [isUserInputAvailable, setIsUserInputAvailable] =
-    useState<Boolean>(false)
   const [selectedDrug, setSelectedDrug] = useState<Drug | NonCodedDrug>(null)
   const [allowOnlyCodedDrug, setAllowOnlyCodedDrug] = useState(false)
   const {medicationConfig, isMedicationConfigLoading, medicationConfigError} =
@@ -43,16 +41,9 @@ const MedicationApp = () => {
     if (userInput.length > 1) {
       searchDrug()
     }
-    setIsUserInputAvailable(userInput.length >= 2)
     setAllowOnlyCodedDrug(false)
     setSelectedDrug(null)
   }, [userInput])
-
-  const clearUserInput = () => {
-    setUserInput('')
-    setIsUserInputAvailable(false)
-    setSelectedDrug(null)
-  }
 
   const updateStatesForNonCodedDrug = () => {
     // TODO: Refactor to get allowOnlyCodedDrugs based on tabConfigName
@@ -67,29 +58,20 @@ const MedicationApp = () => {
     }
   }
 
+  const getErrorMessage = () => {
+    return (
+      <p style={{color: 'red'}}>
+        This drug is not available in the system. Please select from the list of
+        drugs available in the system{' '}
+      </p>
+    )
+  }
+
   const showDrugOptions = () => {
-    if (
-      drugs &&
-      drugs.results.length > 0 &&
-      isUserInputAvailable &&
-      !selectedDrug
-    ) {
-      return drugs.results.map((drug, i: number) => (
-        <ClickableTile
-          data-testid={`drugDataId ${i}`}
-          key={drug.uuid}
-          onClick={() => setSelectedDrug(drug)}
-        >
-          {drug.name}
-        </ClickableTile>
-      ))
-    } else if (
-      drugs &&
-      drugs.results.length === 0 &&
-      isUserInputAvailable &&
-      !selectedDrug
-    ) {
-      return (
+    if (drugs.results.length === 0) {
+      return allowOnlyCodedDrug ? (
+        getErrorMessage()
+      ) : (
         <ClickableTile
           data-testid="nonCodedDrug"
           onClick={updateStatesForNonCodedDrug}
@@ -98,6 +80,16 @@ const MedicationApp = () => {
         </ClickableTile>
       )
     }
+
+    return drugs.results.map((drug, i: number) => (
+      <ClickableTile
+        data-testid={`drugDataId ${i}`}
+        key={drug.uuid}
+        onClick={() => setSelectedDrug(drug)}
+      >
+        {drug.name}
+      </ClickableTile>
+    ))
   }
 
   if (medicationConfigError)
@@ -115,21 +107,17 @@ const MedicationApp = () => {
           onChange={(e: {target: HTMLInputElement}) =>
             setUserInput(e.target.value)
           }
-          onClear={() => clearUserInput()}
+          onClear={() => setUserInput('')}
           value={userInput}
         />
-        <div style={styles.tileList}>{showDrugOptions()}</div>
+        {drugs && !selectedDrug && userInput.length >= 2 && (
+          <div style={styles.tileList}>{showDrugOptions()}</div>
+        )}
       </div>
-      {allowOnlyCodedDrug && userInput && (
-        <p style={{color: 'red'}}>
-          This drug is not available in the system. Please select from the list
-          of drugs available in the system{' '}
-        </p>
-      )}
       {selectedDrug && (
         <AddPrescriptionModal
           drug={selectedDrug}
-          onClose={clearUserInput}
+          onClose={() => setUserInput('')}
         ></AddPrescriptionModal>
       )}
       <PrescriptionWidget />

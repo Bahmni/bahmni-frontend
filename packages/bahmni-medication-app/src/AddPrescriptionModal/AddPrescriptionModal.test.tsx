@@ -490,6 +490,34 @@ describe('Medication Tab - Prescription Dialog', () => {
         .find(item => item instanceof HTMLButtonElement),
     ).toHaveTextContent('Route')
   })
+
+  it('should set duration unit based on frequency', async () => {
+    adapter
+      .onGet(CONFIG_URLS.MEDICATION_CONFIG)
+      .reply(200, mockMedicationConfig)
+    render(
+      <AddPrescriptionModal
+        drug={mockNonCodedDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Immediately'))
+
+    expect(screen.getByLabelText('Duration Unit')).toHaveTextContent('Day(s)')
+
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Once a week'))
+
+    expect(screen.getByLabelText('Duration Unit')).toHaveTextContent('Week(s)')
+
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Once a month'))
+
+    expect(screen.getByLabelText('Duration Unit')).toHaveTextContent('Month(s)')
+  })
 })
 
 async function waitForDrugOrderConfig() {

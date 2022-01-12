@@ -95,19 +95,20 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
     }
   }, [drugOrderConfig, medicationConfig])
 
+  useEffect(() => {
+    frequency && setDefaultDurationUnit()
+  }, [frequency])
+
+  const getInputOptionsConfig = () => {
+    // TODO: Refactor to get inputOptionsConfig based on tabConfigName
+    return medicationConfig?.tabConfig?.allMedicationTabConfig
+      ?.inputOptionsConfig
+  }
   const setDefaultUnitAndRoute = () => {
-    // TODO: Refactor to get drugFormDefaults based on tabConfigName
-    let drugFormDefaults, dosageFormMapping
-    try {
-      drugFormDefaults =
-        medicationConfig.tabConfig.allMedicationTabConfig.inputOptionsConfig
-          .drugFormDefaults
-      dosageFormMapping = drugFormDefaults[props.drug.dosageForm.display]
-    } catch (error) {
-      console.error('Drug Form Defaults not Found', error)
-    }
-    if (dosageFormMapping) {
-      if (dosageFormMapping.doseUnits) {
+    let drugFormDefaults = getInputOptionsConfig()?.drugFormDefaults
+    if (drugFormDefaults) {
+      let dosageFormMapping = drugFormDefaults[props.drug.dosageForm.display]
+      if (dosageFormMapping?.doseUnits) {
         let defaultDoseUnit = drugOrderConfig.doseUnits.find(
           unit => unit.name === dosageFormMapping.doseUnits,
         )
@@ -115,13 +116,33 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
         setDoseUnit(defaultDoseUnit)
         setQuantityUnit(defaultDoseUnit)
       }
-      if (dosageFormMapping.route) {
+      if (dosageFormMapping?.route) {
         let defaultRoute = drugOrderConfig.routes.find(
           unit => unit.name === dosageFormMapping.route,
         )
         setRoute(defaultRoute)
       }
     }
+  }
+
+  const setDefaultDurationUnit = () => {
+    let frequencyDefaultDurationUnitsMap =
+      getInputOptionsConfig()?.frequencyDefaultDurationUnitsMap
+
+    frequencyDefaultDurationUnitsMap?.forEach(durationUnitMap => {
+      let minFrequency = eval(durationUnitMap.minFrequency) // eslint-disable-line no-eval
+      let maxFrequency = eval(durationUnitMap.maxFrequency) // eslint-disable-line no-eval
+      if (
+        (!minFrequency || frequency.frequencyPerDay > minFrequency) &&
+        (!maxFrequency || frequency.frequencyPerDay <= maxFrequency)
+      ) {
+        setDurationUnit(
+          defaultDurationUnits.find(
+            unit => unit.name === durationUnitMap.defaultDurationUnit,
+          ),
+        )
+      }
+    })
   }
 
   if (error) return <p>Something went wrong..</p>
@@ -210,6 +231,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                         items={defaultDurationUnits}
                         ariaLabel="Duration Unit"
                         itemToString={(item: DurationUnit) => item.name}
+                        selectedItem={durationUnit}
                         onChange={(event: {selectedItem: DurationUnit}) => {
                           setDurationUnit(event.selectedItem)
                         }}

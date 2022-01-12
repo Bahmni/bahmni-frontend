@@ -91,6 +91,8 @@ export const mockDrugOrderConfigApiResponse: DrugOrderConfig = {
   frequencies: [
     {name: 'Immediately', frequencyPerDay: 1, uuid: '1'},
     {name: 'Twice a day', frequencyPerDay: 2, uuid: '2'},
+    {name: 'Once a week', frequencyPerDay: 1 / 7, uuid: '3'},
+    {name: 'Once a month', frequencyPerDay: 1 / 30, uuid: '4'},
   ],
   routes: [{name: 'Oral', rootConcept: null}],
 }
@@ -106,6 +108,24 @@ export const mockMedicationConfig = {
   tabConfig: {
     allMedicationTabConfig: {
       inputOptionsConfig: {
+        frequencyDefaultDurationUnitsMap: [
+          {
+            minFrequency: '1/7',
+            maxFrequency: 5,
+            defaultDurationUnit: 'Day(s)',
+          },
+          {
+            minFrequency: '1/30',
+            maxFrequency: '1/7',
+            defaultDurationUnit: 'Week(s)',
+          },
+          {
+            minFrequency: null,
+            maxFrequency: '1/30',
+            defaultDurationUnit: 'Month(s)',
+          },
+        ],
+
         drugFormDefaults: {
           Tablet: {
             doseUnits: 'Tablet(s)',

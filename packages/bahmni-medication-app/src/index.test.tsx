@@ -1,23 +1,16 @@
-import {render, waitFor, screen} from '@testing-library/react'
+import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import {when} from 'jest-when'
+import MockAdapter from 'axios-mock-adapter/types'
+import {axe} from 'jest-axe'
 import React from 'react'
-import {search} from './services/drugs'
 import MedicationApp from './index'
+import {CONFIG_URLS, REST_ENDPOINTS} from './utils/constants'
+import {initMockApi} from './utils/tests-utils/baseApiSetup'
 import {
   mockDrugsApiResponse,
   mockMedicationConfigRespone,
   mockNonCodedDrugConfigResponse,
 } from './utils/tests-utils/mockApiContract'
-import {axe} from 'jest-axe'
-import {fetchMedicationConfig} from './services/config'
-import MockAdapter from 'axios-mock-adapter/types'
-import {initMockApi} from './utils/tests-utils/baseApiSetup'
-
-jest.mock('./services/drugs', () => ({
-  __esModule: true,
-  search: jest.fn(),
-}))
 
 let adapter: MockAdapter, waitForApiCalls: Function, apiParams: Function
 
@@ -27,21 +20,21 @@ test('should pass hygene accessibility tests', async () => {
   ;({adapter, waitForApiCalls, apiParams} = initMockApi())
   const {container} = render(<MedicationApp />)
   adapter
-    .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
+    .onGet(CONFIG_URLS.MEDICATION_CONFIG)
     .reply(200, mockMedicationConfigRespone)
 
   await waitForMedicationConfig()
   expect(await axe(container)).toHaveNoViolations()
 })
 
+beforeEach(() => {
+  ;({adapter, waitForApiCalls, apiParams} = initMockApi())
+  sessionStorage.clear()
+})
+
 describe('Medication Tab', () => {
-  beforeEach(() => {
-    ;({adapter, waitForApiCalls, apiParams} = initMockApi())
-  })
   it('should show error message when fetching medication config fails', async () => {
-    adapter
-      .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
-      .reply(404)
+    adapter.onGet(CONFIG_URLS.MEDICATION_CONFIG).reply(404)
     render(<MedicationApp />)
 
     await waitForMedicationConfig()
@@ -50,9 +43,7 @@ describe('Medication Tab', () => {
   })
 
   it('should show Loading message while fetching medication config', async () => {
-    adapter
-      .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
-      .timeout()
+    adapter.onGet(CONFIG_URLS.MEDICATION_CONFIG).timeout()
     render(<MedicationApp />)
 
     expect(screen.getByText(/loading data/i)).toBeInTheDocument()
@@ -61,57 +52,48 @@ describe('Medication Tab', () => {
   })
 })
 describe('Medication tab - Drugs search', () => {
-  afterEach(() => {
-    jest.clearAllMocks()
-  })
   beforeEach(() => {
-    ;({adapter, waitForApiCalls, apiParams} = initMockApi())
-    sessionStorage.clear()
     adapter
-      .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
+      .onGet(CONFIG_URLS.MEDICATION_CONFIG)
       .reply(200, mockMedicationConfigRespone)
   })
   it('should show matching drugs when user enters valid input in search bar', async () => {
-    when(search)
-      .calledWith('Par')
-      .mockResolvedValue(mockDrugsApiResponse.validResponse)
+    adapter
+      .onGet(REST_ENDPOINTS.DRUG_SEARCH)
+      .reply(200, mockDrugsApiResponse.validResponse)
+
     render(<MedicationApp />)
 
     await waitForMedicationConfig()
-    await searchDrug('Par')
+    await searchDrug('Par', 2)
 
     expect(screen.getByText(/paracetomal 1/i)).toBeInTheDocument()
     expect(screen.getByText(/paracetomal 2/i)).toBeInTheDocument()
   })
 
-  it('should not show any results when user input have no matching drugs', async () => {
-    when(search)
-      .calledWith('bogus')
-      .mockResolvedValue(mockDrugsApiResponse.emptyResponse)
+  it('should display suggestion with user input when user input have no matching drugs', async () => {
+    adapter
+      .onGet(REST_ENDPOINTS.DRUG_SEARCH)
+      .reply(200, mockDrugsApiResponse.emptyResponse)
     render(<MedicationApp />)
-
     await waitForMedicationConfig()
-    await searchDrug('bogus')
+    await searchDrug('Paz', 2)
 
-    expect(screen.queryByTestId(/drugDataId/i)).toBeNull()
+    expect(screen.getByText('"Paz"')).toBeInTheDocument()
+    expect(screen.getByTestId('nonCodedDrug')).not.toBeNull()
   })
-
   it('should require user to enter minimum 2 character for searching drugs', async () => {
-    when(search)
-      .calledWith('Pa')
-      .mockResolvedValue(mockDrugsApiResponse.validResponse)
+    adapter
+      .onGet(REST_ENDPOINTS.DRUG_SEARCH)
+      .reply(200, mockDrugsApiResponse.validResponse)
     render(<MedicationApp />)
 
     await waitForMedicationConfig()
 
-    const searchBox = screen.getByRole('searchbox', {name: /searchdrugs/i})
-
-    userEvent.type(searchBox, 'P')
-    await waitFor(() => expect(search).not.toBeCalled())
+    await searchDrug('P')
     expect(screen.queryByTestId(/drugDataId/i)).toBeNull()
 
-    userEvent.type(searchBox, 'a')
-    await waitFor(() => expect(search).toBeCalledTimes(1))
+    await searchDrug('a', 1)
     expect(screen.getByText(/paracetomal 1/i)).toBeInTheDocument()
     expect(screen.getByText(/paracetomal 2/i)).toBeInTheDocument()
   })
@@ -126,25 +108,19 @@ describe('Medication tab - Drugs search', () => {
 })
 
 describe('Medication tab - Add Prescription Dialog', () => {
-  afterEach(() => {
-    jest.clearAllMocks()
-  })
-
   beforeEach(() => {
-    ;({adapter, waitForApiCalls, apiParams} = initMockApi())
-    sessionStorage.clear()
     adapter
-      .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
+      .onGet(CONFIG_URLS.MEDICATION_CONFIG)
       .reply(200, mockMedicationConfigRespone)
-    when(search)
-      .calledWith('Par')
-      .mockResolvedValue(mockDrugsApiResponse.validResponse)
+    adapter
+      .onGet(REST_ENDPOINTS.DRUG_SEARCH)
+      .reply(200, mockDrugsApiResponse.validResponse)
   })
   it('should show prescription dialog when user clicks a drug', async () => {
     render(<MedicationApp />)
 
     await waitForMedicationConfig()
-    await searchDrug('Par')
+    await searchDrug('Par', 2)
 
     expect(screen.queryByTitle('prescriptionDialog')).toBeNull()
 
@@ -161,7 +137,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
     render(<MedicationApp />)
 
     await waitForMedicationConfig()
-    await searchDrug('Par')
+    await searchDrug('Par', 2)
 
     userEvent.click(screen.getByText(/paracetomal 1/i))
 
@@ -179,7 +155,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
     render(<MedicationApp />)
 
     await waitForMedicationConfig()
-    await searchDrug('Par')
+    await searchDrug('Par', 2)
 
     userEvent.click(screen.getByText(/paracetomal 1/i))
 
@@ -191,79 +167,58 @@ describe('Medication tab - Add Prescription Dialog', () => {
 
     expect(screen.queryByTitle('prescriptionDialog')).not.toBeInTheDocument()
   })
-})
-
-describe('Medication Tab - Prescribe non coded drugs', () => {
-  afterEach(() => {
-    jest.clearAllMocks()
-  })
-  beforeEach(() => {
-    when(search)
-      .calledWith('Paz')
-      .mockResolvedValue(mockDrugsApiResponse.emptyResponse),
-      sessionStorage.clear()
-    ;({adapter, waitForApiCalls, apiParams} = initMockApi())
-  })
-
-  it('should display suggestion with user input when there is no matching drugs', async () => {
+  it('should show prescription dialog when user clicks user input suggestion - Configured to accept non coded drugs ', async () => {
     adapter
-      .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
+      .onGet(CONFIG_URLS.MEDICATION_CONFIG)
       .reply(200, mockMedicationConfigRespone)
+    adapter
+      .onGet(REST_ENDPOINTS.DRUG_SEARCH)
+      .reply(200, mockDrugsApiResponse.emptyResponse)
     render(<MedicationApp />)
     await waitForMedicationConfig()
-    await searchDrug('Paz')
+    await searchDrug('Paz', 2)
 
-    expect(screen.getByText('"Paz"')).toBeInTheDocument()
-    expect(screen.getByTestId('nonCodedDrug')).not.toBeNull()
+    userEvent.click(screen.getByTestId('nonCodedDrug'))
+    await waitFor(() =>
+      expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument(),
+    )
   })
 
-  describe('Medication configured to accept non coded drugs', () => {
-    it('should show prescription dialog when user clicks a non coded drug ', async () => {
-      adapter
-        .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
-        .reply(200, mockMedicationConfigRespone)
-      render(<MedicationApp />)
-      await waitForMedicationConfig()
-      await searchDrug('Paz')
+  it('should show error message when user clicks user input suggestion - Configured to accept only coded drugs', async () => {
+    adapter
+      .onGet(CONFIG_URLS.MEDICATION_CONFIG)
+      .reply(200, mockNonCodedDrugConfigResponse)
+    adapter
+      .onGet(REST_ENDPOINTS.DRUG_SEARCH)
+      .reply(200, mockDrugsApiResponse.emptyResponse)
+    render(<MedicationApp />)
+    await waitForMedicationConfig()
+    await searchDrug('Paz', 2)
 
-      userEvent.click(screen.getByTestId('nonCodedDrug'))
-      await waitFor(() =>
-        expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument(),
-      )
-    })
-  })
+    userEvent.click(screen.getByTestId('nonCodedDrug'))
 
-  describe('Medication configured to not accept non coded drugs', () => {
-    it('should show prescription dialog when user clicks a non coded drug ', async () => {
-      adapter
-        .onGet('/bahmni_config/openmrs/apps/clinical/medication.json')
-        .reply(200, mockNonCodedDrugConfigResponse)
-      render(<MedicationApp />)
-      await waitForMedicationConfig()
-      await searchDrug('Paz')
+    expect(
+      screen.getByText(
+        'This drug is not available in the system. Please select from the list of drugs available in the system',
+      ),
+    ).toBeInTheDocument()
 
-      userEvent.click(screen.getByTestId('nonCodedDrug'))
-
-      expect(
-        screen.getByText(
-          'This drug is not available in the system. Please select from the list of drugs available in the system',
-        ),
-      ).toBeInTheDocument()
-
-      expect(screen.queryByTitle('prescriptionDialog')).toBeNull()
-    })
+    expect(screen.queryByTitle('prescriptionDialog')).toBeNull()
   })
 })
 
-async function searchDrug(durgName: string) {
+async function searchDrug(durgName: string, times: Number = 0) {
   const searchBox = screen.getByRole('searchbox', {name: /searchdrugs/i})
   userEvent.type(searchBox, durgName)
-  await waitFor(() => expect(search).toBeCalledTimes(durgName.length - 1))
+  await waitForApiCalls({
+    apiURL: REST_ENDPOINTS.DRUG_SEARCH,
+    times: times,
+  })
 }
 
 async function waitForMedicationConfig() {
   await waitForApiCalls({
-    apiURL: '/bahmni_config/openmrs/apps/clinical/medication.json',
+    apiURL: CONFIG_URLS.MEDICATION_CONFIG,
     times: 1,
   })
 }

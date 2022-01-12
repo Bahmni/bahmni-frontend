@@ -55,6 +55,7 @@ const MedicationApp = () => {
   }
 
   const updateStatesForNonCodedDrug = () => {
+    // TODO: Refactor to get allowOnlyCodedDrugs based on tabConfigName
     if (
       medicationConfig?.tabConfig?.allMedicationTabConfig?.inputOptionsConfig
         ?.allowOnlyCodedDrugs

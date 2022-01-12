@@ -82,6 +82,33 @@ export const mockPrescriptionResponse = [
   },
 ]
 
+export const mockPrescriptionResponseForNonCodedDrug = [
+  {
+    visit: {
+      startDateTime: 1496851128000,
+    },
+    dateStopped: '1607888143',
+    provider: {
+      name: 'Super Man',
+    },
+    drug: null,
+    drugNonCoded: 'Paz',
+    dosingInstructions: {
+      dose: 5.0,
+      doseUnits: 'Capsule(s)',
+      route: 'Oral',
+      frequency: 'Thrice a day',
+      administrationInstructions:
+        '{"instructions":"As directed","additionalInstructions":"Test Data"}',
+      quantity: 150.0,
+      quantityUnits: 'Capsule(s)',
+    },
+    duration: 5,
+    durationUnits: 'Day(s)',
+    effectiveStartDate: 1640164841000,
+  },
+]
+
 export const mockMedicationConfigRespone = {
   commonConfig: {},
   tabConfig: {

@@ -98,6 +98,33 @@ describe('Medication tab - Drugs search', () => {
     expect(screen.getByText(/paracetomal 2/i)).toBeInTheDocument()
   })
 
+  it('should clear search bar when user clicks clear icon', async () => {
+    adapter
+      .onGet(REST_ENDPOINTS.DRUG_SEARCH)
+      .reply(200, mockDrugsApiResponse.validResponse)
+    render(<MedicationApp />)
+
+    await waitForMedicationConfig()
+    await searchDrug('Par', 2)
+    expect(screen.getByText(/paracetomal 1/i)).toBeInTheDocument()
+    expect(screen.getByText(/paracetomal 2/i)).toBeInTheDocument()
+    expect(
+      screen.queryByPlaceholderText('Search for drug to add in prescription'),
+    ).toHaveValue('Par')
+
+    const clearIcon = screen.getByRole('button', {name: 'Clear search input'})
+
+    expect(clearIcon).toBeInTheDocument()
+
+    userEvent.click(clearIcon)
+
+    expect(screen.queryByText(/paracetomal 1/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/paracetomal 2/i)).not.toBeInTheDocument()
+    expect(
+      screen.queryByPlaceholderText('Search for drug to add in prescription'),
+    ).toHaveValue('')
+  })
+
   it('should show prescription widget', async () => {
     render(<MedicationApp />)
 

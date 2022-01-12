@@ -52,6 +52,8 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
   const [quantityUnit, setQuantityUnit] = useState<Unit>()
   const [route, setRoute] = useState<Route>()
   const [isDataValid, setIsDataValid] = useState<boolean>(false)
+  const [isDoseUnitAndRouteSet, setIsDoseUnitAndRouteSet] =
+    useState<boolean>(false)
 
   useEffect(() => {
     if (dose > 0 && duration > 0 && durationUnit && frequency) {
@@ -91,7 +93,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
 
   useEffect(() => {
     if (props.drug.dosageForm && drugOrderConfig && medicationConfig) {
-      setDefaultUnitAndRoute()
+      if (!isDoseUnitAndRouteSet) setDefaultUnitAndRoute()
     }
   }, [drugOrderConfig, medicationConfig])
 
@@ -122,6 +124,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
         )
         setRoute(defaultRoute)
       }
+      setIsDoseUnitAndRouteSet(true)
     }
   }
 

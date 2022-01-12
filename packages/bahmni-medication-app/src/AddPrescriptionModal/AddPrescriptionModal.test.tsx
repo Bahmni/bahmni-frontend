@@ -518,6 +518,38 @@ describe('Medication Tab - Prescription Dialog', () => {
 
     expect(screen.getByLabelText('Duration Unit')).toHaveTextContent('Month(s)')
   })
+
+  it('should allow the user to modify pre-selected dose unit and route', async () => {
+    adapter
+      .onGet(CONFIG_URLS.MEDICATION_CONFIG)
+      .reply(200, mockMedicationConfig)
+    render(
+      <AddPrescriptionModal
+        drug={mockDrug}
+        onClose={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+
+    userEvent.click(
+      screen.getByLabelText('Dosage Unit').querySelector('button'),
+    )
+    userEvent.click(screen.getByText('Drop'))
+
+    expect(screen.getByLabelText('Dosage Unit')).toHaveTextContent('Drop')
+
+    userEvent.click(
+      screen
+        .getAllByLabelText('Route')
+        .find(item => item instanceof HTMLButtonElement),
+    )
+    userEvent.click(screen.getByText('Topical'))
+    expect(
+      screen
+        .getAllByLabelText('Route')
+        .find(item => item instanceof HTMLButtonElement),
+    ).toHaveTextContent('Topical')
+  })
 })
 
 async function waitForDrugOrderConfig() {

@@ -6,3 +6,11 @@ export const headerData = [
   'Status',
   'Action',
 ]
+
+export const REST_ENDPOINTS = {
+  DRUG_SEARCH: '/openmrs/ws/rest/v1/drug',
+}
+
+export const CONFIG_URLS = {
+  MEDICATION_CONFIG: '/bahmni_config/openmrs/apps/clinical/medication.json',
+}

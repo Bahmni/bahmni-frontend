@@ -71,4 +71,24 @@ describe('Active Prescription', () => {
       screen.queryByRole('table', {name: /prescription/i}),
     ).not.toBeInTheDocument()
   })
+
+  it('should display prescriptions in descending order based on prescried date', async () => {
+    when(getPatientUuid).mockReturnValue('patientUuid')
+    adapter.onGet(durgOrdersUrl).reply(200, mockActivePrescriptionResponse)
+
+    render(<ActivePrescription />)
+    await waitForApiCalls({apiURL: durgOrdersUrl, times: 1})
+
+    const dateRows = screen.getAllByTestId(/date-row/)
+    expect(dateRows[0]).toHaveTextContent(
+      getDateString(mockActivePrescriptionResponse[1].dateActivated),
+    )
+    expect(dateRows[1]).toHaveTextContent(
+      getDateString(mockActivePrescriptionResponse[0].dateActivated),
+    )
+  })
 })
+
+function getDateString(timeStamp: number): string {
+  return new Date(timeStamp).toLocaleDateString()
+}

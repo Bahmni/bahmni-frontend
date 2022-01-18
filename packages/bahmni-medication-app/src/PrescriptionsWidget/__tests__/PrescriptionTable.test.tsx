@@ -6,6 +6,7 @@ import {headerData} from '../../utils/constants'
 import PrescriptionTable from '../PrescriptionTable'
 import {
   mockActivePrescriptionResponse,
+  mockAllPrescriptionResponse,
   mockPrescriptionResponse,
 } from '../../utils/tests-utils/mockApiContract'
 
@@ -21,6 +22,17 @@ describe('Prescription Table', () => {
     render(<PrescriptionTable data={mockPrescriptionResponse} />)
     headerData.map(i => {
       expect(screen.getByText(i)).toBeInTheDocument()
+    })
+  })
+
+  it('should display prescriptions categorised by date prescribed', () => {
+    render(<PrescriptionTable data={mockAllPrescriptionResponse} />)
+    mockAllPrescriptionResponse.forEach(response => {
+      expect(
+        screen.getByRole('row', {
+          name: new Date(response.dateActivated).toLocaleDateString(),
+        }),
+      ).toBeInTheDocument()
     })
   })
 

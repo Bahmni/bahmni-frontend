@@ -32,14 +32,16 @@ const schedule = (drugInfo: any) => {
 enum StatusColor {
   'active' = 'orange',
 }
-let lastVisitDate: String
-const getSubHeading = visitDate => {
-  if (lastVisitDate === null || lastVisitDate != visitDate) {
-    lastVisitDate = visitDate
+const getSubHeading = (prescriptionData, index) => {
+  if (
+    index == 0 ||
+    new Date(prescriptionData[index - 1].dateActivated).toLocaleDateString() !==
+      new Date(prescriptionData[index].dateActivated).toLocaleDateString()
+  ) {
     return (
-      <TableRow>
+      <TableRow data-testid="date-row">
         <TableCell colSpan={6} style={styles.tableSubHeading}>
-          {new Date(visitDate).toLocaleDateString()}
+          {new Date(prescriptionData[index].dateActivated).toLocaleDateString()}
         </TableCell>
       </TableRow>
     )
@@ -85,43 +87,39 @@ const PrescriptionTable = React.memo((props: PrescriptionData) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {props.data
-          .slice()
-          .reverse()
-          .map(row => (
-            <React.Fragment key={Math.random()}>
-              {getSubHeading(row.visit.startDateTime)}
-              <TableRow>
-                <TableCell>
-                  {row.drug.name}, {row.drug.form},{' '}
-                  {row.dosingInstructions.route}
-                </TableCell>
-                <TableCell>
-                  {schedule(row)}
-                  <small style={styles.providerName}>
-                    by {row.provider.name}
-                  </small>
-                </TableCell>
-                <TableCell>
-                  {row.dosingInstructions.quantity}{' '}
-                  {row.dosingInstructions.quantityUnits}
-                </TableCell>
-                <TableCell>{getAdditionalInstruction(row)}</TableCell>
-                <TableCell
-                  style={{
-                    color: StatusColor[getStatus(row)],
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {getStatus(row)}
-                </TableCell>
-                <TableCell>
-                  <Link inline>revise</Link> <Link inline>stop</Link>{' '}
-                  <Link inline>renew</Link>{' '}
-                </TableCell>
-              </TableRow>
-            </React.Fragment>
-          ))}
+        {props.data.map((row, index) => (
+          <React.Fragment key={Math.random()}>
+            {getSubHeading(props.data, index)}
+            <TableRow>
+              <TableCell>
+                {row.drug.name}, {row.drug.form}, {row.dosingInstructions.route}
+              </TableCell>
+              <TableCell>
+                {schedule(row)}
+                <small style={styles.providerName}>
+                  by {row.provider.name}
+                </small>
+              </TableCell>
+              <TableCell>
+                {row.dosingInstructions.quantity}{' '}
+                {row.dosingInstructions.quantityUnits}
+              </TableCell>
+              <TableCell>{getAdditionalInstruction(row)}</TableCell>
+              <TableCell
+                style={{
+                  color: StatusColor[getStatus(row)],
+                  fontWeight: 'bold',
+                }}
+              >
+                {getStatus(row)}
+              </TableCell>
+              <TableCell>
+                <Link inline>revise</Link> <Link inline>stop</Link>{' '}
+                <Link inline>renew</Link>{' '}
+              </TableCell>
+            </TableRow>
+          </React.Fragment>
+        ))}
       </TableBody>
     </Table>
   )

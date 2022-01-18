@@ -17,7 +17,7 @@ const ActivePrescription = () => {
   if (data && data.length > 0)
     return (
       <div data-testid="activePrescription">
-        <PrescriptionTable data={data}></PrescriptionTable>
+        <PrescriptionTable data={data.slice().reverse()} />
       </div>
     )
 

@@ -1,6 +1,7 @@
 export interface ActiveDrug {
   visit: any
-  dateStopped: String
+  dateStopped: number
+  dateActivated: number
   provider: any
   concept?: any
   drug: any

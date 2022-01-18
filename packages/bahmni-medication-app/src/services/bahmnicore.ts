@@ -15,3 +15,16 @@ export const getActivePrescription = async ({patientUuid}): Promise<any> => {
   )
   return responseBody(response)
 }
+
+export const getAllPrescription = async ({patientUuid}): Promise<any> => {
+  const response = await api.get<ActivePrescription>(
+    `/openmrs/ws/rest/v1/bahmnicore/drugOrders`,
+    {
+      params: {
+        patientUuid,
+        includeActiveVisit: true,
+      },
+    },
+  )
+  return responseBody(response)
+}

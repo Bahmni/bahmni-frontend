@@ -21,7 +21,7 @@ const styles = {
   tableSubHeading: {textAlign: 'center'},
 }
 
-const schedule = (drugInfo: any) => {
+export const schedule = (drugInfo: any) => {
   const doseInfo: any = drugInfo.dosingInstructions
   const startDate: String = new Date(
     drugInfo.effectiveStartDate,

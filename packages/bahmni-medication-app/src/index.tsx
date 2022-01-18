@@ -4,7 +4,9 @@ import {useAsync} from 'react-async'
 import AddPrescriptionModal from './AddPrescriptionModal/AddPrescriptionModal'
 import {PrescriptionWidget} from './PrescriptionsWidget/PrescriptionWidget'
 import {search} from './services/drugs'
-import {Drug, DrugResult} from './types'
+import {Drug, DrugResult, NewPrescription} from './types'
+import {addNewPrescription} from './NewPrescriptionTable/addNewPrescription'
+import NewPrescriptionTable from './NewPrescriptionTable/NewPrescriptionTable'
 
 const styles = {
   container: {
@@ -25,6 +27,7 @@ const MedicationApp = () => {
   const [isUserInputAvailable, setIsUserInputAvailable] =
     useState<Boolean>(false)
   const [selectedDrug, setSelectedDrug] = useState<Drug>(null)
+  const [newPrescription, setNewPrescription] = useState<NewPrescription[]>([])
   const {
     run: searchDrug,
     data: drugs,
@@ -47,7 +50,10 @@ const MedicationApp = () => {
     setIsUserInputAvailable(false)
     setSelectedDrug(null)
   }
-
+  const handlePrescription = (data) => {
+    setUserInput('');
+    setNewPrescription([...newPrescription, addNewPrescription(data)]);
+  }
   const showDrugOptions = () => {
     if (drugs && isUserInputAvailable && !selectedDrug) {
       return drugs.results.map((drug, i: number) => (
@@ -82,8 +88,12 @@ const MedicationApp = () => {
         <AddPrescriptionModal
           drug={selectedDrug}
           onClose={clearUserInput}
+          onDone={data => {
+            handlePrescription(data)
+          }}
         ></AddPrescriptionModal>
       )}
+      <NewPrescriptionTable data={newPrescription}></NewPrescriptionTable>
       <PrescriptionWidget />
     </div>
   )

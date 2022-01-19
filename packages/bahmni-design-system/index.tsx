@@ -1,3 +1,5 @@
+import ComboBox from 'carbon-components-react/es/components/ComboBox'
+import InlineLoading from 'carbon-components-react/es/components/InlineLoading'
 import Button from 'carbon-components-react/es/components/Button'
 import Search from 'carbon-components-react/es/components/Search'
 import {ClickableTile} from 'carbon-components-react/es/components/Tile'
@@ -18,6 +20,7 @@ import Dropdown from 'carbon-components-react/es/components/Dropdown'
 import DatePicker from 'carbon-components-react/es/components/DatePicker'
 import DatePickerInput from 'carbon-components-react/es/components/DatePickerInput'
 import Tag from 'carbon-components-react/es/components/Tag/Tag'
+
 export {
   Button,
   Search,
@@ -29,6 +32,8 @@ export {
   Dropdown,
   DatePicker,
   DatePickerInput,
+  ComboBox,
+  InlineLoading,
   Table,
   TableBody,
   TableCell,

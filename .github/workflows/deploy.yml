@@ -1,0 +1,51 @@
+name: bahmni-frontend Deploy
+on:
+  workflow_run:
+    workflows: ["bahmni-frontend Build"]
+    types:
+      - completed
+  # workflow_dispatch:
+  #   inputs:
+  #     target_env:
+  #       description: 'Environment to deploy (dev, qa, demo)'
+  #       default: 'dev'
+  #       required: true
+jobs:
+  deploy:
+    if: ${{ (github.event_name != 'pull_request') && (github.event.workflow_run.conclusion == 'success') }}
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: extract private key
+        run: 'echo "$SSH_KEY" > bahmni-next.pem'
+        shell: bash
+        env:
+          SSH_KEY: ${{secrets.BAHMNI_NEXT_PEM}}
+    # 1) ssh into EC2 machine
+    # 2) extract download artifact URL using github api (uploaded artifact in build step). Use jq to query for archive_download_url
+    # 3) extract physical location of the artifact (archive_download_url) - note this require GHA context OR user auth (PAT) - since we are sshing on remote we could only use PAT
+    # 4) unzip with force overwrite to dist folder
+      - name: deploy bahmni-mf distribution
+        run: |
+          sudo ssh -T -o "StrictHostKeyChecking no" -i "bahmni-next.pem" ec2-user@ec2-54-251-102-238.ap-southeast-1.compute.amazonaws.com <<EOF
+            sudo su
+            cd /home/bahmni/bahmni-frontend
+            curl -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/repos/Bahmni/bahmni-frontend/actions/artifacts | \
+            jq -r '.artifacts | .[] | select(.name | contains("dist-${{ github.sha }}")) | .archive_download_url' | \
+            xargs curl -L -o dist.zip -H "Authorization: token ${{secrets.BAHMNI_PAT}}"
+            unzip -o dist.zip -d dist
+            rm dist.zip
+          EOF
+  slack-workflow-status:
+    name: Post Workflow Status To Slack
+    needs:
+      - deploy
+    runs-on: ubuntu-latest
+    env:
+      TARGET_ENV: ${{ (github.event.inputs.target_env == 'prod' && 'dev') || (github.event.inputs.target_env == '' && 'dev' || github.event.inputs.target_env) }}
+    steps:
+      - name: Deploy notification
+        if: ${{ needs.deploy.result == 'success' }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":":white_check_mark:  Bahmni@next deployed on https://next.mybahmni.org/"}' ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -4,8 +4,14 @@ import {when} from 'jest-when'
 import React from 'react'
 import {search} from './services/drugs'
 import MedicationApp from './index'
-import {mockDrugsApiResponse} from './utils/tests-utils/mockApiContract'
+import {
+  mockDrugOrderConfigApiResponse,
+  mockDrugsApiResponse,
+} from './utils/tests-utils/mockApiContract'
 import {axe} from 'jest-axe'
+import MockAdapter from 'axios-mock-adapter/types'
+import {initMockApi} from './utils/tests-utils/baseApiSetup'
+import {REST_ENDPOINTS} from './utils/constants'
 
 jest.mock('./services/drugs', () => ({
   __esModule: true,
@@ -13,9 +19,11 @@ jest.mock('./services/drugs', () => ({
 }))
 
 Element.prototype.scrollIntoView = jest.fn()
+let adapter: MockAdapter, waitForApiCalls: Function, apiParams: Function
 
 test('should pass hygene accessibility tests', async () => {
   const {container} = render(<MedicationApp />)
+
   expect(await axe(container)).toHaveNoViolations()
 })
 
@@ -52,6 +60,7 @@ describe('Medication tab - Drugs search', () => {
       .calledWith('Pa')
       .mockResolvedValue(mockDrugsApiResponse.validResponse)
     render(<MedicationApp />)
+
     const searchBox = screen.getByRole('searchbox', {name: /searchdrugs/i})
 
     userEvent.type(searchBox, 'P')
@@ -77,6 +86,11 @@ describe('Medication tab - Add Prescription Dialog', () => {
   })
 
   beforeEach(() => {
+    ;({adapter, waitForApiCalls, apiParams} = initMockApi())
+    sessionStorage.clear()
+    adapter
+      .onGet(REST_ENDPOINTS.DRUG_ORDER_CONFIG)
+      .reply(200, mockDrugOrderConfigApiResponse)
     when(search)
       .calledWith('Par')
       .mockResolvedValue(mockDrugsApiResponse.validResponse)
@@ -90,6 +104,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
     const drugOption = screen.getByText(/paracetomal 1/i)
     userEvent.click(drugOption)
 
+    await waitForConfigurationLoad()
     await waitFor(() =>
       expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument(),
     )
@@ -98,9 +113,11 @@ describe('Medication tab - Add Prescription Dialog', () => {
   //FIXME: this test would change after implmenting Add Prescription button
   it('should hide prescription dialog when user clicks cancel', async () => {
     render(<MedicationApp />)
+
     await searchDrug('Par')
 
     userEvent.click(screen.getByText(/paracetomal 1/i))
+    await waitForConfigurationLoad()
 
     await waitFor(() =>
       expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument(),
@@ -118,9 +135,20 @@ describe('Medication tab - Add Prescription Dialog', () => {
 
     userEvent.click(screen.getByText(/paracetomal 1/i))
 
+    await waitForConfigurationLoad()
     await waitFor(() =>
       expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument(),
     )
+    userEvent.type(screen.getByLabelText('Dosage'), '1')
+    userEvent.click(screen.getByTitle('Dosage Unit'))
+    userEvent.click(screen.getByText('Tablet(s)'))
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Immediately'))
+    userEvent.type(screen.getByLabelText('Duration'), '1')
+    userEvent.click(screen.getByTitle('Duration Unit'))
+    userEvent.click(screen.getByText('Day(s)'))
+    userEvent.click(screen.getByTitle('Route'))
+    userEvent.click(screen.getByText('Oral'))
     const doneButton = screen.getByText(/done/i)
     userEvent.click(doneButton)
 
@@ -128,8 +156,15 @@ describe('Medication tab - Add Prescription Dialog', () => {
   })
 })
 
-async function searchDrug(durgName: string) {
+async function searchDrug(drugName: string) {
   const searchBox = screen.getByRole('searchbox', {name: /searchdrugs/i})
-  userEvent.type(searchBox, durgName)
-  await waitFor(() => expect(search).toBeCalledTimes(durgName.length - 1))
+  userEvent.type(searchBox, drugName)
+  await waitFor(() => expect(search).toBeCalledTimes(drugName.length - 1))
+}
+
+async function waitForConfigurationLoad() {
+  await waitForApiCalls({
+    apiURL: REST_ENDPOINTS.DRUG_ORDER_CONFIG,
+    times: 1,
+  })
 }

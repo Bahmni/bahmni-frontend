@@ -1,10 +1,11 @@
-import {ClickableTile, Search} from '@bahmni/design-system'
+import {ClickableTile, InlineLoading, Search} from '@bahmni/design-system'
 import React, {useEffect, useState} from 'react'
 import {useAsync} from 'react-async'
 import AddPrescriptionModal from './AddPrescriptionModal/AddPrescriptionModal'
+import useMedicationConfig from './hooks/useMedicationConfig'
 import {PrescriptionWidget} from './PrescriptionsWidget/PrescriptionWidget'
 import {search} from './services/drugs'
-import {Drug, DrugResult, NewPrescription} from './types'
+import {Drug, DrugResult, NewPrescription, NonCodedDrug} from './types'
 import {addNewPrescription} from './NewPrescriptionTable/addNewPrescription'
 import NewPrescriptionTable from './NewPrescriptionTable/NewPrescriptionTable'
 
@@ -24,10 +25,12 @@ const styles = {
 
 const MedicationApp = () => {
   const [userInput, setUserInput] = useState('')
-  const [isUserInputAvailable, setIsUserInputAvailable] =
-    useState<Boolean>(false)
-  const [selectedDrug, setSelectedDrug] = useState<Drug>(null)
   const [newPrescription, setNewPrescription] = useState<NewPrescription[]>([])
+  const [selectedDrug, setSelectedDrug] = useState<Drug | NonCodedDrug>(null)
+  const [allowOnlyCodedDrug, setAllowOnlyCodedDrug] = useState(false)
+  const {medicationConfig, isMedicationConfigLoading, medicationConfigError} =
+    useMedicationConfig()
+
   const {
     run: searchDrug,
     data: drugs,
@@ -41,33 +44,64 @@ const MedicationApp = () => {
     if (userInput.length > 1) {
       searchDrug()
     }
-    setIsUserInputAvailable(userInput.length >= 2)
+    setAllowOnlyCodedDrug(false)
     setSelectedDrug(null)
   }, [userInput])
 
-  const clearUserInput = () => {
-    setUserInput('')
-    setIsUserInputAvailable(false)
-    setSelectedDrug(null)
+  const updateStatesForNonCodedDrug = () => {
+    // TODO: Refactor to get allowOnlyCodedDrugs based on tabConfigName
+    if (
+      medicationConfig?.tabConfig?.allMedicationTabConfig?.inputOptionsConfig
+        ?.allowOnlyCodedDrugs
+    )
+      setAllowOnlyCodedDrug(true)
+    else {
+      setSelectedDrug({name: userInput})
+      setAllowOnlyCodedDrug(false)
+    }
+  }
+
+  const getErrorMessage = () => {
+    return (
+      <p style={{color: 'red'}}>
+        This drug is not available in the system. Please select from the list of
+        drugs available in the system{' '}
+      </p>
+    )
   }
   const handlePrescription = (data) => {
     setUserInput('');
     setNewPrescription([...newPrescription, addNewPrescription(data)]);
   }
   const showDrugOptions = () => {
-    if (drugs && isUserInputAvailable && !selectedDrug) {
-      return drugs.results.map((drug, i: number) => (
+    if (drugs.results.length === 0) {
+      return allowOnlyCodedDrug ? (
+        getErrorMessage()
+      ) : (
         <ClickableTile
-          data-testid={`drugDataId ${i}`}
-          key={drug.uuid}
-          onClick={() => setSelectedDrug(drug)}
+          data-testid="nonCodedDrug"
+          onClick={updateStatesForNonCodedDrug}
         >
-          {drug.name}
+          "{userInput}"
         </ClickableTile>
-      ))
+      )
     }
+
+    return drugs.results.map((drug, i: number) => (
+      <ClickableTile
+        data-testid={`drugDataId ${i}`}
+        key={drug.uuid}
+        onClick={() => setSelectedDrug(drug)}
+      >
+        {drug.name}
+      </ClickableTile>
+    ))
   }
 
+  if (medicationConfigError)
+    return <p>{`something went wrong ${medicationConfigError.message}`}</p>
+  if (isMedicationConfigLoading)
+    return <InlineLoading description="Loading Data..." />
   return (
     <div style={styles.container}>
       <div style={styles.search_bar}>
@@ -79,15 +113,17 @@ const MedicationApp = () => {
           onChange={(e: {target: HTMLInputElement}) =>
             setUserInput(e.target.value)
           }
-          onClear={() => clearUserInput()}
+          onClear={() => setUserInput('')}
           value={userInput}
         />
-        <div style={styles.tileList}>{showDrugOptions()}</div>
+        {drugs && !selectedDrug && userInput.length >= 2 && (
+          <div style={styles.tileList}>{showDrugOptions()}</div>
+        )}
       </div>
       {selectedDrug && (
         <AddPrescriptionModal
           drug={selectedDrug}
-          onClose={clearUserInput}
+          onClose={() => setUserInput('')}
           onDone={data => {
             handlePrescription(data)
           }}

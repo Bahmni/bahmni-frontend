@@ -1,13 +1,13 @@
 import {render, screen} from '@testing-library/react'
 import {axe} from 'jest-axe'
 import React from 'react'
-import ActivePrescription from '../ActivePrescription'
 import {headerData} from '../../utils/constants'
-import PrescriptionTable from '../PrescriptionTable'
 import {
   mockActivePrescriptionResponse,
   mockPrescriptionResponse,
+  mockPrescriptionResponseForNonCodedDrug,
 } from '../../utils/tests-utils/mockApiContract'
+import PrescriptionTable from '../PrescriptionTable'
 
 test('should pass hygene accessibility tests', async () => {
   const {container} = render(
@@ -29,6 +29,19 @@ describe('Prescription Table', () => {
     expect(
       screen.getByRole('cell', {name: /Aspirin 75mg, Tablet, Oral/i}),
     ).toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {
+        name: /5 Capsule\(s\), Thrice a day for 5 Day\(s\) started on 12\/22\/2021 by Super Man/i,
+      }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {name: /150 Capsule\(s\)/i}),
+    ).toBeInTheDocument()
+  })
+
+  it('should display non coded drug name', () => {
+    render(<PrescriptionTable data={mockPrescriptionResponseForNonCodedDrug} />)
+    expect(screen.getByRole('cell', {name: /Paz/i})).toBeInTheDocument()
     expect(
       screen.getByRole('cell', {
         name: /5 Capsule\(s\), Thrice a day for 5 Day\(s\) started on 12\/22\/2021 by Super Man/i,

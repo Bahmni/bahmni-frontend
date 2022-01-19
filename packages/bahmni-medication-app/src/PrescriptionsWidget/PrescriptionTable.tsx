@@ -70,6 +70,11 @@ const getStatus = (row: ActiveDrug) => {
   if (!row.dateStopped) return 'active'
 }
 
+const getDrugInfo = row => {
+  if (row.drug === null && row.drugNonCoded) return row.drugNonCoded
+
+  return ` ${row.drug.name}, ${row.drug.form}, ${row.dosingInstructions.route}`
+}
 interface PrescriptionData {
   data: ActiveDrug[]
 }
@@ -92,10 +97,7 @@ const PrescriptionTable = React.memo((props: PrescriptionData) => {
             <React.Fragment key={Math.random()}>
               {getSubHeading(row.visit.startDateTime)}
               <TableRow>
-                <TableCell>
-                  {row.drug.name}, {row.drug.form},{' '}
-                  {row.dosingInstructions.route}
-                </TableCell>
+                <TableCell>{getDrugInfo(row)}</TableCell>
                 <TableCell>
                   {schedule(row)}
                   <small style={styles.providerName}>

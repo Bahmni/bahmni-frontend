@@ -1,7 +1,8 @@
-name: bahmni-frontend CI
+name: bahmni-frontend Build
 on:
   push:
-    branches: [main]
+    branches: 
+      - main
   pull_request:
     branches: [ main ]
     types: [opened, synchronize, reopened]
@@ -20,6 +21,11 @@ jobs:
       - run: npx lerna run typescript
       - run: npx lerna run test
       - run: npx lerna run build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist-${{ github.sha }}
+          path: ./dist
   slack-workflow-status:
       name: Notify on Slack
       needs:

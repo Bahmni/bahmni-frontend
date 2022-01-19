@@ -4,12 +4,12 @@ on:
     workflows: ["bahmni-frontend Build"]
     types:
       - completed
-  workflow_dispatch:
-    inputs:
-      target_env:
-        description: 'Environment to deploy (dev, qa, demo)'
-        default: 'dev'
-        required: true
+  # workflow_dispatch:
+  #   inputs:
+  #     target_env:
+  #       description: 'Environment to deploy (dev, qa, demo)'
+  #       default: 'dev'
+  #       required: true
 jobs:
   deploy:
     if: ${{ (github.event_name != 'pull_request') && (github.event.workflow_run.conclusion == 'success') }}
@@ -48,4 +48,4 @@ jobs:
       - name: Deploy notification
         if: ${{ needs.deploy.result == 'success' }}
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":":white_check_mark:  Bahmni@next deployed on ${{env.TARGET_ENV}}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H 'Content-type: application/json' --data '{"text":":white_check_mark:  Bahmni@next deployed on https://next.mybahmni.org/"}' ${{ secrets.SLACK_WEBHOOK_URL }}

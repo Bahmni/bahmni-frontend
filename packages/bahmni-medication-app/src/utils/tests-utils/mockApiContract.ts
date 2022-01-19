@@ -111,20 +111,18 @@ export const mockPrescriptionResponse = [
   },
 ]
 
-export const mockAllPrescriptionResponse = [
+export const mockPrescriptionResponseForNonCodedDrug = [
   {
     visit: {
       startDateTime: 1496851128000,
     },
+    dateActivated: 1640164841000,
     dateStopped: 1607888143,
-    dateActivated: 1640254629000, //Date: 23/12/2021
     provider: {
       name: 'Super Man',
     },
-    drug: {
-      name: 'Aspirin 1',
-      form: 'Tablet',
-    },
+    drug: null,
+    drugNonCoded: 'Paz',
     dosingInstructions: {
       dose: 5.0,
       doseUnits: 'Capsule(s)',
@@ -139,6 +137,8 @@ export const mockAllPrescriptionResponse = [
     durationUnits: 'Day(s)',
     effectiveStartDate: 1640164841000,
   },
+]
+export const mockAllPrescriptionResponse = [
   {
     visit: {
       startDateTime: 1496851128000,
@@ -194,6 +194,28 @@ export const mockAllPrescriptionResponse = [
     effectiveStartDate: 1640164841000,
   },
 ]
+
+export const mockMedicationConfigRespone = {
+  commonConfig: {},
+  tabConfig: {
+    allMedicationTabConfig: {
+      inputOptionsConfig: {
+        allowOnlyCodedDrugs: false,
+      },
+    },
+  },
+}
+export const mockNonCodedDrugConfigResponse = {
+  commonConfig: {},
+  tabConfig: {
+    allMedicationTabConfig: {
+      inputOptionsConfig: {
+        allowOnlyCodedDrugs: true,
+      },
+    },
+  },
+}
+
 export const mockDrugOrderConfigApiResponse: DrugOrderConfig = {
   doseUnits: [
     {name: 'Tablet(s)', rootConcept: null},

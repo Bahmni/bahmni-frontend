@@ -10,11 +10,11 @@ import {
   mockDrugsApiResponse,
   mockMedicationConfigRespone,
   mockNonCodedDrugConfigResponse,
+  mockDrugOrderConfigApiResponse,
 } from './utils/tests-utils/mockApiContract'
 
-let adapter: MockAdapter, waitForApiCalls: Function, apiParams: Function
-
 Element.prototype.scrollIntoView = jest.fn()
+let adapter: MockAdapter, waitForApiCalls: Function, apiParams: Function
 
 test('should pass hygene accessibility tests', async () => {
   ;({adapter, waitForApiCalls, apiParams} = initMockApi())
@@ -30,6 +30,9 @@ test('should pass hygene accessibility tests', async () => {
 beforeEach(() => {
   ;({adapter, waitForApiCalls, apiParams} = initMockApi())
   sessionStorage.clear()
+  adapter
+    .onGet(REST_ENDPOINTS.DRUG_ORDER_CONFIG)
+    .reply(200, mockDrugOrderConfigApiResponse)
 })
 
 describe('Medication Tab', () => {
@@ -154,6 +157,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
     const drugOption = screen.getByText(/paracetomal 1/i)
     userEvent.click(drugOption)
 
+    await waitForConfigurationLoad()
     await waitFor(() =>
       expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument(),
     )
@@ -167,6 +171,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
     await searchDrug('Par', 2)
 
     userEvent.click(screen.getByText(/paracetomal 1/i))
+    await waitForConfigurationLoad()
 
     await waitFor(() =>
       expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument(),
@@ -186,9 +191,20 @@ describe('Medication tab - Add Prescription Dialog', () => {
 
     userEvent.click(screen.getByText(/paracetomal 1/i))
 
+    await waitForConfigurationLoad()
     await waitFor(() =>
       expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument(),
     )
+    userEvent.type(screen.getByLabelText('Dosage'), '1')
+    userEvent.click(screen.getByTitle('Dosage Unit'))
+    userEvent.click(screen.getByText('Tablet(s)'))
+    userEvent.click(screen.getByLabelText('Frequency'))
+    userEvent.click(screen.getByText('Immediately'))
+    userEvent.type(screen.getByLabelText('Duration'), '1')
+    userEvent.click(screen.getByTitle('Duration Unit'))
+    userEvent.click(screen.getByText('Day(s)'))
+    userEvent.click(screen.getByTitle('Route'))
+    userEvent.click(screen.getByText('Oral'))
     const doneButton = screen.getByText(/done/i)
     userEvent.click(doneButton)
 
@@ -206,6 +222,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
     await searchDrug('Paz', 2)
 
     userEvent.click(screen.getByTestId('nonCodedDrug'))
+    await waitForConfigurationLoad()
     await waitFor(() =>
       expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument(),
     )
@@ -246,6 +263,13 @@ async function searchDrug(durgName: string, times: Number = 0) {
 async function waitForMedicationConfig() {
   await waitForApiCalls({
     apiURL: CONFIG_URLS.MEDICATION_CONFIG,
+    times: 1,
+  })
+}
+
+async function waitForConfigurationLoad() {
+  await waitForApiCalls({
+    apiURL: REST_ENDPOINTS.DRUG_ORDER_CONFIG,
     times: 1,
   })
 }

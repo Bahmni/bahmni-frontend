@@ -6,10 +6,8 @@ import React from 'react'
 import ActivePrescription from '../ActivePrescription'
 import {getPatientUuid} from '../../utils/helper'
 import {initMockApi} from '../../utils/tests-utils/baseApiSetup'
-import {
-  durgOrdersUrl,
-  mockActivePrescriptionResponse,
-} from '../../utils/tests-utils/mockApiContract'
+import {mockActivePrescriptionResponse} from '../../utils/tests-utils/mockApiContract'
+import {REST_ENDPOINTS} from '../../utils/constants'
 
 jest.mock('../../utils/helper', () => ({
   __esModule: true,
@@ -24,7 +22,7 @@ afterEach(() => {
 
 test('should pass hygene accessibility tests', async () => {
   const {container} = render(<ActivePrescription />)
-  await waitForApiCalls({apiURL: durgOrdersUrl, times: 1})
+  await waitForApiCalls({apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION, times: 1})
   expect(await axe(container)).toHaveNoViolations()
 })
 
@@ -36,13 +34,20 @@ describe('Active Prescription', () => {
   it('should display active prescriptions for a given patient', async () => {
     const mockPatientUuid = 'patientUuid123'
     when(getPatientUuid).mockReturnValue(mockPatientUuid)
-    adapter.onGet(durgOrdersUrl).reply(200, mockActivePrescriptionResponse)
+    adapter
+      .onGet(REST_ENDPOINTS.ACTIVE_PRESCRIPTION)
+      .reply(200, mockActivePrescriptionResponse)
 
     render(<ActivePrescription />)
 
-    await waitForApiCalls({apiURL: durgOrdersUrl, times: 1})
+    await waitForApiCalls({
+      apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
+      times: 1,
+    })
     expect(
-      apiParams(durgOrdersUrl).some(p => p.patientUuid === mockPatientUuid),
+      apiParams(REST_ENDPOINTS.ACTIVE_PRESCRIPTION).some(
+        p => p.patientUuid === mockPatientUuid,
+      ),
     ).toBeTruthy()
     expect(
       screen.queryByRole('table', {name: /prescription/i}),
@@ -51,11 +56,14 @@ describe('Active Prescription', () => {
 
   it('should not display active prescriptions when the patientId is invalid', async () => {
     when(getPatientUuid).mockReturnValue('someInvalidId')
-    adapter.onGet(durgOrdersUrl).reply(404)
+    adapter.onGet(REST_ENDPOINTS.ACTIVE_PRESCRIPTION).reply(404)
 
     render(<ActivePrescription />)
 
-    await waitForApiCalls({apiURL: durgOrdersUrl, times: 1})
+    await waitForApiCalls({
+      apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
+      times: 1,
+    })
     expect(
       screen.queryByRole('table', {name: /prescription/i}),
     ).not.toBeInTheDocument()
@@ -63,10 +71,13 @@ describe('Active Prescription', () => {
 
   it('should not show active prescription table when there are no active prescription for the patient', async () => {
     when(getPatientUuid).mockReturnValue('patientUuid')
-    adapter.onGet(durgOrdersUrl).reply(200, [])
+    adapter.onGet(REST_ENDPOINTS.ACTIVE_PRESCRIPTION).reply(200, [])
 
     render(<ActivePrescription />)
-    await waitForApiCalls({apiURL: durgOrdersUrl, times: 1})
+    await waitForApiCalls({
+      apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
+      times: 1,
+    })
     expect(
       screen.queryByRole('table', {name: /prescription/i}),
     ).not.toBeInTheDocument()

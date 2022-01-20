@@ -20,18 +20,31 @@ const styles = {
   } as React.CSSProperties,
   tableSubHeading: {textAlign: 'center'},
 }
+enum DrugStatus {
+  ACTIVE = 'active',
+  FINISHED = 'finished',
+  SCHEDULED = 'scheduled',
+  STOPPED = 'stopped',
+}
+const StatusStylesMap = {
+  active: {color: 'orange'},
+  scheduled: {color: 'green'},
+  stopped: {textDecoration: 'line-through'},
+}
 
-const schedule = (drugInfo: any) => {
+const getScheduleText = (drugInfo: any, drugStatus: DrugStatus) => {
   const doseInfo: any = drugInfo.dosingInstructions
   const startDate: String = new Date(
     drugInfo.effectiveStartDate,
   ).toLocaleDateString()
-  const schedule: String = `${doseInfo.dose} ${doseInfo.doseUnits}, ${doseInfo.frequency} for ${drugInfo.duration} ${drugInfo.durationUnits} started on ${startDate}`
+  const schedule: String = `${doseInfo.dose} ${doseInfo.doseUnits}, ${
+    doseInfo.frequency
+  } for ${drugInfo.duration} ${drugInfo.durationUnits} ${
+    drugStatus === DrugStatus.SCHEDULED ? 'start on' : 'started on'
+  } ${startDate}`
   return schedule
 }
-enum StatusColor {
-  'active' = 'orange',
-}
+
 const getSubHeading = (prescriptionData, index) => {
   if (
     index == 0 ||
@@ -68,8 +81,24 @@ const getAdditionalInstruction = (row: PrescriptionItem) => {
   )
 }
 
-const getStatus = (row: PrescriptionItem) => {
-  if (!row.dateStopped) return 'active'
+const getStatus = (row: PrescriptionItem): DrugStatus => {
+  const currentDateTime = Date.now()
+  if (row.dateStopped) return DrugStatus.STOPPED
+  if (row.effectiveStartDate > currentDateTime) return DrugStatus.SCHEDULED
+  return row.effectiveStopDate > currentDateTime
+    ? DrugStatus.ACTIVE
+    : DrugStatus.FINISHED
+}
+
+const getActionLinks = (status: DrugStatus) => {
+  return status === DrugStatus.FINISHED || status === DrugStatus.STOPPED ? (
+    <Link inline>add</Link>
+  ) : (
+    <>
+      <Link inline>revise</Link> <Link inline>stop</Link>
+      <Link inline>renew</Link>{' '}
+    </>
+  )
 }
 
 const getDrugInfo = row => {
@@ -81,7 +110,7 @@ interface PrescriptionData {
   data: PrescriptionItem[]
 }
 
-const PrescriptionTable = React.memo((props: PrescriptionData) => {
+const PrescriptionTable = (props: PrescriptionData) => {
   return (
     <Table title="prescription">
       <TableHead>
@@ -92,40 +121,49 @@ const PrescriptionTable = React.memo((props: PrescriptionData) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {props.data.map((row, index) => (
-          <React.Fragment key={Math.random()}>
-            {getSubHeading(props.data, index)}
-            <TableRow>
-              <TableCell>{getDrugInfo(row)}</TableCell>
-              <TableCell>
-                {schedule(row)}
-                <small style={styles.providerName}>
-                  by {row.provider.name}
-                </small>
-              </TableCell>
-              <TableCell>
-                {row.dosingInstructions.quantity}{' '}
-                {row.dosingInstructions.quantityUnits}
-              </TableCell>
-              <TableCell>{getAdditionalInstruction(row)}</TableCell>
-              <TableCell
-                style={{
-                  color: StatusColor[getStatus(row)],
-                  fontWeight: 'bold',
-                }}
-              >
-                {getStatus(row)}
-              </TableCell>
-              <TableCell>
-                <Link inline>revise</Link> <Link inline>stop</Link>{' '}
-                <Link inline>renew</Link>{' '}
-              </TableCell>
-            </TableRow>
-          </React.Fragment>
-        ))}
+        {props.data.map((row, index) => {
+          const drugStatus = getStatus(row)
+          return (
+            <React.Fragment key={Math.random()}>
+              {getSubHeading(props.data, index)}
+              <TableRow>
+                <TableCell
+                  style={{
+                    textDecoration: StatusStylesMap[drugStatus]?.textDecoration,
+                  }}
+                >
+                  {getDrugInfo(row)}
+                </TableCell>
+                <TableCell
+                  style={{
+                    textDecoration: StatusStylesMap[drugStatus]?.textDecoration,
+                  }}
+                >
+                  {getScheduleText(row, drugStatus)}
+                  <small style={styles.providerName}>
+                    by {row.provider.name}
+                  </small>
+                </TableCell>
+                <TableCell>
+                  {row.dosingInstructions.quantity}{' '}
+                  {row.dosingInstructions.quantityUnits}
+                </TableCell>
+                <TableCell>{getAdditionalInstruction(row)}</TableCell>
+                <TableCell
+                  style={{
+                    color: StatusStylesMap[drugStatus]?.color,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {drugStatus}
+                </TableCell>
+                <TableCell>{getActionLinks(drugStatus)}</TableCell>
+              </TableRow>
+            </React.Fragment>
+          )
+        })}
       </TableBody>
     </Table>
   )
-})
-
+}
 export default PrescriptionTable

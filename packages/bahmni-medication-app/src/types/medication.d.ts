@@ -1,4 +1,4 @@
-export interface ActiveDrug {
+export interface PrescriptionItem {
   visit: any
   dateStopped: number
   dateActivated: number
@@ -7,6 +7,7 @@ export interface ActiveDrug {
   drug: any
   dosingInstructions: any
   duration: number
-  durationUnits: String
-  effectiveStartDate: Number
+  durationUnits: string
+  effectiveStartDate: number
+  effectiveStopDate: number
 }

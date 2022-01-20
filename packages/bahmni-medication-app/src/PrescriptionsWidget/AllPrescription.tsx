@@ -3,10 +3,10 @@ import {useAsync} from 'react-async'
 import {getAllPrescription} from '../services/bahmnicore'
 import {getPatientUuid} from '../utils/helper'
 import PrescriptionTable from './PrescriptionTable'
-import type {ActiveDrug} from '../types/medication'
+import type {PrescriptionItem} from '../types/medication'
 
 const AllPrescription = () => {
-  const {data, error, isPending} = useAsync<ActiveDrug[]>({
+  const {data, error, isPending} = useAsync<PrescriptionItem[]>({
     promiseFn: getAllPrescription,
     patientUuid: getPatientUuid(),
   })

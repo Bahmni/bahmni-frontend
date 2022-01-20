@@ -10,7 +10,7 @@ import {
 } from '@bahmni/design-system'
 import React from 'react'
 import {headerData} from '../utils/constants'
-import type {ActiveDrug} from '../types/medication'
+import {PrescriptionItem} from '../types/medication'
 
 const styles = {
   providerName: {
@@ -48,7 +48,7 @@ const getSubHeading = (prescriptionData, index) => {
   }
 }
 
-const getAdditionalInstruction = (row: ActiveDrug) => {
+const getAdditionalInstruction = (row: PrescriptionItem) => {
   const instructionJson = JSON.parse(
     row.dosingInstructions.administrationInstructions,
   )
@@ -68,7 +68,7 @@ const getAdditionalInstruction = (row: ActiveDrug) => {
   )
 }
 
-const getStatus = (row: ActiveDrug) => {
+const getStatus = (row: PrescriptionItem) => {
   if (!row.dateStopped) return 'active'
 }
 
@@ -78,7 +78,7 @@ const getDrugInfo = row => {
   return ` ${row.drug.name}, ${row.drug.form}, ${row.dosingInstructions.route}`
 }
 interface PrescriptionData {
-  data: ActiveDrug[]
+  data: PrescriptionItem[]
 }
 
 const PrescriptionTable = React.memo((props: PrescriptionData) => {

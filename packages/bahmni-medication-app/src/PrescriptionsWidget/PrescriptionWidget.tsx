@@ -4,7 +4,7 @@ import ActivePrescription from './ActivePrescription'
 
 const styles = {
   tablePosition: {
-    paddingTop: '10rem',
+    paddingTop: '5rem',
   },
 }
 

@@ -22,7 +22,7 @@ const styles = {
     justifyContent: 'space-evenly',
     width: '100%',
   },
-  tablePos: {marginTop: '10rem', padding: '16px'},
+  tablePos: {marginTop: '5rem', padding: '16px'},
 }
 
 const getScheduleText = (prescriptionItem: any) => {

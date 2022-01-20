@@ -47,7 +47,7 @@ export type DurationUnit = {
 }
 
 export interface NewPrescription {
-  action?: string,
+  action?: string
   dateStopped: number
   autoExpireDate: number
   concept?: any

@@ -48,5 +48,5 @@ export {
   Link,
   Tag,
   Close24,
-  Star24
+  Star24,
 }

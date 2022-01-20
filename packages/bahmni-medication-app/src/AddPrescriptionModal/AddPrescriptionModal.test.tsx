@@ -31,6 +31,7 @@ test('should pass hygene accessibility tests', async () => {
     <AddPrescriptionModal
       drug={mockDrug}
       onClose={() => {}}
+      onDone={() => {}}
     ></AddPrescriptionModal>,
   )
   await waitForDrugOrderConfig()
@@ -49,6 +50,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -70,6 +72,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -86,6 +89,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -102,6 +106,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -128,6 +133,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -146,6 +152,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -161,6 +168,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -176,6 +184,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -191,6 +200,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -206,6 +216,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -222,6 +233,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -234,6 +246,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     expect(screen.getByText(/loading data/i)).toBeInTheDocument()
@@ -249,6 +262,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -260,6 +274,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -278,6 +293,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -300,6 +316,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -322,6 +339,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -344,6 +362,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -366,6 +385,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -388,6 +408,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -406,6 +427,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -423,6 +445,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -451,6 +474,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -474,6 +498,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockNonCodedDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -499,6 +524,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockNonCodedDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()
@@ -527,6 +553,7 @@ describe('Medication Tab - Prescription Dialog', () => {
       <AddPrescriptionModal
         drug={mockDrug}
         onClose={() => {}}
+        onDone={() => {}}
       ></AddPrescriptionModal>,
     )
     await waitForDrugOrderConfig()

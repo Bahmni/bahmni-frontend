@@ -37,6 +37,7 @@ export const mockActivePrescriptionResponse = [
       name: 'Aspirin 75mg',
       form: 'Tablet',
     },
+    drugNonCoded: null,
     dosingInstructions: {
       dose: 5.0,
       doseUnits: 'Capsule(s)',
@@ -66,6 +67,7 @@ export const mockPrescriptionResponse = [
       name: 'Aspirin 75mg',
       form: 'Tablet',
     },
+    drugNonCoded: null,
     dosingInstructions: {
       dose: 5.0,
       doseUnits: 'Capsule(s)',
@@ -191,3 +193,27 @@ export const mockMedicationConfig = {
 export const mockNonCodedDrug = {
   name: 'Non-Coded Drug',
 }
+
+export const mockNewPrescription = [
+  {
+    action: 'NEW',
+    dateStopped: null,
+    dateActivated: 1642506772121,
+    autoExpireDate: 1642593171905,
+    drug: {form: 'Tablet', name: 'Paracetomal 1', strength: '', uuid: '1'},
+    dosingInstructions: {
+      dose: 1,
+      doseUnits: 'Tablet(s)',
+      frequency: 'Immediately',
+      quantity: 2,
+      quantityUnits: 'Tablet(s)',
+      route: 'Oral',
+    },
+    drugNonCoded: null,
+    duration: 1,
+    durationUnits: 'Day(s)',
+    effectiveStartDate: 1642506771905,
+    effectiveStopDate: 1642593171905,
+    scheduledDate: 1642506771905,
+  },
+]

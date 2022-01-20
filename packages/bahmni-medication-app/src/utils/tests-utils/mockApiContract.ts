@@ -34,7 +34,7 @@ export const mockActivePrescriptionResponse = [
       startDateTime: 1496851128000,
     },
     dateStopped: null,
-    dateActivated: 1640164841000,
+    dateActivated: 1640164841000, //Date: 22/12/2021
     provider: {
       name: 'Super Man',
     },
@@ -180,7 +180,7 @@ export const mockAllPrescriptionResponse = {
         startDateTime: 1496851128000,
       },
       dateStopped: null,
-      dateActivated: 1640254629000, //Date: 23/12/2021
+      dateActivated: 1640254629000,
       provider: {
         name: 'Super Man',
       },
@@ -210,7 +210,7 @@ export const mockAllPrescriptionResponse = {
         startDateTime: 1496851128000,
       },
       dateStopped: null,
-      dateActivated: 1640164841000, //Date : 22/12/2021
+      dateActivated: 1640164841000,
       provider: {
         name: 'Super Man',
       },
@@ -234,14 +234,13 @@ export const mockAllPrescriptionResponse = {
       effectiveStopDate: nextDay + 1,
     },
   ],
-  //Finished Prescription
   finished: [
     {
       visit: {
         startDateTime: 1496851128000,
       },
       dateStopped: null,
-      dateActivated: 1640164841000, //Date : 22/12/2021
+      dateActivated: 1640164841000,
       provider: {
         name: 'Super Man',
       },
@@ -265,14 +264,13 @@ export const mockAllPrescriptionResponse = {
       effectiveStopDate: previousDay,
     },
   ],
-  //Stopped Prescription
   stopped: [
     {
       visit: {
         startDateTime: 1496851128000,
       },
       dateStopped: previousDay,
-      dateActivated: 1640164841000, //Date : 22/12/2021
+      dateActivated: 1640164841000,
       provider: {
         name: 'Super Man',
       },

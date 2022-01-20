@@ -5,6 +5,7 @@ export interface PrescriptionItem {
   provider: any
   concept?: any
   drug: any
+  drugNonCoded?: string
   dosingInstructions: any
   duration: number
   durationUnits: string

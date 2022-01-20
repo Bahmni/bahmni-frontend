@@ -45,7 +45,7 @@ const getScheduleText = (drugInfo: any, drugStatus: DrugStatus) => {
   return schedule
 }
 
-const getSubHeading = (prescriptionData, index) => {
+const getSubHeading = (prescriptionData: PrescriptionItem[], index: number) => {
   if (
     index == 0 ||
     new Date(prescriptionData[index - 1].dateActivated).toLocaleDateString() !==
@@ -101,7 +101,7 @@ const getActionLinks = (status: DrugStatus) => {
   )
 }
 
-const getDrugInfo = row => {
+const getDrugInfo = (row: PrescriptionItem) => {
   if (row.drug === null && row.drugNonCoded) return row.drugNonCoded
 
   return ` ${row.drug.name}, ${row.drug.form}, ${row.dosingInstructions.route}`

@@ -64,6 +64,7 @@ describe('Active Prescription', () => {
       apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
       times: 1,
     })
+    expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
     expect(
       screen.queryByRole('table', {name: /prescription/i}),
     ).not.toBeInTheDocument()
@@ -81,6 +82,19 @@ describe('Active Prescription', () => {
     expect(
       screen.queryByRole('table', {name: /prescription/i}),
     ).not.toBeInTheDocument()
+  })
+
+  it('should display loading message while fetching active prescription', async () => {
+    when(getPatientUuid).mockReturnValue('patientUuid')
+    adapter.onGet(REST_ENDPOINTS.ACTIVE_PRESCRIPTION).timeout()
+
+    render(<ActivePrescription />)
+    expect(screen.getByText(/loading/i)).toBeInTheDocument()
+    await waitForApiCalls({
+      apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
+      times: 1,
+    })
+    expect(screen.queryByText(/loading/i)).not.toBeInTheDocument()
   })
 
   it('should display prescriptions in descending order based on prescried date', async () => {

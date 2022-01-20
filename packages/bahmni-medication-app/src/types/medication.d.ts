@@ -4,6 +4,7 @@ export interface ActiveDrug {
   provider: any
   concept?: any
   drug: any
+  drugNonCoded: String
   dosingInstructions: any
   duration: number
   durationUnits: String

@@ -11,6 +11,7 @@ import {
 import React from 'react'
 import {headerData} from '../utils/constants'
 import type {ActiveDrug} from '../types/medication'
+import {getDrugInfo} from '../utils/helper'
 
 const styles = {
   providerName: {
@@ -20,13 +21,12 @@ const styles = {
   } as React.CSSProperties,
   tableSubHeading: {textAlign: 'center'},
 }
-
-export const schedule = (drugInfo: any) => {
-  const doseInfo: any = drugInfo.dosingInstructions
+const getScheduleText = (prescriptionItem: any) => {
+  const doseInfo: any = prescriptionItem.dosingInstructions
   const startDate: String = new Date(
-    drugInfo.effectiveStartDate,
+    prescriptionItem.effectiveStartDate,
   ).toLocaleDateString()
-  const schedule: String = `${doseInfo.dose} ${doseInfo.doseUnits}, ${doseInfo.frequency} for ${drugInfo.duration} ${drugInfo.durationUnits} started on ${startDate}`
+  const schedule: String = `${doseInfo.dose} ${doseInfo.doseUnits}, ${doseInfo.frequency} for ${prescriptionItem.duration} ${prescriptionItem.durationUnits} started on ${startDate}`
   return schedule
 }
 enum StatusColor {
@@ -70,11 +70,6 @@ const getStatus = (row: ActiveDrug) => {
   if (!row.dateStopped) return 'active'
 }
 
-const getDrugInfo = row => {
-  if (row.drug === null && row.drugNonCoded) return row.drugNonCoded
-
-  return ` ${row.drug.name}, ${row.drug.form}, ${row.dosingInstructions.route}`
-}
 interface PrescriptionData {
   data: ActiveDrug[]
 }
@@ -99,7 +94,7 @@ const PrescriptionTable = React.memo((props: PrescriptionData) => {
               <TableRow>
                 <TableCell>{getDrugInfo(row)}</TableCell>
                 <TableCell>
-                  {schedule(row)}
+                  {getScheduleText(row)}
                   <small style={styles.providerName}>
                     by {row.provider.name}
                   </small>

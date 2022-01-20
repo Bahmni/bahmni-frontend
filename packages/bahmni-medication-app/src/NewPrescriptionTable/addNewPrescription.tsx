@@ -1,4 +1,3 @@
-import {is, isType} from '@babel/types'
 import {
   DosingInstructions,
   DrugInfo,
@@ -27,24 +26,21 @@ export const addNewPrescription = (data): NewPrescription => {
     quantityUnits: data.quantityUnit.name,
     route: data.route.name,
   }
-  let drug : DrugInfo= null
+  let drug: DrugInfo = null
   let drugNonCoded = null
   const isCodedDrug = drug => {
     if (drug.uuid) return true
     return false
   }
-  
-
-  if (isCodedDrug) {
+  if (isCodedDrug(data.drug)) {
     drug = {
       form: data.drug.dosageForm.display,
       name: data.drug.name,
       strength: data.drug.strength,
       uuid: data.drug.uuid,
     }
-  }
-  else{
-      drugNonCoded = data.drug.name
+  } else {
+    drugNonCoded = data.drug.name
   }
 
   const autoExpireDate = getExpiredDate(

@@ -69,9 +69,9 @@ const MedicationApp = () => {
       </p>
     )
   }
-  const handlePrescription = (data) => {
-    setUserInput('');
-    setNewPrescription([...newPrescription, addNewPrescription(data)]);
+  const handlePrescription = data => {
+    setUserInput('')
+    setNewPrescription([addNewPrescription(data), ...newPrescription])
   }
   const showDrugOptions = () => {
     if (drugs.results.length === 0) {

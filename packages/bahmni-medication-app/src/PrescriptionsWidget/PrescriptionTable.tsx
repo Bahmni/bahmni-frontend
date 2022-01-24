@@ -10,7 +10,7 @@ import {
 } from '@bahmni/design-system'
 import React from 'react'
 import {headerData} from '../utils/constants'
-import type {ActiveDrug} from '../types/medication'
+import {PrescriptionItem} from '../types/medication'
 
 const styles = {
   providerName: {
@@ -20,33 +20,48 @@ const styles = {
   } as React.CSSProperties,
   tableSubHeading: {textAlign: 'center'},
 }
+enum DrugStatus {
+  ACTIVE = 'active',
+  FINISHED = 'finished',
+  SCHEDULED = 'scheduled',
+  STOPPED = 'stopped',
+}
+const StatusStylesMap = {
+  active: {color: 'orange'},
+  scheduled: {color: 'green'},
+  stopped: {textDecoration: 'line-through'},
+}
 
-const schedule = (drugInfo: any) => {
+const getScheduleText = (drugInfo: any, drugStatus: DrugStatus) => {
   const doseInfo: any = drugInfo.dosingInstructions
   const startDate: String = new Date(
     drugInfo.effectiveStartDate,
   ).toLocaleDateString()
-  const schedule: String = `${doseInfo.dose} ${doseInfo.doseUnits}, ${doseInfo.frequency} for ${drugInfo.duration} ${drugInfo.durationUnits} started on ${startDate}`
+  const schedule: String = `${doseInfo.dose} ${doseInfo.doseUnits}, ${
+    doseInfo.frequency
+  } for ${drugInfo.duration} ${drugInfo.durationUnits} ${
+    drugStatus === DrugStatus.SCHEDULED ? 'start on' : 'started on'
+  } ${startDate}`
   return schedule
 }
-enum StatusColor {
-  'active' = 'orange',
-}
-let lastVisitDate: String
-const getSubHeading = visitDate => {
-  if (lastVisitDate === null || lastVisitDate != visitDate) {
-    lastVisitDate = visitDate
+
+const getSubHeading = (prescriptionData: PrescriptionItem[], index: number) => {
+  if (
+    index == 0 ||
+    new Date(prescriptionData[index - 1].dateActivated).toLocaleDateString() !==
+      new Date(prescriptionData[index].dateActivated).toLocaleDateString()
+  ) {
     return (
-      <TableRow>
+      <TableRow data-testid="date-row">
         <TableCell colSpan={6} style={styles.tableSubHeading}>
-          {new Date(visitDate).toLocaleDateString()}
+          {new Date(prescriptionData[index].dateActivated).toLocaleDateString()}
         </TableCell>
       </TableRow>
     )
   }
 }
 
-const getAdditionalInstruction = (row: ActiveDrug) => {
+const getAdditionalInstruction = (row: PrescriptionItem) => {
   const instructionJson = JSON.parse(
     row.dosingInstructions.administrationInstructions,
   )
@@ -66,20 +81,36 @@ const getAdditionalInstruction = (row: ActiveDrug) => {
   )
 }
 
-const getStatus = (row: ActiveDrug) => {
-  if (!row.dateStopped) return 'active'
+const getStatus = (row: PrescriptionItem): DrugStatus => {
+  const currentDateTime = Date.now()
+  if (row.dateStopped) return DrugStatus.STOPPED
+  if (row.effectiveStartDate > currentDateTime) return DrugStatus.SCHEDULED
+  return row.effectiveStopDate > currentDateTime
+    ? DrugStatus.ACTIVE
+    : DrugStatus.FINISHED
 }
 
-const getDrugInfo = row => {
+const getActionLinks = (status: DrugStatus) => {
+  return status === DrugStatus.FINISHED || status === DrugStatus.STOPPED ? (
+    <Link inline>add</Link>
+  ) : (
+    <>
+      <Link inline>revise</Link> <Link inline>stop</Link>
+      <Link inline>renew</Link>{' '}
+    </>
+  )
+}
+
+const getDrugInfo = (row: PrescriptionItem) => {
   if (row.drug === null && row.drugNonCoded) return row.drugNonCoded
 
   return ` ${row.drug.name}, ${row.drug.form}, ${row.dosingInstructions.route}`
 }
 interface PrescriptionData {
-  data: ActiveDrug[]
+  data: PrescriptionItem[]
 }
 
-const PrescriptionTable = React.memo((props: PrescriptionData) => {
+const PrescriptionTable = (props: PrescriptionData) => {
   return (
     <Table title="prescription">
       <TableHead>
@@ -90,16 +121,25 @@ const PrescriptionTable = React.memo((props: PrescriptionData) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {props.data
-          .slice()
-          .reverse()
-          .map(row => (
+        {props.data.map((row, index) => {
+          const drugStatus = getStatus(row)
+          return (
             <React.Fragment key={Math.random()}>
-              {getSubHeading(row.visit.startDateTime)}
+              {getSubHeading(props.data, index)}
               <TableRow>
-                <TableCell>{getDrugInfo(row)}</TableCell>
-                <TableCell>
-                  {schedule(row)}
+                <TableCell
+                  style={{
+                    textDecoration: StatusStylesMap[drugStatus]?.textDecoration,
+                  }}
+                >
+                  {getDrugInfo(row)}
+                </TableCell>
+                <TableCell
+                  style={{
+                    textDecoration: StatusStylesMap[drugStatus]?.textDecoration,
+                  }}
+                >
+                  {getScheduleText(row, drugStatus)}
                   <small style={styles.providerName}>
                     by {row.provider.name}
                   </small>
@@ -111,22 +151,19 @@ const PrescriptionTable = React.memo((props: PrescriptionData) => {
                 <TableCell>{getAdditionalInstruction(row)}</TableCell>
                 <TableCell
                   style={{
-                    color: StatusColor[getStatus(row)],
+                    color: StatusStylesMap[drugStatus]?.color,
                     fontWeight: 'bold',
                   }}
                 >
-                  {getStatus(row)}
+                  {drugStatus}
                 </TableCell>
-                <TableCell>
-                  <Link inline>revise</Link> <Link inline>stop</Link>{' '}
-                  <Link inline>renew</Link>{' '}
-                </TableCell>
+                <TableCell>{getActionLinks(drugStatus)}</TableCell>
               </TableRow>
             </React.Fragment>
-          ))}
+          )
+        })}
       </TableBody>
     </Table>
   )
-})
-
+}
 export default PrescriptionTable

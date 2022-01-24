@@ -13,11 +13,18 @@ import {
 import React, {useEffect, useState} from 'react'
 import useDrugOrderConfig from '../hooks/useDrugOrderConfig'
 import useMedicationConfig from '../hooks/useMedicationConfig'
-import {Drug, DurationUnit, Frequency, Route, Unit} from '../types'
+import {
+  Drug,
+  DurationUnit,
+  Frequency,
+  Route,
+  Unit,
+  NonCodedDrug,
+} from '../types'
 import {defaultDurationUnits} from '../utils/constants'
 
 type AddPrescriptionModalProps = {
-  drug: Drug
+  drug: Drug | NonCodedDrug
   onClose: Function
 }
 
@@ -346,7 +353,6 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
         </Grid>
       </div>
     )
-
   return <p>Something went wrong..</p>
 }
 

@@ -10,6 +10,11 @@ export type Drug = {
   dosageForm?: DosageForm
 }
 
+export type NonCodedDrug = {
+  name: String
+  dosageForm?: DosageForm = undefined
+}
+
 export type DrugResult = {
   results: Drug[]
 }

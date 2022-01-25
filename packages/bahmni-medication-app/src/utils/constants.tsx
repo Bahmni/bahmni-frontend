@@ -21,3 +21,5 @@ export const defaultDurationUnits = [
   {name: 'Week(s)', factor: 7},
   {name: 'Month(s)', factor: 30},
 ]
+
+export const stopReasons: string[] = ['Allergic Rection']

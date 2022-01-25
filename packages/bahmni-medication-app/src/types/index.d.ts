@@ -45,3 +45,9 @@ export type DurationUnit = {
   name: string
   factor: number
 }
+
+export type StopPrescriptionInfo = {
+  stopDate: Date
+  reason?: string
+  notes?: string
+}

@@ -2,6 +2,7 @@ import {
   Column,
   Grid,
   Link,
+  Reset24,
   Row,
   Table,
   TableBody,
@@ -142,9 +143,10 @@ const PrescriptionTable = (props: PrescriptionData) => {
     if (isPrescrioptionFinishedOrStopped(status)) return <Link inline>add</Link>
     if (stoppedPrescriptions[prescriptionIndex])
       return (
-        <Link inline onClick={() => handleUndoStopAction(prescriptionIndex)}>
-          undo stop
-        </Link>
+        <Reset24
+          aria-label="Reset"
+          onClick={() => handleUndoStopAction(prescriptionIndex)}
+        />
       )
 
     return (

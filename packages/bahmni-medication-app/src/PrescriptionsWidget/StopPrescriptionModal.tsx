@@ -91,6 +91,7 @@ const StopPrescripotionModal = (props: StopPrescriptionModalProps) => {
             <Column>
               <TextArea
                 labelText="Notes"
+                id="stop-notes"
                 rows={1}
                 onChange={(e: {target: {value: string}}) => {
                   setNotes(e.target.value)

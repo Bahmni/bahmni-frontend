@@ -1,4 +1,5 @@
 import {render, screen} from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import {axe} from 'jest-axe'
 import React from 'react'
 import {headerData} from '../../utils/constants'
@@ -121,6 +122,62 @@ describe('Prescription Table', () => {
     ).toBeInTheDocument()
   })
 
+  it('should show stop prescription modal when user clicks stop action link', () => {
+    render(<PrescriptionTable data={mockAllPrescriptionResponse.active} />)
+    userEvent.click(screen.getByText(/stop/i))
+    expect(screen.getByTitle('stopPrescriptionModal')).toBeInTheDocument()
+  })
+
+  it('should show stopped drug prescription info when user click Done in stop prescription modal', () => {
+    render(<PrescriptionTable data={mockAllPrescriptionResponse.active} />)
+    userEvent.click(screen.getByText(/stop/i))
+    userEvent.click(screen.getByRole('button', {name: /Done/i}))
+
+    const currentDate = new Date().toLocaleDateString()
+    expect(screen.getByRole('img', {name: /reset/i})).toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {
+        name: `Stop Date : ${currentDate} Reason : - Notes: -`,
+      }),
+    ).toBeInTheDocument()
+  })
+
+  it('should not show stopped drug prescription info when user click Cancel in stop prescription modal', () => {
+    render(<PrescriptionTable data={mockAllPrescriptionResponse.active} />)
+    userEvent.click(screen.getByText(/stop/i))
+    userEvent.click(screen.getByRole('button', {name: /Cancel/i}))
+
+    const currentDate = new Date().toLocaleDateString()
+    expect(screen.queryByRole('img', {name: /reset/i})).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('cell', {
+        name: `Stop Date : ${currentDate} Reason : - Notes: -`,
+      }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should not stop the prescribed drug when user undos the stop action', () => {
+    render(<PrescriptionTable data={mockAllPrescriptionResponse.active} />)
+    userEvent.click(screen.getByText(/stop/i))
+    userEvent.click(screen.getByRole('button', {name: /Done/i}))
+
+    const currentDate = new Date().toLocaleDateString()
+    expect(screen.getByRole('img', {name: /reset/i})).toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {
+        name: `Stop Date : ${currentDate} Reason : - Notes: -`,
+      }),
+    ).toBeInTheDocument()
+    userEvent.click(screen.getByRole('img', {name: /reset/i}))
+    expect(
+      screen.queryByRole('cell', {
+        name: `Stop Date : ${currentDate} Reason : - Notes: -`,
+      }),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {name: /revise stop renew/i}),
+    ).toBeInTheDocument()
+  })
   it('should show only add action for stopped prescription', () => {
     render(<PrescriptionTable data={mockAllPrescriptionResponse.stopped} />)
     expect(screen.getByRole('cell', {name: /add/i})).toBeInTheDocument()

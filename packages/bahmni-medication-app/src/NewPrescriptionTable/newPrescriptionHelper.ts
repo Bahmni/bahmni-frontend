@@ -2,8 +2,11 @@ import {
   DosingInstructions,
   DrugInfo,
   DurationUnit,
+  EncounterPayload,
   NewPrescription,
+  Concept,
 } from '../types'
+import {getPatientUuid} from '../utils/helper'
 
 const getDurationInDays = (
   duration: number,
@@ -17,7 +20,7 @@ const getExpiredDate = (effectiveStartDate: number, durationInDays: number) => {
   return d.setDate(d.getDate() + durationInDays)
 }
 
-export const addNewPrescription = (data): NewPrescription => {
+export const createDrugOrder = (data): NewPrescription => {
   const dosingInstructions: DosingInstructions = {
     dose: data.dose,
     doseUnits: data.doseUnit.name,
@@ -25,11 +28,13 @@ export const addNewPrescription = (data): NewPrescription => {
     quantity: data.quantity,
     quantityUnits: data.quantityUnit.name,
     route: data.route.name,
+    asNeeded: false,
   }
   let drug: DrugInfo = null
+  let concept: Concept = null
   let drugNonCoded = null
   const isCodedDrug = drug => {
-    if (drug.uuid) return true
+    if (drug.concept) return true
     return false
   }
   if (isCodedDrug(data.drug)) {
@@ -41,6 +46,9 @@ export const addNewPrescription = (data): NewPrescription => {
     }
   } else {
     drugNonCoded = data.drug.name
+    concept = {
+      uuid: data.drug.uuid,
+    }
   }
 
   const autoExpireDate = getExpiredDate(
@@ -49,9 +57,11 @@ export const addNewPrescription = (data): NewPrescription => {
   )
 
   //Todo. when action is implemented
-  const prescription: NewPrescription = {
+  const drugOrder: NewPrescription = {
     //Todo. action should be revised or refilled or Discontinued based on user action
     action: 'NEW',
+    careSetting: 'OUTPATIENT',
+    concept: concept,
     dateStopped: null,
     dateActivated: data.dateActivated,
     autoExpireDate: autoExpireDate,
@@ -65,5 +75,34 @@ export const addNewPrescription = (data): NewPrescription => {
     effectiveStopDate: autoExpireDate,
     scheduledDate: data.startDate,
   }
-  return prescription
+  return drugOrder
+}
+
+export const createEncounterPayload = (
+  locationUuid: String,
+  providerUuid: String,
+  encounterTypeUuid: String,
+  visitType: String,
+  drugOrders: NewPrescription[],
+) => {
+  const encounterPayload: EncounterPayload = {
+    locationUuid,
+    patientUuid: getPatientUuid(),
+    encounterUuid: null,
+    visitUuid: null,
+    providers: [
+      {
+        uuid: providerUuid,
+      },
+    ],
+    encounterDateTime: null,
+    visitType,
+    bahmniDiagnoses: [],
+    orders: [],
+    drugOrders,
+    disposition: null,
+    observations: [],
+    encounterTypeUuid,
+  }
+  return encounterPayload
 }

@@ -50,12 +50,15 @@ const getAdditionalInstruction = (row: ActiveDrug) => {
   const instructionJson = JSON.parse(
     row.dosingInstructions.administrationInstructions,
   )
-  return (
+
+  return instructionJson ? (
     <>
-      <Tag type="green" title="Instruction">
-        {' '}
-        {instructionJson.instructions}{' '}
-      </Tag>
+      {instructionJson.instructions && (
+        <Tag type="green" title="Instruction">
+          {' '}
+          {instructionJson.instructions}{' '}
+        </Tag>
+      )}
       {instructionJson.additionalInstructions && (
         <Tag type="blue" title="Instruction">
           {' '}
@@ -63,6 +66,8 @@ const getAdditionalInstruction = (row: ActiveDrug) => {
         </Tag>
       )}
     </>
+  ) : (
+    <></>
   )
 }
 

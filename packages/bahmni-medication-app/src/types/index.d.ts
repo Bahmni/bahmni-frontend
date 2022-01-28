@@ -11,6 +11,7 @@ export type Drug = {
 }
 
 export type NonCodedDrug = {
+  uuid?: String
   name: String
   dosageForm?: DosageForm = undefined
 }
@@ -47,10 +48,11 @@ export type DurationUnit = {
 }
 
 export interface NewPrescription {
+  careSetting: String
   action?: string
   dateStopped: number
   autoExpireDate: number
-  concept?: any
+  concept?: Concept
   dateActivated: number
   dosingInstructions: DosingInstructions
   drug: DrugInfo
@@ -60,6 +62,30 @@ export interface NewPrescription {
   effectiveStartDate: number
   effectiveStopDate: number
   scheduledDate: number
+}
+
+export interface Concept {
+  uuid: String
+}
+
+export interface EncounterPayload {
+  locationUuid: String
+  patientUuid: String
+  encounterUuid: String
+  visitUuid: String
+  providers: [
+    {
+      uuid: String
+    },
+  ]
+  encounterDateTime?: String
+  visitType: String
+  bahmniDiagnoses: Array
+  orders: Array
+  drugOrders: Array<NewPrescription>
+  disposition: String
+  observations: Array
+  encounterTypeUuid: String
 }
 
 export interface DrugInfo {

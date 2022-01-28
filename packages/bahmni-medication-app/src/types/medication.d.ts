@@ -1,5 +1,5 @@
 export interface ActiveDrug {
-  visit: any
+  visit: Visit
   dateStopped: String
   provider: any
   concept?: any
@@ -9,4 +9,9 @@ export interface ActiveDrug {
   duration: number
   durationUnits: String
   effectiveStartDate: Number
+}
+
+export type Visit = {
+  startDateTime: Number
+  uuid: String
 }

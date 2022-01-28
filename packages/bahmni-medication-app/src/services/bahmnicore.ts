@@ -1,4 +1,4 @@
-import {DrugOrderConfig} from '../types'
+import {DrugOrderConfig, EncounterPayload} from '../types'
 import {REST_ENDPOINTS} from '../utils/constants'
 import {api, responseBody} from './axios'
 
@@ -22,5 +22,10 @@ export const fetchDrugOrderConfig = async (): Promise<DrugOrderConfig> => {
   const response = await api.get<DrugOrderConfig>(
     REST_ENDPOINTS.DRUG_ORDER_CONFIG,
   )
+  return responseBody(response)
+}
+
+export const saveNewPrescription = async (payload: EncounterPayload) => {
+  const response = await api.post(REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION, payload)
   return responseBody(response)
 }

@@ -19,6 +19,11 @@ export const REST_ENDPOINTS = {
   DRUG_ORDER_CONFIG: '/openmrs/ws/rest/v1/bahmnicore/config/drugOrders',
   ACTIVE_PRESCRIPTION: '/openmrs/ws/rest/v1/bahmnicore/drugOrders/active',
   DRUG_SEARCH: '/openmrs/ws/rest/v1/drug',
+  PROVIDER: '/openmrs/ws/rest/v1/provider',
+  ENCOUNTER_TYPE: '/openmrs/ws/rest/v1/encountertype/Consultation',
+  VISIT: '/openmrs/ws/rest/v1/visit',
+  SAVE_NEW_PRESCRIPTION: '/openmrs/ws/rest/v1/bahmnicore/bahmniencounter',
+  CONCEPT: '/openmrs/ws/rest/v1/concept',
 }
 export const CONFIG_URLS = {
   MEDICATION_CONFIG: '/bahmni_config/openmrs/apps/clinical/medication.json',

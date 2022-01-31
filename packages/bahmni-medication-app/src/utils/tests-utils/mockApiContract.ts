@@ -28,6 +28,7 @@ export const mockActivePrescriptionResponse = [
   {
     visit: {
       startDateTime: 1496851128000,
+      uuid: '123',
     },
     dateStopped: null,
     provider: {
@@ -58,6 +59,7 @@ export const mockPrescriptionResponse = [
   {
     visit: {
       startDateTime: 1496851128000,
+      uuid: '12345',
     },
     dateStopped: '1607888143',
     provider: {
@@ -88,6 +90,7 @@ export const mockPrescriptionResponseForNonCodedDrug = [
   {
     visit: {
       startDateTime: 1496851128000,
+      uuid: '123456',
     },
     dateStopped: '1607888143',
     provider: {
@@ -196,6 +199,7 @@ export const mockNonCodedDrug = {
 
 export const mockNewPrescription = [
   {
+    careSetting: 'OUTPATIENT',
     action: 'NEW',
     dateStopped: null,
     dateActivated: 1642506772121,

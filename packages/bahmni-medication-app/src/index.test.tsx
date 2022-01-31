@@ -2,6 +2,7 @@ import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import MockAdapter from 'axios-mock-adapter/types'
 import {axe} from 'jest-axe'
+import {when} from 'jest-when'
 import React from 'react'
 import MedicationApp from './index'
 import {CONFIG_URLS, REST_ENDPOINTS} from './utils/constants'
@@ -12,9 +13,12 @@ import {
   mockNonCodedDrugConfigResponse,
   mockDrugOrderConfigApiResponse,
 } from './utils/tests-utils/mockApiContract'
+import SaveMedication from './SaveMedication/SaveMedication'
 
 Element.prototype.scrollIntoView = jest.fn()
 let adapter: MockAdapter, waitForApiCalls: Function, apiParams: Function
+
+jest.mock('./SaveMedication/SaveMedication')
 
 test('should pass hygene accessibility tests', async () => {
   ;({adapter, waitForApiCalls, apiParams} = initMockApi())
@@ -33,6 +37,7 @@ beforeEach(() => {
   adapter
     .onGet(REST_ENDPOINTS.DRUG_ORDER_CONFIG)
     .reply(200, mockDrugOrderConfigApiResponse)
+  when(SaveMedication).mockReturnValue(<p>Save Medication</p>)
 })
 
 describe('Medication Tab', () => {

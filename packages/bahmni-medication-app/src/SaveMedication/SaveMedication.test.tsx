@@ -120,12 +120,11 @@ describe('Medication tab - Save New Prescription', () => {
     adapter.onPost(REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION).reply(200)
 
     userEvent.click(screen.getByRole('button', {name: /save/i}))
+
+    expect(screen.getByTitle(/loading/i)).toBeInTheDocument()
     await waitFor(() => {
-      expect(screen.getByText(/Saving Prescriptions.../i)).toBeInTheDocument()
+      expect(screen.getByText(/save successful/i)).toBeInTheDocument()
     })
-    expect(screen.getByText(/save successful/i)).toBeInTheDocument()
-    expect(
-      screen.queryByText(/Saving Prescriptions.../i),
-    ).not.toBeInTheDocument()
+    expect(screen.queryByTitle(/loading/i)).not.toBeInTheDocument()
   })
 })

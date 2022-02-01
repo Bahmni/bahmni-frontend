@@ -1,6 +1,7 @@
 import {Button, InlineLoading, ToastNotification} from '@bahmni/design-system'
 import React, {useEffect, useState} from 'react'
 import {useAsync} from 'react-async'
+import Loader from '../Loader/Loader'
 import {createEncounterPayload} from '../NewPrescriptionTable/newPrescriptionHelper'
 import {saveNewPrescription} from '../services/bahmnicore'
 import {
@@ -68,19 +69,17 @@ const SaveMedication = (props: SaveMedicationProps) => {
 
   return (
     <div>
-      {!isPending ? (
-        <Button
-          style={{float: 'right'}}
-          className="confirm"
-          onClick={() => {
-            payload()
-          }}
-        >
-          Save
-        </Button>
-      ) : (
-        <InlineLoading description="Saving Prescriptions..."></InlineLoading>
-      )}
+      {isPending && <Loader />}
+      <Button
+        style={{float: 'right'}}
+        className="confirm"
+        onClick={() => {
+          payload()
+        }}
+      >
+        Save
+      </Button>
+
       {isFulfilled && (
         <ToastNotification
           lowContrast

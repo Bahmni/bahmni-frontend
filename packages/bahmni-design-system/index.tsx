@@ -23,6 +23,7 @@ import DatePickerInput from 'carbon-components-react/es/components/DatePickerInp
 import Tag from 'carbon-components-react/es/components/Tag/Tag'
 import {Close24, Star24} from '@carbon/icons-react'
 import {ToastNotification} from 'carbon-components-react/es/components/Notification/Notification'
+import Loading from 'carbon-components-react/es/components/Loading/Loading'
 
 export {
   Button,
@@ -37,6 +38,7 @@ export {
   DatePickerInput,
   ComboBox,
   InlineLoading,
+  Loading,
   TableContainer,
   Table,
   TableBody,

@@ -118,6 +118,7 @@ const StopPrescripotionModal = (props: StopPrescriptionModalProps) => {
                     notes: notes ?? '-',
                   })
                 }
+                disabled={!stopDate}
               >
                 Done
               </Button>

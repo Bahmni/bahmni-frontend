@@ -96,6 +96,24 @@ describe('Stop Prescription Modal', () => {
       }),
     )
   })
+
+  it('should disable Done button when stop date is empty', () => {
+    render(
+      <StopPrescripotionModal
+        drugInfo={'Test Drug'}
+        onClose={() => {}}
+      ></StopPrescripotionModal>,
+    )
+    const stopDateInput = screen.getByLabelText('Stop Date')
+    userEvent.clear(stopDateInput)
+    userEvent.type(screen.getByLabelText(/notes/i), '')
+
+    expect(
+      screen.getByRole('button', {
+        name: /Done/i,
+      }),
+    ).toBeDisabled()
+  })
   it('should pass null when user clicks cancel', () => {
     const onClose = jest.fn()
     render(

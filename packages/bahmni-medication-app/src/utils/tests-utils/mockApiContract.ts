@@ -221,3 +221,26 @@ export const mockNewPrescription = [
     scheduledDate: 1642506771905,
   },
 ]
+
+export const mockProviderResponse = {
+  results: [
+    {
+      uuid: 'providerUuid',
+      display: 'superman - Super Man',
+    },
+  ],
+}
+
+export const mockEncounterTypeResponse = {
+  uuid: 'encounterTypeUuid',
+}
+
+export const mockVisitTypeResponse = {
+  results: [
+    {
+      visitType: {
+        name: 'OPD',
+      },
+    },
+  ],
+}

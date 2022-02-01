@@ -54,7 +54,7 @@ describe('All Prescription', () => {
     ).toBeInTheDocument()
   })
 
-  it('should not display active prescriptions when the patientId is invalid', async () => {
+  it('should not display all prescriptions when the patientId is invalid', async () => {
     when(getPatientUuid).mockReturnValue('someInvalidId')
     adapter.onGet(REST_ENDPOINTS.ALL_PRESCRIPTION).reply(404)
 
@@ -70,7 +70,7 @@ describe('All Prescription', () => {
     ).not.toBeInTheDocument()
   })
 
-  it('should not show active prescription table when there are no active prescription for the patient', async () => {
+  it('should not show all prescription table when there are no prescription for the patient', async () => {
     when(getPatientUuid).mockReturnValue('patientUuid')
     adapter.onGet(REST_ENDPOINTS.ALL_PRESCRIPTION).reply(200, [])
 

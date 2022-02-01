@@ -1,4 +1,5 @@
 import {DrugOrderConfig} from '../../types'
+import {PrescriptionItem} from '../../types/medication'
 
 const currentDate = new Date()
 const nextDay = currentDate.setDate(currentDate.getDate() + 1)
@@ -87,7 +88,7 @@ export const mockActivePrescriptionResponse = [
   },
 ]
 
-export const mockPrescriptionResponse = [
+export const mockPrescriptionResponse: PrescriptionItem[] = [
   {
     visit: {
       startDateTime: 1496851128000,
@@ -100,6 +101,8 @@ export const mockPrescriptionResponse = [
     drug: {
       name: 'Aspirin 1',
       form: 'Tablet',
+      uuid: '1',
+      strength: null,
     },
     dosingInstructions: {
       dose: 5.0,
@@ -128,6 +131,8 @@ export const mockPrescriptionResponse = [
     drug: {
       name: 'Aspirin 2',
       form: 'Tablet',
+      uuid: '2',
+      strength: null,
     },
     dosingInstructions: {
       dose: 4.0,
@@ -173,7 +178,12 @@ export const mockPrescriptionResponseForNonCodedDrug = [
     effectiveStopDate: 1607888143,
   },
 ]
-export const mockAllPrescriptionResponse = {
+export const mockAllPrescriptionResponse: {
+  active: PrescriptionItem[]
+  scheduled: PrescriptionItem[]
+  finished: PrescriptionItem[]
+  stopped: PrescriptionItem[]
+} = {
   active: [
     {
       visit: {
@@ -187,6 +197,8 @@ export const mockAllPrescriptionResponse = {
       drug: {
         name: 'Aspirin 1',
         form: 'Tablet',
+        uuid: '1',
+        strength: null,
       },
       dosingInstructions: {
         dose: 5.0,
@@ -217,6 +229,8 @@ export const mockAllPrescriptionResponse = {
       drug: {
         name: 'Aspirin 2',
         form: 'Tablet',
+        uuid: '2',
+        strength: null,
       },
       dosingInstructions: {
         dose: 5.0,
@@ -247,6 +261,8 @@ export const mockAllPrescriptionResponse = {
       drug: {
         name: 'Aspirin 3',
         form: 'Tablet',
+        uuid: '3',
+        strength: null,
       },
       dosingInstructions: {
         dose: 5.0,
@@ -277,6 +293,8 @@ export const mockAllPrescriptionResponse = {
       drug: {
         name: 'Aspirin 4',
         form: 'Tablet',
+        uuid: '4',
+        strength: null,
       },
       dosingInstructions: {
         dose: 5.0,

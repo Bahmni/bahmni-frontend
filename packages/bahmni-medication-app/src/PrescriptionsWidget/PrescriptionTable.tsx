@@ -13,6 +13,7 @@ import {
   Tag,
 } from '@bahmni/design-system'
 import React, {useState} from 'react'
+import {useStoppedPrescriptions} from '../context/StoppedPrescriptionContext'
 import {StopPrescriptionInfo} from '../types'
 import {PrescriptionItem} from '../types/medication'
 import {headerData} from '../utils/constants'
@@ -107,23 +108,47 @@ interface PrescriptionData {
 }
 
 const PrescriptionTable = (props: PrescriptionData) => {
-  const [stoppedPrescriptions, setStoppedPrescriptions] = useState<
+  const {stoppedPrescriptions, setStoppedPrescriptions} =
+    useStoppedPrescriptions()
+  const [stoppedPrescriptionsInfo, setStoppedPrescriptionsInfo] = useState<
     StopPrescriptionInfo[]
   >(Array(props.data.length).fill(undefined))
   const [selectedStopPrescriptionIndex, setSelectedStopPrescriptionIndex] =
     useState<number>(-1)
 
   const handleUndoStopAction = (index: number) => {
-    const temp = [...stoppedPrescriptions]
+    const temp = [...stoppedPrescriptionsInfo]
     temp[index] = undefined
+    setStoppedPrescriptionsInfo(temp)
 
-    setStoppedPrescriptions(temp)
+    const filteredArray = stoppedPrescriptions.filter(
+      item => item.previousOrderUuid != props.data[index].uuid,
+    )
+    setStoppedPrescriptions(filteredArray)
   }
 
   const handleStopModalClose = (stopData: StopPrescriptionInfo) => {
     if (stopData) {
-      const temp = [...stoppedPrescriptions]
+      let temp: any[]
+      temp = [...stoppedPrescriptionsInfo]
       temp[selectedStopPrescriptionIndex] = stopData
+      setStoppedPrescriptionsInfo(temp)
+
+      let stoppedPrescriptionItem = JSON.parse(
+        JSON.stringify(props.data[selectedStopPrescriptionIndex]),
+      )
+      stoppedPrescriptionItem.action = 'DISCONTINUE'
+      stoppedPrescriptionItem.dateActivated = null
+      stoppedPrescriptionItem.dateStopped = stopData.stopDate
+      stoppedPrescriptionItem.previousOrderUuid = stoppedPrescriptionItem.uuid
+      stoppedPrescriptionItem.uuid = null
+      stoppedPrescriptionItem.orderReasonText = stopData.notes
+
+      //TODO Update setting orderReasonConcept based on stopData.reason
+      stoppedPrescriptionItem.orderReasonConcept = null
+
+      temp = [...stoppedPrescriptions]
+      temp.push(stoppedPrescriptionItem)
       setStoppedPrescriptions(temp)
     }
     setSelectedStopPrescriptionIndex(-1)
@@ -141,7 +166,7 @@ const PrescriptionTable = (props: PrescriptionData) => {
     prescriptionIndex: number,
   ) => {
     if (isPrescrioptionFinishedOrStopped(status)) return <Link inline>add</Link>
-    if (stoppedPrescriptions[prescriptionIndex])
+    if (stoppedPrescriptionsInfo[prescriptionIndex])
       return (
         <Reset24
           aria-label="Reset"
@@ -213,18 +238,18 @@ const PrescriptionTable = (props: PrescriptionData) => {
                   </TableCell>
                   <TableCell>{getActionLinks(drugStatus, index)}</TableCell>
                 </TableRow>
-                {stoppedPrescriptions[index] && (
+                {stoppedPrescriptionsInfo[index] && (
                   <TableRow style={{borderTop: 'hidden'}}>
                     <TableCell colSpan={6}>
                       <Grid>
                         <Row>
                           <Column>
-                            {`Stop Date : ${stoppedPrescriptions[
+                            {`Stop Date : ${stoppedPrescriptionsInfo[
                               index
                             ].stopDate.toLocaleDateString()} `}{' '}
                           </Column>
-                          <Column>{`Reason : ${stoppedPrescriptions[index].reason}`}</Column>
-                          <Column>{`Notes: ${stoppedPrescriptions[index].notes}`}</Column>
+                          <Column>{`Reason : ${stoppedPrescriptionsInfo[index].reason}`}</Column>
+                          <Column>{`Notes: ${stoppedPrescriptionsInfo[index].notes}`}</Column>
                         </Row>
                       </Grid>
                     </TableCell>

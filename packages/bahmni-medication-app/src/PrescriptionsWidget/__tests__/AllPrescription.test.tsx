@@ -8,6 +8,7 @@ import {getPatientUuid} from '../../utils/helper'
 import {initMockApi} from '../../utils/tests-utils/baseApiSetup'
 import {mockPrescriptionResponse} from '../../utils/tests-utils/mockApiContract'
 import {REST_ENDPOINTS} from '../../utils/constants'
+import {StoppedPrescriptionsProvider} from '../../context/StoppedPrescriptionContext'
 
 jest.mock('../../utils/helper', () => ({
   __esModule: true,
@@ -21,7 +22,7 @@ afterEach(() => {
 })
 
 test('should pass hygene accessibility tests', async () => {
-  const {container} = render(<AllPrescription />)
+  const {container} = renderWithContextProvider(<AllPrescription />)
   await waitForApiCalls({apiURL: REST_ENDPOINTS.ALL_PRESCRIPTION, times: 1})
   expect(await axe(container)).toHaveNoViolations()
 })
@@ -38,7 +39,7 @@ describe('All Prescription', () => {
       .onGet(REST_ENDPOINTS.ALL_PRESCRIPTION)
       .reply(200, mockPrescriptionResponse)
 
-    render(<AllPrescription />)
+    renderWithContextProvider(<AllPrescription />)
 
     await waitForApiCalls({
       apiURL: REST_ENDPOINTS.ALL_PRESCRIPTION,
@@ -58,7 +59,7 @@ describe('All Prescription', () => {
     when(getPatientUuid).mockReturnValue('someInvalidId')
     adapter.onGet(REST_ENDPOINTS.ALL_PRESCRIPTION).reply(404)
 
-    render(<AllPrescription />)
+    renderWithContextProvider(<AllPrescription />)
 
     await waitForApiCalls({
       apiURL: REST_ENDPOINTS.ALL_PRESCRIPTION,
@@ -74,7 +75,7 @@ describe('All Prescription', () => {
     when(getPatientUuid).mockReturnValue('patientUuid')
     adapter.onGet(REST_ENDPOINTS.ALL_PRESCRIPTION).reply(200, [])
 
-    render(<AllPrescription />)
+    renderWithContextProvider(<AllPrescription />)
     await waitForApiCalls({
       apiURL: REST_ENDPOINTS.ALL_PRESCRIPTION,
       times: 1,
@@ -88,7 +89,7 @@ describe('All Prescription', () => {
     when(getPatientUuid).mockReturnValue('patientUuid')
     adapter.onGet(REST_ENDPOINTS.ALL_PRESCRIPTION).timeout()
 
-    render(<AllPrescription />)
+    renderWithContextProvider(<AllPrescription />)
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument()
     await waitForApiCalls({
@@ -99,3 +100,9 @@ describe('All Prescription', () => {
     expect(screen.queryByText(/loading/i)).not.toBeInTheDocument()
   })
 })
+
+function renderWithContextProvider(children) {
+  return render(
+    <StoppedPrescriptionsProvider>{children}</StoppedPrescriptionsProvider>,
+  )
+}

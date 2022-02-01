@@ -1,12 +1,12 @@
 export interface PrescriptionItem {
   action?: string
   autoExpireDate?: number
-  careSetting: string
-  commentToFulfiller: string
+  careSetting?: string
+  commentToFulfiller?: string
   concept?: Concept
   creatorName?: string
   dateActivated: number
-  dateStopped: number
+  dateStopped: number | Date
   dosingInstructions: DosingInstructions
   dosingInstructionType?: string
   drug: DrugInfo

@@ -10,11 +10,11 @@ import React, {useEffect, useState} from 'react'
 import {useAsync} from 'react-async'
 import AddPrescriptionModal from './AddPrescriptionModal/AddPrescriptionModal'
 import useMedicationConfig from './hooks/useMedicationConfig'
-import {createDrugOrder} from './NewPrescriptionTable/newPrescriptionHelper'
+import {createNewPrescription} from './NewPrescriptionTable/createNewPrescription'
+import NewPrescriptionTable from './NewPrescriptionTable/NewPrescriptionTable'
 import {PrescriptionWidget} from './PrescriptionsWidget/PrescriptionWidget'
 import SaveMedication from './SaveMedication/SaveMedication'
 import {search} from './services/drugs'
-import NewPrescriptionTable from './NewPrescriptionTable/NewPrescriptionTable'
 import {getNonCodedDrugUuid} from './services/openmrs'
 import {Drug, DrugResult, NewPrescription, NonCodedDrug} from './types'
 
@@ -102,9 +102,12 @@ const MedicationApp = () => {
     setPrescriptionWidgetKey(Math.random())
   }
 
-  const handlePrescription = data => {
+  const handlePrescription = prescription => {
     setUserInput('')
-    setNewPrescription([createDrugOrder(data), ...newPrescription])
+    setNewPrescription([
+      createNewPrescription(prescription),
+      ...newPrescription,
+    ])
   }
   const showDrugOptions = () => {
     if (drugs.results.length === 0) {
@@ -171,8 +174,8 @@ const MedicationApp = () => {
         <AddPrescriptionModal
           drug={selectedDrug}
           onClose={() => setUserInput('')}
-          onDone={data => {
-            handlePrescription(data)
+          onDone={prescription => {
+            handlePrescription(prescription)
           }}
         ></AddPrescriptionModal>
       )}

@@ -38,7 +38,7 @@ describe('New Prescription Table', () => {
   it('should display all the actions', () => {
     render(<NewPrescriptionTable data={mockNewPrescription} />)
     expect(screen.getByRole('cell', {name: /edit/i})).toBeInTheDocument()
-    expect(screen.getByTestId(/favourite/i)).toBeInTheDocument()
-    expect(screen.getByTestId(/close/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/favourite/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/close/i)).toBeInTheDocument()
   })
 })

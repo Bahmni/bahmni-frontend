@@ -284,7 +284,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
     await fillingDosageInstructions()
 
     expect(screen.queryByTitle('prescriptionDialog')).not.toBeInTheDocument()
-    const drugs = screen.getAllByTestId(/prescription/i)
+    const drugs = screen.getAllByLabelText(/prescription/i)
     expect(drugs[0]).toHaveTextContent(/paracetomal 2/i)
     expect(drugs[1]).toHaveTextContent(/paracetomal 1/i)
   })

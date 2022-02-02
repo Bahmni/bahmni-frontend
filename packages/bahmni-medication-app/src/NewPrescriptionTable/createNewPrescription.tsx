@@ -1,12 +1,10 @@
+import {StringSchema} from 'yup'
 import {
   DosingInstructions,
   DrugInfo,
   DurationUnit,
-  EncounterPayload,
   NewPrescription,
-  Concept,
 } from '../types'
-import {getPatientUuid} from '../utils/helper'
 
 export const createNewPrescription = (prescription): NewPrescription => {
   function getDosingInstructions(): DosingInstructions {
@@ -17,17 +15,15 @@ export const createNewPrescription = (prescription): NewPrescription => {
       quantity: prescription.quantity,
       quantityUnits: prescription.quantityUnit.name,
       route: prescription.route.name,
-      asNeeded: false,
     }
   }
 
   let drug: DrugInfo = null
   let drugNonCoded: string = null
-  let concept: Concept = null
 
   function setDrugInfo() {
     function isCodedDrug(drug) {
-      return drug.concept ? true : false
+      return drug.uuid ? true : false
     }
 
     if (isCodedDrug(prescription.drug)) {
@@ -39,9 +35,6 @@ export const createNewPrescription = (prescription): NewPrescription => {
       }
     } else {
       drugNonCoded = prescription.drug.name
-      concept = {
-        uuid: prescription.drug.uuid,
-      }
     }
   }
 
@@ -72,7 +65,6 @@ export const createNewPrescription = (prescription): NewPrescription => {
   return {
     //Todo. action should be revised or refilled or Discontinued based on user action
     action: 'NEW',
-    careSetting: 'OUTPATIENT',
     dateStopped: null,
     dateActivated: prescription.dateActivated,
     autoExpireDate: getAutoExpireDate(),
@@ -86,33 +78,4 @@ export const createNewPrescription = (prescription): NewPrescription => {
     effectiveStopDate: getAutoExpireDate(),
     scheduledDate: prescription.startDate,
   }
-}
-
-export const createEncounterPayload = (
-  locationUuid: String,
-  providerUuid: String,
-  encounterTypeUuid: String,
-  visitType: String,
-  drugOrders: NewPrescription[],
-) => {
-  const encounterPayload: EncounterPayload = {
-    locationUuid,
-    patientUuid: getPatientUuid(),
-    encounterUuid: null,
-    visitUuid: null,
-    providers: [
-      {
-        uuid: providerUuid,
-      },
-    ],
-    encounterDateTime: null,
-    visitType,
-    bahmniDiagnoses: [],
-    orders: [],
-    drugOrders,
-    disposition: null,
-    observations: [],
-    encounterTypeUuid,
-  }
-  return encounterPayload
 }

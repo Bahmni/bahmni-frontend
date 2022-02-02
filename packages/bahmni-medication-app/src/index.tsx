@@ -6,7 +6,7 @@ import useMedicationConfig from './hooks/useMedicationConfig'
 import {PrescriptionWidget} from './PrescriptionsWidget/PrescriptionWidget'
 import {search} from './services/drugs'
 import {Drug, DrugResult, NewPrescription, NonCodedDrug} from './types'
-import {addNewPrescription} from './NewPrescriptionTable/addNewPrescription'
+import {createNewPrescription} from './NewPrescriptionTable/createNewPrescription'
 import NewPrescriptionTable from './NewPrescriptionTable/NewPrescriptionTable'
 
 const styles = {
@@ -69,9 +69,12 @@ const MedicationApp = () => {
       </p>
     )
   }
-  const handlePrescription = data => {
+  const handlePrescription = prescription => {
     setUserInput('')
-    setNewPrescription([addNewPrescription(data), ...newPrescription])
+    setNewPrescription([
+      createNewPrescription(prescription),
+      ...newPrescription,
+    ])
   }
   const showDrugOptions = () => {
     if (drugs.results.length === 0) {
@@ -124,8 +127,8 @@ const MedicationApp = () => {
         <AddPrescriptionModal
           drug={selectedDrug}
           onClose={() => setUserInput('')}
-          onDone={data => {
-            handlePrescription(data)
+          onDone={prescription => {
+            handlePrescription(prescription)
           }}
         ></AddPrescriptionModal>
       )}

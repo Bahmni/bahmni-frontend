@@ -53,7 +53,7 @@ const NewPrescriptionTable = React.memo((props: PrescriptionData) => {
             <TableBody>
               {props.data.map(row => (
                 <React.Fragment key={Math.random()}>
-                  <TableRow data-testid="prescription">
+                  <TableRow aria-label="prescription">
                     <TableCell>{getDrugInfo(row)}</TableCell>
                     <TableCell>{getScheduleText(row)}</TableCell>
                     <TableCell>
@@ -64,8 +64,8 @@ const NewPrescriptionTable = React.memo((props: PrescriptionData) => {
                     <TableCell>
                       <span style={styles.action}>
                         <Link>edit</Link>
-                        <Star24 data-testid="favourite" />
-                        <Close24 data-testid="close" />
+                        <Star24 aria-label="favourite" />
+                        <Close24 aria-label="close" />
                       </span>
                     </TableCell>
                   </TableRow>

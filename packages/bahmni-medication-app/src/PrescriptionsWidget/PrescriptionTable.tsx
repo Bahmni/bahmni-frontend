@@ -125,7 +125,7 @@ const PrescriptionTable = (props: PrescriptionData) => {
 
   const renderPrescriptionDateHeader = (currentRow: number) => {
     return (
-      <TableRow data-testid="date-row">
+      <TableRow aria-label="Prescription Date Header">
         <TableCell colSpan={6} style={styles.tableSubHeading}>
           {prescriptionActivatedDate(currentRow)}
         </TableCell>

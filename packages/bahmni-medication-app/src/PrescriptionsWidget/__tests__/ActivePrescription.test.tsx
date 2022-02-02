@@ -109,7 +109,7 @@ describe('Active Prescription', () => {
       times: 1,
     })
 
-    const dateRows = screen.getAllByTestId(/date-row/)
+    const dateRows = screen.getAllByLabelText(/Prescription Date Header/i)
     expect(dateRows[0]).toHaveTextContent(
       getDateString(mockActivePrescriptionResponse[1].dateActivated),
     )

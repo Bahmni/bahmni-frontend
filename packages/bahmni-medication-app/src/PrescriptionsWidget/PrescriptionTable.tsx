@@ -116,44 +116,6 @@ const PrescriptionTable = (props: PrescriptionData) => {
   const [selectedStopPrescriptionIndex, setSelectedStopPrescriptionIndex] =
     useState<number>(-1)
 
-  const handleUndoStopAction = (index: number) => {
-    const temp = [...stoppedPrescriptionsInfo]
-    temp[index] = undefined
-    setStoppedPrescriptionsInfo(temp)
-
-    const filteredArray = stoppedPrescriptions.filter(
-      item => item.previousOrderUuid != props.data[index].uuid,
-    )
-    setStoppedPrescriptions(filteredArray)
-  }
-
-  const handleStopModalClose = (stopData: StopPrescriptionInfo) => {
-    if (stopData) {
-      let temp: any[]
-      temp = [...stoppedPrescriptionsInfo]
-      temp[selectedStopPrescriptionIndex] = stopData
-      setStoppedPrescriptionsInfo(temp)
-
-      let stoppedPrescriptionItem = JSON.parse(
-        JSON.stringify(props.data[selectedStopPrescriptionIndex]),
-      )
-      stoppedPrescriptionItem.action = 'DISCONTINUE'
-      stoppedPrescriptionItem.dateActivated = null
-      stoppedPrescriptionItem.dateStopped = stopData.stopDate
-      stoppedPrescriptionItem.previousOrderUuid = stoppedPrescriptionItem.uuid
-      stoppedPrescriptionItem.uuid = null
-      stoppedPrescriptionItem.orderReasonText = stopData.notes
-
-      //TODO Update setting orderReasonConcept based on stopData.reason
-      stoppedPrescriptionItem.orderReasonConcept = null
-
-      temp = [...stoppedPrescriptions]
-      temp.push(stoppedPrescriptionItem)
-      setStoppedPrescriptions(temp)
-    }
-    setSelectedStopPrescriptionIndex(-1)
-  }
-
   function isPrescrioptionFinishedOrStopped(status: PrescriptionStatus) {
     return (
       status === PrescriptionStatus.FINISHED ||
@@ -187,6 +149,78 @@ const PrescriptionTable = (props: PrescriptionData) => {
       </>
     )
   }
+
+  function isStopActionClicked() {
+    return selectedStopPrescriptionIndex >= 0
+  }
+
+  function renderStoppedPrecriptionInfo(currentRow: number): React.ReactNode {
+    return (
+      <TableRow style={{borderTop: 'hidden'}}>
+        <TableCell colSpan={6}>
+          <Grid>
+            <Row>
+              <Column>
+                {`Stop Date : ${stoppedPrescriptionsInfo[
+                  currentRow
+                ].stopDate.toLocaleDateString()} `}{' '}
+              </Column>
+              <Column>{`Reason : ${stoppedPrescriptionsInfo[currentRow].reason}`}</Column>
+              <Column>{`Notes: ${stoppedPrescriptionsInfo[currentRow].notes}`}</Column>
+            </Row>
+          </Grid>
+        </TableCell>
+      </TableRow>
+    )
+  }
+
+  const handleStopPrescriptionModalClose = (
+    stopPrescriptionInfo: StopPrescriptionInfo,
+  ) => {
+    if (stopPrescriptionInfo) {
+      updateStoppedPrescriptionsInfo(stopPrescriptionInfo)
+      setStoppedPrescriptions([
+        ...stoppedPrescriptions,
+        getStoppedPrescriptionItem(),
+      ])
+    }
+    setSelectedStopPrescriptionIndex(-1)
+
+    function getStoppedPrescriptionItem(): PrescriptionItem {
+      let stoppedPrescriptionItem = JSON.parse(
+        JSON.stringify(props.data[selectedStopPrescriptionIndex]),
+      )
+      stoppedPrescriptionItem.action = 'DISCONTINUE'
+      stoppedPrescriptionItem.dateActivated = null
+      stoppedPrescriptionItem.dateStopped = stopPrescriptionInfo.stopDate
+      stoppedPrescriptionItem.previousOrderUuid = stoppedPrescriptionItem.uuid
+      stoppedPrescriptionItem.uuid = null
+      stoppedPrescriptionItem.orderReasonText = stopPrescriptionInfo.notes
+
+      //TODO Update setting orderReasonConcept based on stopData.reason
+      stoppedPrescriptionItem.orderReasonConcept = null
+      return stoppedPrescriptionItem
+    }
+  }
+
+  const handleUndoStopAction = (index: number) => {
+    updateStoppedPrescriptionsInfo(undefined, index)
+
+    const removedArray = stoppedPrescriptions.filter(
+      item => item.previousOrderUuid != props.data[index].uuid,
+    )
+    setStoppedPrescriptions(removedArray)
+  }
+
+  function updateStoppedPrescriptionsInfo(
+    stopPrescriptionInfo: StopPrescriptionInfo,
+    index: number = selectedStopPrescriptionIndex,
+  ) {
+    let updatedArray = [...stoppedPrescriptionsInfo]
+    updatedArray[index] = stopPrescriptionInfo
+    setStoppedPrescriptionsInfo(updatedArray)
+  }
+
   return (
     <>
       <Table title="prescription">
@@ -238,33 +272,18 @@ const PrescriptionTable = (props: PrescriptionData) => {
                   </TableCell>
                   <TableCell>{getActionLinks(drugStatus, index)}</TableCell>
                 </TableRow>
-                {stoppedPrescriptionsInfo[index] && (
-                  <TableRow style={{borderTop: 'hidden'}}>
-                    <TableCell colSpan={6}>
-                      <Grid>
-                        <Row>
-                          <Column>
-                            {`Stop Date : ${stoppedPrescriptionsInfo[
-                              index
-                            ].stopDate.toLocaleDateString()} `}{' '}
-                          </Column>
-                          <Column>{`Reason : ${stoppedPrescriptionsInfo[index].reason}`}</Column>
-                          <Column>{`Notes: ${stoppedPrescriptionsInfo[index].notes}`}</Column>
-                        </Row>
-                      </Grid>
-                    </TableCell>
-                  </TableRow>
-                )}
+                {stoppedPrescriptionsInfo[index] &&
+                  renderStoppedPrecriptionInfo(index)}
               </React.Fragment>
             )
           })}
         </TableBody>
       </Table>
-      {selectedStopPrescriptionIndex >= 0 && (
+      {isStopActionClicked() && (
         <StopPrescripotionModal
           drugInfo={getDrugInfo(props.data[selectedStopPrescriptionIndex])}
-          onClose={(stopData: StopPrescriptionInfo) =>
-            handleStopModalClose(stopData)
+          onClose={(stopPrescriptionInfo: StopPrescriptionInfo) =>
+            handleStopPrescriptionModalClose(stopPrescriptionInfo)
           }
         />
       )}

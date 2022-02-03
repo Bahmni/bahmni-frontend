@@ -37,6 +37,17 @@ jest.mock('../utils/helper', () => {
   }
 })
 
+beforeEach(() => {
+  adapter.onGet(REST_ENDPOINTS.PROVIDER).reply(200, mockProviderResponse)
+  adapter
+    .onGet(REST_ENDPOINTS.ENCOUNTER_TYPE)
+    .reply(200, mockEncounterTypeResponse)
+  adapter.onGet(REST_ENDPOINTS.VISIT).reply(200, mockVisitTypeResponse)
+  when(useProviderName).mockReturnValue({providerName: 'superman'})
+  when(useUserLocationUuid).mockReturnValue({locationUuid: 'locationUuid'})
+  when(getPatientUuid).mockReturnValue('patientUuid')
+})
+
 test('should pass hygene accessibility tests', async () => {
   const {container} = render(
     <SaveMedication
@@ -50,17 +61,6 @@ test('should pass hygene accessibility tests', async () => {
 })
 
 describe('Medication tab - Save New Prescription', () => {
-  beforeEach(() => {
-    adapter.onGet(REST_ENDPOINTS.PROVIDER).reply(200, mockProviderResponse)
-    adapter
-      .onGet(REST_ENDPOINTS.ENCOUNTER_TYPE)
-      .reply(200, mockEncounterTypeResponse)
-    adapter.onGet(REST_ENDPOINTS.VISIT).reply(200, mockVisitTypeResponse)
-    when(useProviderName).mockReturnValue('superman')
-    when(useUserLocationUuid).mockReturnValue('locationUuid')
-    when(getPatientUuid).mockReturnValue('patientUuid')
-  })
-
   afterEach(() => {
     jest.clearAllMocks()
   })

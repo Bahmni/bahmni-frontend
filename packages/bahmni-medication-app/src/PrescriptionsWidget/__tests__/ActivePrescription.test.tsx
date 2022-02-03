@@ -93,12 +93,12 @@ describe('Active Prescription', () => {
     adapter.onGet(REST_ENDPOINTS.ACTIVE_PRESCRIPTION).timeout()
 
     render(<ActivePrescription />)
-    expect(screen.getByText(/loading/i)).toBeInTheDocument()
+    expect(screen.getByText(/Loading Prescriptions/i)).toBeInTheDocument()
     await waitForApiCalls({
       apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
       times: 1,
     })
-    expect(screen.queryByText(/loading/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Loading Prescriptions/i)).not.toBeInTheDocument()
   })
 
   it('should display prescriptions in descending order based on prescried date', async () => {

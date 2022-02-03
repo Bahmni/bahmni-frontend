@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@bahmni/design-system'
 import React from 'react'
-import {NewPrescription} from '../types'
+import type {DosingInstructions, NewPrescription} from '../types'
 import {newPrescriptionHeader} from '../utils/constants'
 import {getDrugInfo} from '../utils/helper'
 
@@ -24,15 +24,15 @@ const styles = {
   tablePos: {padding: '5rem 16px 0px 16px'},
 }
 
-const getScheduleText = (prescriptionItem: any) => {
-  const doseInfo: any = prescriptionItem.dosingInstructions
-  const startDate: String = new Date(
+const getScheduleText = (prescriptionItem: NewPrescription): string => {
+  const doseInfo: DosingInstructions = prescriptionItem.dosingInstructions
+  const startDate: string = new Date(
     prescriptionItem.effectiveStartDate,
   ).toLocaleDateString()
-  const schedule: String = `${doseInfo.dose} ${doseInfo.doseUnits}, ${doseInfo.frequency} for ${prescriptionItem.duration} ${prescriptionItem.durationUnits} starting on ${startDate}`
+  const schedule: string = `${doseInfo.dose} ${doseInfo.doseUnits}, ${doseInfo.frequency} for ${prescriptionItem.duration} ${prescriptionItem.durationUnits} starting on ${startDate}`
   return schedule
 }
-interface PrescriptionData {
+type PrescriptionData = {
   data: NewPrescription[]
 }
 

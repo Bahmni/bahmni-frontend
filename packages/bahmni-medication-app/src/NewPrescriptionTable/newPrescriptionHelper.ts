@@ -1,4 +1,4 @@
-import {
+import type {
   DosingInstructions,
   DrugInfo,
   DurationUnit,
@@ -45,7 +45,7 @@ export const createNewPrescription = (prescription): NewPrescription => {
     }
   }
 
-  function getAutoExpireDate() {
+  function getAutoExpireDate(): number {
     function getDurationInDays(
       duration: number,
       durationUnit: DurationUnit,
@@ -56,7 +56,7 @@ export const createNewPrescription = (prescription): NewPrescription => {
     function getExpiredDate(
       effectiveStartDate: number,
       durationInDays: number,
-    ) {
+    ): number {
       const d = new Date(effectiveStartDate)
       return d.setDate(d.getDate() + durationInDays)
     }
@@ -76,9 +76,10 @@ export const createNewPrescription = (prescription): NewPrescription => {
     dateStopped: null,
     dateActivated: prescription.dateActivated,
     autoExpireDate: getAutoExpireDate(),
-    drug: drug,
+    drug,
+    concept,
     dosingInstructions: getDosingInstructions(),
-    drugNonCoded: drugNonCoded,
+    drugNonCoded,
     duration: prescription.duration,
     durationUnits: prescription.durationUnit.name,
     effectiveStartDate: prescription.startDate,
@@ -94,8 +95,8 @@ export const createEncounterPayload = (
   encounterTypeUuid: String,
   visitType: String,
   drugOrders: NewPrescription[],
-) => {
-  const encounterPayload: EncounterPayload = {
+): EncounterPayload => {
+  return {
     locationUuid,
     patientUuid: getPatientUuid(),
     encounterUuid: null,
@@ -114,5 +115,4 @@ export const createEncounterPayload = (
     observations: [],
     encounterTypeUuid,
   }
-  return encounterPayload
 }

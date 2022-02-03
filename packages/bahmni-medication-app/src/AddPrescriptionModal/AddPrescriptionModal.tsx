@@ -13,7 +13,7 @@ import {
 import React, {useEffect, useState} from 'react'
 import useDrugOrderConfig from '../hooks/useDrugOrderConfig'
 import useMedicationConfig from '../hooks/useMedicationConfig'
-import {
+import type {
   Drug,
   DurationUnit,
   Frequency,

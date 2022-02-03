@@ -47,8 +47,8 @@ export type DurationUnit = {
   factor: number
 }
 
-export interface NewPrescription {
-  careSetting: String
+export type NewPrescription = {
+  careSetting: string
   action?: string
   dateStopped: number
   autoExpireDate: number
@@ -64,11 +64,11 @@ export interface NewPrescription {
   scheduledDate: number
 }
 
-export interface Concept {
+export type Concept = {
   uuid: String
 }
 
-export interface EncounterPayload {
+export type EncounterPayload = {
   locationUuid: String
   patientUuid: String
   encounterUuid: String
@@ -88,14 +88,14 @@ export interface EncounterPayload {
   encounterTypeUuid: String
 }
 
-export interface DrugInfo {
+export type DrugInfo = {
   form: String
   name: String
   strength: String
   uuid: String
 }
 
-export interface DosingInstructions {
+export type DosingInstructions = {
   administrationInstructions?: String
   asNeeded?: boolean
   dose: number

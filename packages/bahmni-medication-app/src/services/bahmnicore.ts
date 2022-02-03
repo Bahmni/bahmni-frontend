@@ -1,8 +1,8 @@
-import {DrugOrderConfig, EncounterPayload} from '../types'
+import type {DrugOrderConfig, EncounterPayload} from '../types/index'
 import {REST_ENDPOINTS} from '../utils/constants'
 import {api, responseBody} from './axios'
 
-interface ActivePrescription {
+type ActivePrescription = {
   patientUuid: String
 }
 
@@ -38,6 +38,9 @@ export const fetchDrugOrderConfig = async (): Promise<DrugOrderConfig> => {
 }
 
 export const saveNewPrescription = async (payload: EncounterPayload) => {
-  const response = await api.post(REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION, payload)
+  const response = await api.post<EncounterPayload>(
+    REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION,
+    payload,
+  )
   return responseBody(response)
 }

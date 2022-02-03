@@ -14,8 +14,7 @@ import {
   mockDrugOrderConfigApiResponse,
   mockDrugsApiResponse,
   mockEncounterTypeResponse,
-  mockMedicationConfigRespone,
-  mockNonCodedDrugConfigResponse,
+  mockMedicationConfigResponse,
   mockProviderResponse,
   mockVisitTypeResponse,
 } from './utils/tests-utils/mockApiContract'
@@ -47,7 +46,7 @@ test('should pass hygene accessibility tests', async () => {
   const {container} = render(<MedicationApp />)
   adapter
     .onGet(CONFIG_URLS.MEDICATION_CONFIG)
-    .reply(200, mockMedicationConfigRespone)
+    .reply(200, mockMedicationConfigResponse.allowCodedAndNonCodedDrugs)
 
   await waitForMedicationConfig()
   expect(await axe(container)).toHaveNoViolations()
@@ -86,7 +85,7 @@ describe('Medication tab - Drugs search', () => {
   beforeEach(() => {
     adapter
       .onGet(CONFIG_URLS.MEDICATION_CONFIG)
-      .reply(200, mockMedicationConfigRespone)
+      .reply(200, mockMedicationConfigResponse.allowCodedAndNonCodedDrugs)
   })
   it('should show matching drugs when user enters valid input in search bar', async () => {
     adapter
@@ -179,7 +178,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
   beforeEach(() => {
     adapter
       .onGet(CONFIG_URLS.MEDICATION_CONFIG)
-      .reply(200, mockMedicationConfigRespone)
+      .reply(200, mockMedicationConfigResponse.allowCodedAndNonCodedDrugs)
     adapter
       .onGet(REST_ENDPOINTS.DRUG_SEARCH)
       .reply(200, mockDrugsApiResponse.validResponse)
@@ -292,7 +291,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
   it('should show prescription dialog when user clicks user input suggestion - Configured to accept non coded drugs ', async () => {
     adapter
       .onGet(CONFIG_URLS.MEDICATION_CONFIG)
-      .reply(200, mockMedicationConfigRespone)
+      .reply(200, mockMedicationConfigResponse.allowCodedAndNonCodedDrugs)
     adapter
       .onGet(REST_ENDPOINTS.DRUG_SEARCH)
       .reply(200, mockDrugsApiResponse.emptyResponse)
@@ -310,7 +309,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
   it('should show error message when user clicks user input suggestion - Configured to accept only coded drugs', async () => {
     adapter
       .onGet(CONFIG_URLS.MEDICATION_CONFIG)
-      .reply(200, mockNonCodedDrugConfigResponse)
+      .reply(200, mockMedicationConfigResponse.allowOnlyCodedDrugs)
     adapter
       .onGet(REST_ENDPOINTS.DRUG_SEARCH)
       .reply(200, mockDrugsApiResponse.emptyResponse)
@@ -334,7 +333,7 @@ describe('Medication tab - Save New Prescription', () => {
   beforeEach(() => {
     adapter
       .onGet(CONFIG_URLS.MEDICATION_CONFIG)
-      .reply(200, mockMedicationConfigRespone)
+      .reply(200, mockMedicationConfigResponse.allowCodedAndNonCodedDrugs)
     adapter
       .onGet(REST_ENDPOINTS.DRUG_SEARCH)
       .reply(200, mockDrugsApiResponse.validResponse)

@@ -1,5 +1,9 @@
-import {DrugOrderConfig} from '../../types'
-
+import type {
+  DrugOrderConfig,
+  NewPrescription,
+  NonCodedDrug,
+} from '../../types/index'
+import type {PrescriptionItem} from '../../types/medication'
 const currentDate = new Date()
 const nextDay = currentDate.setDate(currentDate.getDate() + 1)
 const previousDay = currentDate.setDate(currentDate.getDate() - 1)
@@ -28,7 +32,7 @@ export const mockDrugsApiResponse = {
   },
 }
 
-export const mockActivePrescriptionResponse = [
+export const mockActivePrescriptionResponse: PrescriptionItem[] = [
   {
     visit: {
       startDateTime: 1496851128000,
@@ -89,7 +93,7 @@ export const mockActivePrescriptionResponse = [
   },
 ]
 
-export const mockPrescriptionResponse = [
+export const mockPrescriptionResponse: PrescriptionItem[] = [
   {
     visit: {
       startDateTime: 1496851128000,
@@ -149,7 +153,7 @@ export const mockPrescriptionResponse = [
   },
 ]
 
-export const mockPrescriptionResponseForNonCodedDrug = [
+export const mockPrescriptionResponseForNonCodedDrug: PrescriptionItem[] = [
   {
     visit: {
       startDateTime: 1496851128000,
@@ -301,22 +305,24 @@ export const mockAllPrescriptionResponse = {
   ],
 }
 
-export const mockMedicationConfigRespone = {
-  commonConfig: {},
-  tabConfig: {
-    allMedicationTabConfig: {
-      inputOptionsConfig: {
-        allowOnlyCodedDrugs: false,
+export const mockMedicationConfigResponse = {
+  allowCodedAndNonCodedDrugs: {
+    commonConfig: {},
+    tabConfig: {
+      allMedicationTabConfig: {
+        inputOptionsConfig: {
+          allowOnlyCodedDrugs: false,
+        },
       },
     },
   },
-}
-export const mockNonCodedDrugConfigResponse = {
-  commonConfig: {},
-  tabConfig: {
-    allMedicationTabConfig: {
-      inputOptionsConfig: {
-        allowOnlyCodedDrugs: true,
+  allowOnlyCodedDrugs: {
+    commonConfig: {},
+    tabConfig: {
+      allMedicationTabConfig: {
+        inputOptionsConfig: {
+          allowOnlyCodedDrugs: true,
+        },
       },
     },
   },
@@ -380,11 +386,11 @@ export const mockMedicationConfig = {
   },
 }
 
-export const mockNonCodedDrug = {
+export const mockNonCodedDrug: NonCodedDrug = {
   name: 'Non-Coded Drug',
 }
 
-export const mockNewPrescription = [
+export const mockNewPrescription: NewPrescription[] = [
   {
     careSetting: 'OUTPATIENT',
     action: 'NEW',

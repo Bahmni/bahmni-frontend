@@ -11,9 +11,9 @@ import {
 import React from 'react'
 import {headerData} from '../utils/constants'
 import {getDrugInfo} from '../utils/helper'
-import {PrescriptionItem} from '../types/medication'
+import type {PrescriptionItem} from '../types/medication'
 
-interface PrescriptionData {
+type PrescriptionData = {
   data: PrescriptionItem[]
 }
 const styles = {

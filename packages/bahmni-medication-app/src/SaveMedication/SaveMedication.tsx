@@ -1,4 +1,4 @@
-import {Button, InlineLoading, ToastNotification} from '@bahmni/design-system'
+import {Button, ToastNotification} from '@bahmni/design-system'
 import React, {useEffect, useState} from 'react'
 import {useAsync} from 'react-async'
 import Loader from '../Loader/Loader'
@@ -10,7 +10,7 @@ import {
   getVisitType,
 } from '../services/openmrs'
 
-import {NewPrescription} from '../types'
+import type {NewPrescription} from '../types'
 import {useProviderName, useUserLocationUuid} from '../utils/cookie'
 import {getPatientUuid} from '../utils/helper'
 
@@ -20,11 +20,11 @@ type SaveMedicationProps = {
 }
 
 const SaveMedication = (props: SaveMedicationProps) => {
-  const providerName = useProviderName()
-  const locationUuid = useUserLocationUuid()
+  const {providerName} = useProviderName()
+  const {locationUuid} = useUserLocationUuid()
   const {data: providerUuid} = useAsync<any>({
     promiseFn: getProviderUuid,
-    name: providerName,
+    providerName,
   })
 
   const {data: encounterTypeUuid} = useAsync<any>({

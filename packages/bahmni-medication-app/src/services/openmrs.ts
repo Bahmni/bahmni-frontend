@@ -1,10 +1,10 @@
 import {REST_ENDPOINTS} from '../utils/constants'
 import {api, responseBody} from './axios'
 
-export const getProviderUuid = async providerName => {
+export const getProviderUuid = async ({providerName}) => {
   const response = await api.get(REST_ENDPOINTS.PROVIDER, {
     params: {
-      q: providerName.name,
+      q: providerName,
     },
   })
   return responseBody(response).results[0].uuid
@@ -15,7 +15,7 @@ export const getEncounterTypeUuid = async () => {
   return responseBody(response).uuid
 }
 
-export const getVisitType = async patientUuid => {
+export const getVisitType = async ({patientUuid}) => {
   const response = await api.get(REST_ENDPOINTS.VISIT, {
     params: {
       includeInactive: false,

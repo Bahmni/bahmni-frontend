@@ -1,4 +1,4 @@
-export interface PrescriptionItem {
+export type PrescriptionItem = {
   visit: any
   dateStopped: number
   dateActivated: number

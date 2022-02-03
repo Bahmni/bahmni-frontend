@@ -34,7 +34,7 @@ describe('Prescription Table', () => {
     )
     mockPrescriptionResponse.forEach(response => {
       expect(
-        screen.getByRole('row', {
+        screen.getByRole('cell', {
           name: new Date(response.dateActivated).toLocaleDateString(),
         }),
       ).toBeInTheDocument()

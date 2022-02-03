@@ -19,6 +19,9 @@ import {PrescriptionItem} from '../types/medication'
 import {headerData} from '../utils/constants'
 import StopPrescripotionModal from './StopPrescriptionModal'
 
+interface PrescriptionData {
+  data: PrescriptionItem[]
+}
 const styles = {
   providerName: {
     fontSize: '0.7rem',
@@ -39,38 +42,27 @@ const StatusStylesMap = {
   stopped: {textDecoration: 'line-through'},
 }
 
-const getScheduleText = (drugInfo: any, drugStatus: PrescriptionStatus) => {
-  const doseInfo: any = drugInfo.dosingInstructions
+const getScheduleText = (
+  prescription: PrescriptionItem,
+  prescriptionStatus: PrescriptionStatus,
+): String => {
+  const doseInfo: any = prescription.dosingInstructions
   const startDate: String = new Date(
-    drugInfo.effectiveStartDate,
+    prescription.effectiveStartDate,
   ).toLocaleDateString()
   const schedule: String = `${doseInfo.dose} ${doseInfo.doseUnits}, ${
     doseInfo.frequency
-  } for ${drugInfo.duration} ${drugInfo.durationUnits} ${
-    drugStatus === PrescriptionStatus.SCHEDULED ? 'start on' : 'started on'
+  } for ${prescription.duration} ${prescription.durationUnits} ${
+    prescriptionStatus === PrescriptionStatus.SCHEDULED
+      ? 'start on'
+      : 'started on'
   } ${startDate}`
   return schedule
 }
 
-const getSubHeading = (prescriptionData: PrescriptionItem[], index: number) => {
-  if (
-    index == 0 ||
-    new Date(prescriptionData[index - 1].dateActivated).toLocaleDateString() !==
-      new Date(prescriptionData[index].dateActivated).toLocaleDateString()
-  ) {
-    return (
-      <TableRow data-testid="date-row">
-        <TableCell colSpan={6} style={styles.tableSubHeading}>
-          {new Date(prescriptionData[index].dateActivated).toLocaleDateString()}
-        </TableCell>
-      </TableRow>
-    )
-  }
-}
-
-const getAdditionalInstruction = (row: PrescriptionItem) => {
+const renderInstructions = (prescription: PrescriptionItem) => {
   const instructionJson = JSON.parse(
-    row.dosingInstructions.administrationInstructions,
+    prescription.dosingInstructions.administrationInstructions,
   )
   return (
     <>
@@ -88,23 +80,22 @@ const getAdditionalInstruction = (row: PrescriptionItem) => {
   )
 }
 
-const getStatus = (row: PrescriptionItem): PrescriptionStatus => {
+const getPrescriptionStatus = (
+  prescription: PrescriptionItem,
+): PrescriptionStatus => {
   const currentDateTime = Date.now()
-  if (row.dateStopped) return PrescriptionStatus.STOPPED
-  if (row.effectiveStartDate > currentDateTime)
+  if (prescription.dateStopped) return PrescriptionStatus.STOPPED
+  if (prescription.effectiveStartDate > currentDateTime)
     return PrescriptionStatus.SCHEDULED
-  return row.effectiveStopDate > currentDateTime
+  return prescription.effectiveStopDate > currentDateTime
     ? PrescriptionStatus.ACTIVE
     : PrescriptionStatus.FINISHED
 }
 
-const getDrugInfo = (row: PrescriptionItem) => {
+const getDrugInfo = (row: PrescriptionItem): string => {
   if (row.drug === null && row.drugNonCoded) return row.drugNonCoded
 
   return ` ${row.drug.name}, ${row.drug.form}, ${row.dosingInstructions.route}`
-}
-interface PrescriptionData {
-  data: PrescriptionItem[]
 }
 
 const PrescriptionTable = (props: PrescriptionData) => {
@@ -116,18 +107,11 @@ const PrescriptionTable = (props: PrescriptionData) => {
   const [selectedStopPrescriptionIndex, setSelectedStopPrescriptionIndex] =
     useState<number>(-1)
 
-  function isPrescrioptionFinishedOrStopped(status: PrescriptionStatus) {
-    return (
-      status === PrescriptionStatus.FINISHED ||
-      status === PrescriptionStatus.STOPPED
-    )
-  }
-
-  const getActionLinks = (
+  const renderPrescriptionActions = (
     status: PrescriptionStatus,
     prescriptionIndex: number,
   ) => {
-    if (isPrescrioptionFinishedOrStopped(status)) return <Link inline>add</Link>
+    if (isPastPrescription()) return <Link inline>add</Link>
     if (stoppedPrescriptionsInfo[prescriptionIndex])
       return (
         <Reset24
@@ -148,8 +132,13 @@ const PrescriptionTable = (props: PrescriptionData) => {
         <Link inline>renew</Link>{' '}
       </>
     )
+    function isPastPrescription() {
+      return (
+        status === PrescriptionStatus.FINISHED ||
+        status === PrescriptionStatus.STOPPED
+      )
+    }
   }
-
   function isStopActionClicked() {
     return selectedStopPrescriptionIndex >= 0
   }
@@ -168,7 +157,30 @@ const PrescriptionTable = (props: PrescriptionData) => {
               <Column>{`Reason : ${stoppedPrescriptionsInfo[currentRow].reason}`}</Column>
               <Column>{`Notes: ${stoppedPrescriptionsInfo[currentRow].notes}`}</Column>
             </Row>
-          </Grid>
+          </Grid>{' '}
+        </TableCell>
+      </TableRow>
+    )
+  }
+
+  const prescriptionActivatedDate = (index: number) =>
+    new Date(props.data[index].dateActivated).toLocaleDateString()
+
+  const isPrescriptionDateHeaderRequired = (currentRow: number) => {
+    const firstEntry = () => currentRow == 0
+
+    return (
+      firstEntry() ||
+      prescriptionActivatedDate(currentRow) !=
+        prescriptionActivatedDate(currentRow - 1)
+    )
+  }
+
+  const renderPrescriptionDateHeader = (currentRow: number) => {
+    return (
+      <TableRow aria-label="Prescription Date Header">
+        <TableCell colSpan={6} style={styles.tableSubHeading}>
+          {prescriptionActivatedDate(currentRow)}
         </TableCell>
       </TableRow>
     )
@@ -233,15 +245,16 @@ const PrescriptionTable = (props: PrescriptionData) => {
         </TableHead>
         <TableBody>
           {props.data.map((row, index) => {
-            const drugStatus = getStatus(row)
+            const prescriptionStatus = getPrescriptionStatus(row)
             return (
               <React.Fragment key={Math.random()}>
-                {getSubHeading(props.data, index)}
+                {isPrescriptionDateHeaderRequired(index) &&
+                  renderPrescriptionDateHeader(index)}
                 <TableRow>
                   <TableCell
                     style={{
                       textDecoration:
-                        StatusStylesMap[drugStatus]?.textDecoration,
+                        StatusStylesMap[prescriptionStatus]?.textDecoration,
                     }}
                   >
                     {getDrugInfo(row)}
@@ -249,10 +262,10 @@ const PrescriptionTable = (props: PrescriptionData) => {
                   <TableCell
                     style={{
                       textDecoration:
-                        StatusStylesMap[drugStatus]?.textDecoration,
+                        StatusStylesMap[prescriptionStatus]?.textDecoration,
                     }}
                   >
-                    {getScheduleText(row, drugStatus)}
+                    {getScheduleText(row, prescriptionStatus)}
                     <small style={styles.providerName}>
                       by {row.provider.name}
                     </small>
@@ -261,16 +274,18 @@ const PrescriptionTable = (props: PrescriptionData) => {
                     {row.dosingInstructions.quantity}{' '}
                     {row.dosingInstructions.quantityUnits}
                   </TableCell>
-                  <TableCell>{getAdditionalInstruction(row)}</TableCell>
+                  <TableCell>{renderInstructions(row)}</TableCell>
                   <TableCell
                     style={{
-                      color: StatusStylesMap[drugStatus]?.color,
+                      color: StatusStylesMap[prescriptionStatus]?.color,
                       fontWeight: 'bold',
                     }}
                   >
-                    {drugStatus}
+                    {prescriptionStatus}
                   </TableCell>
-                  <TableCell>{getActionLinks(drugStatus, index)}</TableCell>
+                  <TableCell>
+                    {renderPrescriptionActions(prescriptionStatus, index)}
+                  </TableCell>
                 </TableRow>
                 {stoppedPrescriptionsInfo[index] &&
                   renderStoppedPrecriptionInfo(index)}

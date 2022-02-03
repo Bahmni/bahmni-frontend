@@ -1,5 +1,9 @@
 import {DrugOrderConfig} from '../../types'
 
+const currentDate = new Date()
+const nextDay = currentDate.setDate(currentDate.getDate() + 1)
+const previousDay = currentDate.setDate(currentDate.getDate() - 1)
+
 export const mockDrugsApiResponse = {
   validResponse: {
     results: [
@@ -30,6 +34,7 @@ export const mockActivePrescriptionResponse = [
       startDateTime: 1496851128000,
     },
     dateStopped: null,
+    dateActivated: 1640164841000, //Date: 22/12/2021
     provider: {
       name: 'Super Man',
     },
@@ -51,6 +56,35 @@ export const mockActivePrescriptionResponse = [
     duration: 5,
     durationUnits: 'Day(s)',
     effectiveStartDate: 1640164841000,
+    effectiveStopDate: nextDay,
+  },
+  {
+    visit: {
+      startDateTime: 1496851128000,
+    },
+    dateStopped: 1607888143,
+    dateActivated: 1640254629000, //Date: 23/12/2021
+    provider: {
+      name: 'Super Man',
+    },
+    drug: {
+      name: 'Aspirin 1',
+      form: 'Tablet',
+    },
+    dosingInstructions: {
+      dose: 5.0,
+      doseUnits: 'Capsule(s)',
+      route: 'Oral',
+      frequency: 'Thrice a day',
+      administrationInstructions:
+        '{"instructions":"As directed","additionalInstructions":"Test Data"}',
+      quantity: 150.0,
+      quantityUnits: 'Capsule(s)',
+    },
+    duration: 5,
+    durationUnits: 'Day(s)',
+    effectiveStartDate: 1640164841000,
+    effectiveStopDate: nextDay,
   },
 ]
 
@@ -59,12 +93,13 @@ export const mockPrescriptionResponse = [
     visit: {
       startDateTime: 1496851128000,
     },
-    dateStopped: '1607888143',
+    dateStopped: 1607888143,
+    dateActivated: 1640164841000, //Date: 22/12/2021
     provider: {
       name: 'Super Man',
     },
     drug: {
-      name: 'Aspirin 75mg',
+      name: 'Aspirin 1',
       form: 'Tablet',
     },
     drugNonCoded: null,
@@ -81,6 +116,34 @@ export const mockPrescriptionResponse = [
     duration: 5,
     durationUnits: 'Day(s)',
     effectiveStartDate: 1640164841000,
+    effectiveStopDate: 1607888143,
+  },
+  {
+    visit: {
+      startDateTime: 1496851128000,
+    },
+    dateStopped: null,
+    dateActivated: 1640254629000, //Date: 23/12/2021
+    provider: {
+      name: 'Super Man',
+    },
+    drug: {
+      name: 'Aspirin 2',
+      form: 'Tablet',
+    },
+    dosingInstructions: {
+      dose: 4.0,
+      doseUnits: 'Capsule(s)',
+      route: 'Oral',
+      frequency: 'Thrice a day',
+      administrationInstructions: '{"instructions":"As directed"}',
+      quantity: 140.0,
+      quantityUnits: 'Capsule(s)',
+    },
+    duration: 4,
+    durationUnits: 'Day(s)',
+    effectiveStartDate: 1640164841000,
+    effectiveStopDate: nextDay,
   },
 ]
 
@@ -89,7 +152,8 @@ export const mockPrescriptionResponseForNonCodedDrug = [
     visit: {
       startDateTime: 1496851128000,
     },
-    dateStopped: '1607888143',
+    dateActivated: 1640164841000,
+    dateStopped: 1607888143,
     provider: {
       name: 'Super Man',
     },
@@ -108,8 +172,131 @@ export const mockPrescriptionResponseForNonCodedDrug = [
     duration: 5,
     durationUnits: 'Day(s)',
     effectiveStartDate: 1640164841000,
+    effectiveStopDate: 1607888143,
   },
 ]
+export const mockAllPrescriptionResponse = {
+  active: [
+    {
+      visit: {
+        startDateTime: 1496851128000,
+      },
+      dateStopped: null,
+      dateActivated: 1640254629000,
+      provider: {
+        name: 'Super Man',
+      },
+      drug: {
+        name: 'Aspirin 1',
+        form: 'Tablet',
+      },
+      dosingInstructions: {
+        dose: 5.0,
+        doseUnits: 'Capsule(s)',
+        route: 'Oral',
+        frequency: 'Thrice a day',
+        administrationInstructions:
+          '{"instructions":"As directed","additionalInstructions":"Test Data"}',
+        quantity: 150.0,
+        quantityUnits: 'Capsule(s)',
+      },
+      duration: 5,
+      durationUnits: 'Day(s)',
+      effectiveStartDate: 1640164841000,
+      effectiveStopDate: nextDay,
+    },
+  ],
+  scheduled: [
+    {
+      visit: {
+        startDateTime: 1496851128000,
+      },
+      dateStopped: null,
+      dateActivated: 1640164841000,
+      provider: {
+        name: 'Super Man',
+      },
+      drug: {
+        name: 'Aspirin 2',
+        form: 'Tablet',
+      },
+      dosingInstructions: {
+        dose: 5.0,
+        doseUnits: 'Capsule(s)',
+        route: 'Oral',
+        frequency: 'Thrice a day',
+        administrationInstructions:
+          '{"instructions":"As directed","additionalInstructions":"Test Data"}',
+        quantity: 150.0,
+        quantityUnits: 'Capsule(s)',
+      },
+      duration: 5,
+      durationUnits: 'Day(s)',
+      effectiveStartDate: nextDay,
+      effectiveStopDate: nextDay + 1,
+    },
+  ],
+  finished: [
+    {
+      visit: {
+        startDateTime: 1496851128000,
+      },
+      dateStopped: null,
+      dateActivated: 1640164841000,
+      provider: {
+        name: 'Super Man',
+      },
+      drug: {
+        name: 'Aspirin 3',
+        form: 'Tablet',
+      },
+      dosingInstructions: {
+        dose: 5.0,
+        doseUnits: 'Capsule(s)',
+        route: 'Oral',
+        frequency: 'Thrice a day',
+        administrationInstructions:
+          '{"instructions":"As directed","additionalInstructions":"Test Data"}',
+        quantity: 150.0,
+        quantityUnits: 'Capsule(s)',
+      },
+      duration: 5,
+      durationUnits: 'Day(s)',
+      effectiveStartDate: 1640164841000,
+      effectiveStopDate: previousDay,
+    },
+  ],
+  stopped: [
+    {
+      visit: {
+        startDateTime: 1496851128000,
+      },
+      dateStopped: previousDay,
+      dateActivated: 1640164841000,
+      provider: {
+        name: 'Super Man',
+      },
+      drug: {
+        name: 'Aspirin 4',
+        form: 'Tablet',
+      },
+      dosingInstructions: {
+        dose: 5.0,
+        doseUnits: 'Capsule(s)',
+        route: 'Oral',
+        frequency: 'Thrice a day',
+        administrationInstructions:
+          '{"instructions":"As directed","additionalInstructions":"Test Data"}',
+        quantity: 150.0,
+        quantityUnits: 'Capsule(s)',
+      },
+      duration: 5,
+      durationUnits: 'Day(s)',
+      effectiveStartDate: 1640164841000,
+      effectiveStopDate: previousDay,
+    },
+  ],
+}
 
 export const mockMedicationConfigRespone = {
   commonConfig: {},

@@ -18,6 +18,7 @@ export const BASE_URL = ''
 export const REST_ENDPOINTS = {
   DRUG_ORDER_CONFIG: '/openmrs/ws/rest/v1/bahmnicore/config/drugOrders',
   ACTIVE_PRESCRIPTION: '/openmrs/ws/rest/v1/bahmnicore/drugOrders/active',
+  ALL_PRESCRIPTION: '/openmrs/ws/rest/v1/bahmnicore/drugOrders',
   DRUG_SEARCH: '/openmrs/ws/rest/v1/drug',
 }
 export const CONFIG_URLS = {

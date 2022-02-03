@@ -18,6 +18,18 @@ export const getActivePrescription = async ({patientUuid}): Promise<any> => {
   return responseBody(response)
 }
 
+export const getAllPrescription = async ({patientUuid}): Promise<any> => {
+  const response = await api.get<ActivePrescription>(
+    REST_ENDPOINTS.ALL_PRESCRIPTION,
+    {
+      params: {
+        patientUuid,
+        includeActiveVisit: true,
+      },
+    },
+  )
+  return responseBody(response)
+}
 export const fetchDrugOrderConfig = async (): Promise<DrugOrderConfig> => {
   const response = await api.get<DrugOrderConfig>(
     REST_ENDPOINTS.DRUG_ORDER_CONFIG,

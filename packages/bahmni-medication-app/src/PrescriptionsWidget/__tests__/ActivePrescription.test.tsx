@@ -64,6 +64,7 @@ describe('Active Prescription', () => {
       apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
       times: 1,
     })
+    expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
     expect(
       screen.queryByRole('table', {name: /prescription/i}),
     ).not.toBeInTheDocument()
@@ -82,4 +83,42 @@ describe('Active Prescription', () => {
       screen.queryByRole('table', {name: /prescription/i}),
     ).not.toBeInTheDocument()
   })
+
+  it('should display loading message while fetching active prescription', async () => {
+    when(getPatientUuid).mockReturnValue('patientUuid')
+    adapter.onGet(REST_ENDPOINTS.ACTIVE_PRESCRIPTION).timeout()
+
+    render(<ActivePrescription />)
+    expect(screen.getByText(/loading/i)).toBeInTheDocument()
+    await waitForApiCalls({
+      apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
+      times: 1,
+    })
+    expect(screen.queryByText(/loading/i)).not.toBeInTheDocument()
+  })
+
+  it('should display prescriptions in descending order based on prescried date', async () => {
+    when(getPatientUuid).mockReturnValue('patientUuid')
+    adapter
+      .onGet(REST_ENDPOINTS.ACTIVE_PRESCRIPTION)
+      .reply(200, mockActivePrescriptionResponse)
+
+    render(<ActivePrescription />)
+    await waitForApiCalls({
+      apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
+      times: 1,
+    })
+
+    const dateRows = screen.getAllByLabelText(/Prescription Date Header/i)
+    expect(dateRows[0]).toHaveTextContent(
+      getDateString(mockActivePrescriptionResponse[1].dateActivated),
+    )
+    expect(dateRows[1]).toHaveTextContent(
+      getDateString(mockActivePrescriptionResponse[0].dateActivated),
+    )
+  })
 })
+
+function getDateString(timeStamp: number): string {
+  return new Date(timeStamp).toLocaleDateString()
+}

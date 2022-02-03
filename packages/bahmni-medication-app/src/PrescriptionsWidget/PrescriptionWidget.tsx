@@ -1,6 +1,7 @@
 import {Tab, Tabs} from '@bahmni/design-system'
 import React from 'react'
 import ActivePrescription from './ActivePrescription'
+import AllPrescription from './AllPrescription'
 
 const styles = {
   tablePosition: {
@@ -16,7 +17,9 @@ export const PrescriptionWidget = () => {
           <ActivePrescription />
         </Tab>
         <Tab label="Scheduled" />
-        <Tab label="Show all" />
+        <Tab label="Show all">
+          <AllPrescription />
+        </Tab>
       </Tabs>
     </div>
   )

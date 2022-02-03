@@ -1,14 +1,16 @@
-export interface ActiveDrug {
-  visit: Visit
-  dateStopped: String
+export interface PrescriptionItem {
+  visit: any
+  dateStopped: number
+  dateActivated: number
   provider: any
   concept?: any
   drug: any
-  drugNonCoded: String
+  drugNonCoded?: string
   dosingInstructions: any
   duration: number
-  durationUnits: String
-  effectiveStartDate: Number
+  durationUnits: string
+  effectiveStartDate: number
+  effectiveStopDate: number
 }
 
 export type Visit = {

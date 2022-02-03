@@ -102,7 +102,7 @@ const MedicationApp = () => {
     setPrescriptionWidgetKey(Math.random())
   }
 
-  const handlePrescription = prescription => {
+  const onAddPrescription = prescription => {
     setUserInput('')
     setNewPrescription([
       createNewPrescription(prescription),
@@ -175,7 +175,7 @@ const MedicationApp = () => {
           drug={selectedDrug}
           onClose={() => setUserInput('')}
           onDone={prescription => {
-            handlePrescription(prescription)
+            onAddPrescription(prescription)
           }}
         ></AddPrescriptionModal>
       )}

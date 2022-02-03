@@ -1,5 +1,5 @@
 import {NewPrescription} from '../types'
-import {ActiveDrug} from '../types/medication'
+import {PrescriptionItem} from '../types/medication'
 
 export const getPatientUuid = () => {
   const url = window.location.hash
@@ -7,7 +7,9 @@ export const getPatientUuid = () => {
   return urlArray[urlArray.indexOf('patient') + 1]
 }
 
-export const getDrugInfo = (prescriptionItem: ActiveDrug | NewPrescription) => {
+export const getDrugInfo = (
+  prescriptionItem: PrescriptionItem | NewPrescription,
+) => {
   if (prescriptionItem.drug === null && prescriptionItem.drugNonCoded)
     return `${prescriptionItem.drugNonCoded}, ${prescriptionItem.dosingInstructions.route}`
 

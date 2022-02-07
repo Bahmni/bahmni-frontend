@@ -1,4 +1,4 @@
-export interface PrescriptionItem {
+export type PrescriptionItem = {
   action?: string
   autoExpireDate?: number
   careSetting?: string
@@ -58,6 +58,11 @@ export interface DosingInstructions {
 export interface DrugInfo {
   form: String
   name: String
-  strength: String
+  strength?: String
+  uuid?: String
+}
+
+export type Visit = {
+  startDateTime: Number
   uuid: String
 }

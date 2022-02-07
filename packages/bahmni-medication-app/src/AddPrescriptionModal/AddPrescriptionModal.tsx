@@ -13,7 +13,7 @@ import {
 import React, {useEffect, useState} from 'react'
 import useDrugOrderConfig from '../hooks/useDrugOrderConfig'
 import useMedicationConfig from '../hooks/useMedicationConfig'
-import {
+import type {
   Drug,
   DurationUnit,
   Frequency,
@@ -158,7 +158,6 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
 
   const getDrugInstruction = () => {
     return {
-      dateActivated: Date.now(),
       drug: props.drug,
       dose: dose,
       doseUnit: doseUnit,

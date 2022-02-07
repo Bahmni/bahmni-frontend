@@ -4,7 +4,7 @@ import {axe} from 'jest-axe'
 import {when} from 'jest-when'
 import React from 'react'
 import ActivePrescription from '../ActivePrescription'
-import {getPatientUuid, getDrugInfo} from '../../utils/helper'
+import {getPatientUuid} from '../../utils/helper'
 import {initMockApi} from '../../utils/tests-utils/baseApiSetup'
 import {mockActivePrescriptionResponse} from '../../utils/tests-utils/mockApiContract'
 import {REST_ENDPOINTS} from '../../utils/constants'
@@ -94,12 +94,12 @@ describe('Active Prescription', () => {
     adapter.onGet(REST_ENDPOINTS.ACTIVE_PRESCRIPTION).timeout()
 
     renderWithContextProvider(<ActivePrescription />)
-    expect(screen.getByText(/loading/i)).toBeInTheDocument()
+    expect(screen.getByText(/Loading Prescriptions/i)).toBeInTheDocument()
     await waitForApiCalls({
       apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
       times: 1,
     })
-    expect(screen.queryByText(/loading/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Loading Prescriptions/i)).not.toBeInTheDocument()
   })
 
   it('should display prescriptions in descending order based on prescried date', async () => {

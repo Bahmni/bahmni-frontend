@@ -16,11 +16,11 @@ import React, {useState} from 'react'
 import {useStoppedPrescriptions} from '../context/StoppedPrescriptionContext'
 import {StopPrescriptionInfo} from '../types'
 import {getDrugInfo} from '../utils/helper'
-import {PrescriptionItem} from '../types/medication'
 import {headerData} from '../utils/constants'
 import StopPrescripotionModal from './StopPrescriptionModal'
+import type {PrescriptionItem} from '../types/medication'
 
-interface PrescriptionData {
+type PrescriptionData = {
   data: PrescriptionItem[]
 }
 const styles = {
@@ -65,7 +65,8 @@ const renderInstructions = (prescription: PrescriptionItem) => {
   const instructionJson = JSON.parse(
     prescription.dosingInstructions?.administrationInstructions,
   )
-  return (
+
+  return instructionJson ? (
     <>
       {instructionJson?.instructions && (
         <Tag type="green" title="Instruction">
@@ -80,6 +81,8 @@ const renderInstructions = (prescription: PrescriptionItem) => {
         </Tag>
       )}
     </>
+  ) : (
+    <></>
   )
 }
 

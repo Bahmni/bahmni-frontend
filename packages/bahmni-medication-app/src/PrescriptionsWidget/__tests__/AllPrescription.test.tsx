@@ -94,13 +94,13 @@ describe('All Prescription', () => {
 
     renderWithContextProvider(<AllPrescription />)
 
-    expect(screen.getByText(/loading/i)).toBeInTheDocument()
+    expect(screen.getByText(/loading prescriptions/i)).toBeInTheDocument()
     await waitForApiCalls({
       apiURL: REST_ENDPOINTS.ALL_PRESCRIPTION,
       times: 1,
     })
 
-    expect(screen.queryByText(/loading/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/loading prescriptions/i)).not.toBeInTheDocument()
   })
 })
 

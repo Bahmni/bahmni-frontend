@@ -24,6 +24,8 @@ import Tag from 'carbon-components-react/es/components/Tag/Tag'
 import TextArea from 'carbon-components-react/es/components/TextArea'
 import Reset24 from '@carbon/icons-react/es/reset/24'
 import {Close24, Star24} from '@carbon/icons-react'
+import {ToastNotification} from 'carbon-components-react/es/components/Notification/Notification'
+import Loading from 'carbon-components-react/es/components/Loading/Loading'
 
 export {
   Button,
@@ -38,6 +40,7 @@ export {
   DatePickerInput,
   ComboBox,
   InlineLoading,
+  Loading,
   TableContainer,
   Table,
   TableBody,
@@ -47,6 +50,7 @@ export {
   TableRow,
   Tab,
   Tabs,
+  ToastNotification,
   Link,
   Tag,
   TextArea,

@@ -4,6 +4,7 @@ import {getAllPrescription} from '../services/bahmnicore'
 import {getPatientUuid} from '../utils/helper'
 import PrescriptionTable from './PrescriptionTable'
 import type {PrescriptionItem} from '../types/medication'
+import {InlineLoading} from '@bahmni/design-system'
 
 const AllPrescription = () => {
   const {data, error, isPending} = useAsync<PrescriptionItem[]>({
@@ -12,7 +13,10 @@ const AllPrescription = () => {
   })
 
   //TODO add a common loader and error
-  if (isPending) return <p>Loading...</p>
+  if (isPending)
+    return (
+      <InlineLoading description="Loading Prescriptions..."></InlineLoading>
+    )
   if (error) return <p>{`something went wrong ${error.message}`}</p>
   if (data && data.length > 0) {
     return (

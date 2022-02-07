@@ -1,6 +1,9 @@
-import {DrugOrderConfig} from '../../types'
-import {PrescriptionItem} from '../../types/medication'
-
+import type {
+  DrugOrderConfig,
+  NewPrescription,
+  NonCodedDrug,
+} from '../../types/index'
+import type {PrescriptionItem} from '../../types/medication'
 const currentDate = new Date()
 const nextDay = currentDate.setDate(currentDate.getDate() + 1)
 const previousDay = currentDate.setDate(currentDate.getDate() - 1)
@@ -29,10 +32,11 @@ export const mockDrugsApiResponse = {
   },
 }
 
-export const mockActivePrescriptionResponse = [
+export const mockActivePrescriptionResponse: PrescriptionItem[] = [
   {
     visit: {
       startDateTime: 1496851128000,
+      uuid: '123',
     },
     dateStopped: null,
     dateActivated: 1640164841000, //Date: 22/12/2021
@@ -93,6 +97,7 @@ export const mockPrescriptionResponse: PrescriptionItem[] = [
   {
     visit: {
       startDateTime: 1496851128000,
+      uuid: '12345',
     },
     dateStopped: 1607888143,
     dateActivated: 1640164841000, //Date: 22/12/2021
@@ -152,10 +157,11 @@ export const mockPrescriptionResponse: PrescriptionItem[] = [
   },
 ]
 
-export const mockPrescriptionResponseForNonCodedDrug = [
+export const mockPrescriptionResponseForNonCodedDrug: PrescriptionItem[] = [
   {
     visit: {
       startDateTime: 1496851128000,
+      uuid: '123456',
     },
     dateActivated: 1640164841000,
     dateStopped: 1607888143,
@@ -316,22 +322,24 @@ export const mockAllPrescriptionResponse: {
   ],
 }
 
-export const mockMedicationConfigRespone = {
-  commonConfig: {},
-  tabConfig: {
-    allMedicationTabConfig: {
-      inputOptionsConfig: {
-        allowOnlyCodedDrugs: false,
+export const mockMedicationConfigResponse = {
+  allowCodedAndNonCodedDrugs: {
+    commonConfig: {},
+    tabConfig: {
+      allMedicationTabConfig: {
+        inputOptionsConfig: {
+          allowOnlyCodedDrugs: false,
+        },
       },
     },
   },
-}
-export const mockNonCodedDrugConfigResponse = {
-  commonConfig: {},
-  tabConfig: {
-    allMedicationTabConfig: {
-      inputOptionsConfig: {
-        allowOnlyCodedDrugs: true,
+  allowOnlyCodedDrugs: {
+    commonConfig: {},
+    tabConfig: {
+      allMedicationTabConfig: {
+        inputOptionsConfig: {
+          allowOnlyCodedDrugs: true,
+        },
       },
     },
   },
@@ -395,15 +403,15 @@ export const mockMedicationConfig = {
   },
 }
 
-export const mockNonCodedDrug = {
+export const mockNonCodedDrug: NonCodedDrug = {
   name: 'Non-Coded Drug',
 }
 
-export const mockNewPrescription = [
+export const mockNewPrescription: NewPrescription[] = [
   {
+    careSetting: 'OUTPATIENT',
     action: 'NEW',
     dateStopped: null,
-    dateActivated: 1642506772121,
     autoExpireDate: 1642593171905,
     drug: {form: 'Tablet', name: 'Paracetomal 1', strength: '', uuid: '1'},
     dosingInstructions: {
@@ -422,3 +430,26 @@ export const mockNewPrescription = [
     scheduledDate: 1642506771905,
   },
 ]
+
+export const mockProviderResponse = {
+  results: [
+    {
+      uuid: 'providerUuid',
+      display: 'superman - Super Man',
+    },
+  ],
+}
+
+export const mockEncounterTypeResponse = {
+  uuid: 'encounterTypeUuid',
+}
+
+export const mockVisitTypeResponse = {
+  results: [
+    {
+      visitType: {
+        name: 'OPD',
+      },
+    },
+  ],
+}

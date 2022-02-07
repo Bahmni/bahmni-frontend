@@ -11,6 +11,7 @@ export type Drug = {
 }
 
 export type NonCodedDrug = {
+  uuid?: String
   name: String
   dosageForm?: DosageForm = undefined
 }
@@ -51,12 +52,13 @@ export type StopPrescriptionInfo = {
   reason?: string
   notes?: string
 }
-export interface NewPrescription {
+
+export type NewPrescription = {
+  careSetting: string
   action?: string
   dateStopped: number
   autoExpireDate: number
-  concept?: any
-  dateActivated: number
+  concept?: Concept
   dosingInstructions: DosingInstructions
   drug: DrugInfo
   drugNonCoded?: any
@@ -67,14 +69,38 @@ export interface NewPrescription {
   scheduledDate: number
 }
 
-export interface DrugInfo {
+export type Concept = {
+  uuid: String
+}
+
+export type EncounterPayload = {
+  locationUuid: String
+  patientUuid: String
+  encounterUuid: String
+  visitUuid: String
+  providers: [
+    {
+      uuid: String
+    },
+  ]
+  encounterDateTime?: String
+  visitType: String
+  bahmniDiagnoses: Array
+  orders: Array
+  drugOrders: Array<NewPrescription>
+  disposition: String
+  observations: Array
+  encounterTypeUuid: String
+}
+
+export type DrugInfo = {
   form: String
   name: String
   strength: String
   uuid: String
 }
 
-export interface DosingInstructions {
+export type DosingInstructions = {
   administrationInstructions?: String
   asNeeded?: boolean
   dose: number

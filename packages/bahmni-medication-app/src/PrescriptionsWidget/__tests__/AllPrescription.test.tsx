@@ -10,11 +10,14 @@ import {mockPrescriptionResponse} from '../../utils/tests-utils/mockApiContract'
 import {REST_ENDPOINTS} from '../../utils/constants'
 import {StoppedPrescriptionsProvider} from '../../context/StoppedPrescriptionContext'
 
-jest.mock('../../utils/helper', () => ({
-  __esModule: true,
-  getPatientUuid: jest.fn(),
-}))
-
+jest.mock('../../utils/helper', () => {
+  const originalModule = jest.requireActual('../../utils/helper')
+  return {
+    __esModule: true,
+    ...originalModule,
+    getPatientUuid: jest.fn(),
+  }
+})
 let adapter: MockAdapter, waitForApiCalls: Function, apiParams: Function
 
 afterEach(() => {

@@ -7,6 +7,7 @@ import Tab from 'carbon-components-react/es/components/Tab/Tab'
 import Tabs from 'carbon-components-react/es/components/Tabs'
 import Link from 'carbon-components-react/es/components/Link'
 import {
+  TableContainer,
   Table,
   TableBody,
   TableCell,
@@ -22,6 +23,8 @@ import DatePickerInput from 'carbon-components-react/es/components/DatePickerInp
 import Tag from 'carbon-components-react/es/components/Tag/Tag'
 import TextArea from 'carbon-components-react/es/components/TextArea'
 import Reset24 from '@carbon/icons-react/es/reset/24'
+import {Close24, Star24} from '@carbon/icons-react'
+
 export {
   Button,
   Search,
@@ -35,6 +38,7 @@ export {
   DatePickerInput,
   ComboBox,
   InlineLoading,
+  TableContainer,
   Table,
   TableBody,
   TableCell,
@@ -47,4 +51,6 @@ export {
   Tag,
   TextArea,
   Reset24,
+  Close24,
+  Star24,
 }

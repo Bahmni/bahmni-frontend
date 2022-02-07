@@ -15,6 +15,7 @@ import {
 import React, {useState} from 'react'
 import {useStoppedPrescriptions} from '../context/StoppedPrescriptionContext'
 import {StopPrescriptionInfo} from '../types'
+import {getDrugInfo} from '../utils/helper'
 import {PrescriptionItem} from '../types/medication'
 import {headerData} from '../utils/constants'
 import StopPrescripotionModal from './StopPrescriptionModal'
@@ -62,18 +63,20 @@ const getScheduleText = (
 
 const renderInstructions = (prescription: PrescriptionItem) => {
   const instructionJson = JSON.parse(
-    prescription.dosingInstructions.administrationInstructions,
+    prescription.dosingInstructions?.administrationInstructions,
   )
   return (
     <>
-      <Tag type="green" title="Instruction">
-        {' '}
-        {instructionJson.instructions}{' '}
-      </Tag>
-      {instructionJson.additionalInstructions && (
+      {instructionJson?.instructions && (
+        <Tag type="green" title="Instruction">
+          {' '}
+          {instructionJson?.instructions}{' '}
+        </Tag>
+      )}
+      {instructionJson?.additionalInstructions && (
         <Tag type="blue" title="Instruction">
           {' '}
-          {instructionJson.additionalInstructions}{' '}
+          {instructionJson?.additionalInstructions}{' '}
         </Tag>
       )}
     </>
@@ -90,12 +93,6 @@ const getPrescriptionStatus = (
   return prescription.effectiveStopDate > currentDateTime
     ? PrescriptionStatus.ACTIVE
     : PrescriptionStatus.FINISHED
-}
-
-const getDrugInfo = (row: PrescriptionItem): string => {
-  if (row.drug === null && row.drugNonCoded) return row.drugNonCoded
-
-  return ` ${row.drug.name}, ${row.drug.form}, ${row.dosingInstructions.route}`
 }
 
 const PrescriptionTable = (props: PrescriptionData) => {

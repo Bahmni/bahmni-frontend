@@ -51,3 +51,37 @@ export type StopPrescriptionInfo = {
   reason?: string
   notes?: string
 }
+export interface NewPrescription {
+  action?: string
+  dateStopped: number
+  autoExpireDate: number
+  concept?: any
+  dateActivated: number
+  dosingInstructions: DosingInstructions
+  drug: DrugInfo
+  drugNonCoded?: any
+  duration: number
+  durationUnits: String
+  effectiveStartDate: number
+  effectiveStopDate: number
+  scheduledDate: number
+}
+
+export interface DrugInfo {
+  form: String
+  name: String
+  strength: String
+  uuid: String
+}
+
+export interface DosingInstructions {
+  administrationInstructions?: String
+  asNeeded?: boolean
+  dose: number
+  doseUnits: String
+  frequency: String
+  numberOfRefills?: any
+  quantity: number
+  quantityUnits: String
+  route: String
+}

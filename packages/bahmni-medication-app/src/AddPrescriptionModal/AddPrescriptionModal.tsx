@@ -158,7 +158,6 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
 
   const getDrugInstruction = () => {
     return {
-      dateActivated: Date.now(),
       drug: props.drug,
       dose: dose,
       doseUnit: doseUnit,

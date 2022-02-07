@@ -54,6 +54,7 @@ const MedicationApp = () => {
     error: nonCodedUuidError,
   } = useAsync<String>({
     deferFn: () => getNonCodedDrugUuid(),
+    onResolve: () => setSelectedDrug({name: userInput, uuid: nonCodedUuid}),
     // onReject: (e) => error ?? console.log(e),
   })
 
@@ -67,13 +68,11 @@ const MedicationApp = () => {
 
   useEffect(() => {
     if (selectedDrug && selectedDrug?.uuid == undefined) {
-      getNonCodedUUID()
+      nonCodedUuid == undefined
+        ? getNonCodedUUID()
+        : setSelectedDrug({name: userInput, uuid: nonCodedUuid})
     }
   }, [selectedDrug])
-
-  useEffect(() => {
-    nonCodedUuid ? setSelectedDrug({name: userInput, uuid: nonCodedUuid}) : {}
-  }, [nonCodedUuid])
 
   const updateStatesForNonCodedDrug = () => {
     // TODO: Refactor to get allowOnlyCodedDrugs based on tabConfigName

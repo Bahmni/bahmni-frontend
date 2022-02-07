@@ -53,7 +53,6 @@ export type NewPrescription = {
   dateStopped: number
   autoExpireDate: number
   concept?: Concept
-  dateActivated: number
   dosingInstructions: DosingInstructions
   drug: DrugInfo
   drugNonCoded?: any

@@ -74,7 +74,6 @@ export const createNewPrescription = (prescription): NewPrescription => {
     action: 'NEW',
     careSetting: 'OUTPATIENT',
     dateStopped: null,
-    dateActivated: prescription.dateActivated,
     autoExpireDate: getAutoExpireDate(),
     drug,
     concept,

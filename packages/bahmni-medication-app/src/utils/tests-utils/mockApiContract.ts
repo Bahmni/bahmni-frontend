@@ -395,7 +395,6 @@ export const mockNewPrescription: NewPrescription[] = [
     careSetting: 'OUTPATIENT',
     action: 'NEW',
     dateStopped: null,
-    dateActivated: 1642506772121,
     autoExpireDate: 1642593171905,
     drug: {form: 'Tablet', name: 'Paracetomal 1', strength: '', uuid: '1'},
     dosingInstructions: {

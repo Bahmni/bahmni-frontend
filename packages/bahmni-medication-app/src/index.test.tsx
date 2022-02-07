@@ -410,6 +410,32 @@ describe('Medication tab - Save New Prescription', () => {
     })
     expect(screen.getByText(/Prescription Widget/i)).toBeInTheDocument()
   })
+
+  it('should save non coded drug', async () => {
+    adapter
+      .onGet(REST_ENDPOINTS.DRUG_SEARCH)
+      .reply(200, mockDrugsApiResponse.emptyResponse)
+    render(<MedicationApp />)
+    adapter.onPost(REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION).reply(200)
+
+    await waitForMedicationConfig()
+    await searchDrug('Parz', 3)
+
+    userEvent.click(screen.getByText(/parz/i))
+
+    await fillingDosageInstructions()
+
+    const drugs = screen.getAllByTitle(/newprescription/i)
+    expect(drugs[0]).toHaveTextContent(/parz/i)
+
+    userEvent.click(screen.getByRole('button', {name: /save/i}))
+
+    await waitFor(() => {
+      expect(screen.getByText(/save successful/i)).toBeInTheDocument()
+    })
+
+    expect(screen.queryByTitle(/newprescription/i)).not.toBeInTheDocument()
+  })
 })
 
 async function fillingDosageInstructions() {

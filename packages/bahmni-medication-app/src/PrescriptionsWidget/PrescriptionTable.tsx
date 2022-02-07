@@ -101,18 +101,16 @@ const getDrugInfo = (row: PrescriptionItem): string => {
 const PrescriptionTable = (props: PrescriptionData) => {
   const {stoppedPrescriptions, setStoppedPrescriptions} =
     useStoppedPrescriptions()
-  const [stoppedPrescriptionsInfo, setStoppedPrescriptionsInfo] = useState<
-    StopPrescriptionInfo[]
-  >(Array(props.data.length).fill(undefined))
   const [selectedStopPrescriptionIndex, setSelectedStopPrescriptionIndex] =
     useState<number>(-1)
 
   const renderPrescriptionActions = (
     status: PrescriptionStatus,
     prescriptionIndex: number,
+    currentStopInfo: PrescriptionItem,
   ) => {
-    if (isPastPrescription()) return <Link inline>add</Link>
-    if (stoppedPrescriptionsInfo[prescriptionIndex])
+    if (isPastPrescription(status)) return <Link inline>add</Link>
+    if (currentStopInfo)
       return (
         <Reset24
           aria-label="Reset"
@@ -132,30 +130,34 @@ const PrescriptionTable = (props: PrescriptionData) => {
         <Link inline>renew</Link>{' '}
       </>
     )
-    function isPastPrescription() {
-      return (
-        status === PrescriptionStatus.FINISHED ||
-        status === PrescriptionStatus.STOPPED
-      )
-    }
+  }
+  function isPastPrescription(status: PrescriptionStatus) {
+    return (
+      status === PrescriptionStatus.FINISHED ||
+      status === PrescriptionStatus.STOPPED
+    )
   }
   function isStopActionClicked() {
     return selectedStopPrescriptionIndex >= 0
   }
 
-  function renderStoppedPrecriptionInfo(currentRow: number): React.ReactNode {
+  function renderStoppedPrecriptionInfo(
+    stopInfo: PrescriptionItem,
+  ): React.ReactNode {
     return (
       <TableRow style={{borderTop: 'hidden'}}>
         <TableCell colSpan={6}>
           <Grid>
             <Row>
               <Column>
-                {`Stop Date : ${stoppedPrescriptionsInfo[
-                  currentRow
-                ].stopDate.toLocaleDateString()} `}{' '}
+                {`Stop Date : ${new Date(
+                  stopInfo.dateStopped,
+                ).toLocaleDateString()} `}{' '}
               </Column>
-              <Column>{`Reason : ${stoppedPrescriptionsInfo[currentRow].reason}`}</Column>
-              <Column>{`Notes: ${stoppedPrescriptionsInfo[currentRow].notes}`}</Column>
+              <Column>{`Reason : ${
+                stopInfo.orderReasonConcept?.name ?? '-'
+              }`}</Column>
+              <Column>{`Notes: ${stopInfo.orderReasonText}`}</Column>
             </Row>
           </Grid>{' '}
         </TableCell>
@@ -190,7 +192,6 @@ const PrescriptionTable = (props: PrescriptionData) => {
     stopPrescriptionInfo: StopPrescriptionInfo,
   ) => {
     if (stopPrescriptionInfo) {
-      updateStoppedPrescriptionsInfo(stopPrescriptionInfo)
       setStoppedPrescriptions([
         ...stoppedPrescriptions,
         getStoppedPrescriptionItem(),
@@ -216,21 +217,21 @@ const PrescriptionTable = (props: PrescriptionData) => {
   }
 
   const handleUndoStopAction = (index: number) => {
-    updateStoppedPrescriptionsInfo(undefined, index)
-
     const removedArray = stoppedPrescriptions.filter(
       item => item.previousOrderUuid != props.data[index].uuid,
     )
     setStoppedPrescriptions(removedArray)
   }
 
-  function updateStoppedPrescriptionsInfo(
-    stopPrescriptionInfo: StopPrescriptionInfo,
-    index: number = selectedStopPrescriptionIndex,
-  ) {
-    let updatedArray = [...stoppedPrescriptionsInfo]
-    updatedArray[index] = stopPrescriptionInfo
-    setStoppedPrescriptionsInfo(updatedArray)
+  const getCurrentStopInfo = (
+    prescriptionItem: PrescriptionItem,
+    prescriptionStatus: PrescriptionStatus,
+  ): PrescriptionItem => {
+    if (isPastPrescription(prescriptionStatus)) return undefined
+
+    return stoppedPrescriptions.find(
+      item => item.previousOrderUuid === prescriptionItem.uuid,
+    )
   }
 
   return (
@@ -246,6 +247,7 @@ const PrescriptionTable = (props: PrescriptionData) => {
         <TableBody>
           {props.data.map((row, index) => {
             const prescriptionStatus = getPrescriptionStatus(row)
+            let currentStopInfo = getCurrentStopInfo(row, prescriptionStatus)
             return (
               <React.Fragment key={Math.random()}>
                 {isPrescriptionDateHeaderRequired(index) &&
@@ -284,11 +286,15 @@ const PrescriptionTable = (props: PrescriptionData) => {
                     {prescriptionStatus}
                   </TableCell>
                   <TableCell>
-                    {renderPrescriptionActions(prescriptionStatus, index)}
+                    {renderPrescriptionActions(
+                      prescriptionStatus,
+                      index,
+                      currentStopInfo,
+                    )}
                   </TableCell>
                 </TableRow>
-                {stoppedPrescriptionsInfo[index] &&
-                  renderStoppedPrecriptionInfo(index)}
+                {currentStopInfo &&
+                  renderStoppedPrecriptionInfo(currentStopInfo)}
               </React.Fragment>
             )
           })}

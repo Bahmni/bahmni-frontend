@@ -5,7 +5,9 @@ import AddPrescriptionModal from './AddPrescriptionModal/AddPrescriptionModal'
 import useMedicationConfig from './hooks/useMedicationConfig'
 import {PrescriptionWidget} from './PrescriptionsWidget/PrescriptionWidget'
 import {search} from './services/drugs'
-import {Drug, DrugResult, NonCodedDrug} from './types'
+import {Drug, DrugResult, NewPrescription, NonCodedDrug} from './types'
+import {createNewPrescription} from './NewPrescriptionTable/createNewPrescription'
+import NewPrescriptionTable from './NewPrescriptionTable/NewPrescriptionTable'
 
 const styles = {
   container: {
@@ -23,6 +25,7 @@ const styles = {
 
 const MedicationApp = () => {
   const [userInput, setUserInput] = useState('')
+  const [newPrescription, setNewPrescription] = useState<NewPrescription[]>([])
   const [selectedDrug, setSelectedDrug] = useState<Drug | NonCodedDrug>(null)
   const [allowOnlyCodedDrug, setAllowOnlyCodedDrug] = useState(false)
   const {medicationConfig, isMedicationConfigLoading, medicationConfigError} =
@@ -66,7 +69,13 @@ const MedicationApp = () => {
       </p>
     )
   }
-
+  const onAddPrescription = prescription => {
+    setUserInput('')
+    setNewPrescription([
+      createNewPrescription(prescription),
+      ...newPrescription,
+    ])
+  }
   const showDrugOptions = () => {
     if (drugs.results.length === 0) {
       return allowOnlyCodedDrug ? (
@@ -118,8 +127,12 @@ const MedicationApp = () => {
         <AddPrescriptionModal
           drug={selectedDrug}
           onClose={() => setUserInput('')}
+          onDone={prescription => {
+            onAddPrescription(prescription)
+          }}
         ></AddPrescriptionModal>
       )}
+      <NewPrescriptionTable data={newPrescription}></NewPrescriptionTable>
       <PrescriptionWidget />
     </div>
   )

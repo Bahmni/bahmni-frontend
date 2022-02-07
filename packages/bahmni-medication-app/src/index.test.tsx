@@ -135,6 +135,16 @@ describe('Medication tab - Drugs search', () => {
 
     expect(screen.getByTitle('prescriptionWidget')).toBeInTheDocument()
   })
+
+  it('should not show new prescription table unless user adds new prescription', async () => {
+    render(<MedicationApp />)
+
+    await waitForMedicationConfig()
+
+    expect(
+      screen.queryByRole('heading', {name: /New Prescription/}),
+    ).not.toBeInTheDocument()
+  })
 })
 
 describe('Medication tab - Add Prescription Dialog', () => {
@@ -164,7 +174,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
   })
 
   //FIXME: this test would change after implmenting Add Prescription button
-  it('should hide prescription dialog when user clicks cancel', async () => {
+  it('should hide prescription dialog and new prescription table when user clicks cancel', async () => {
     render(<MedicationApp />)
 
     await waitForMedicationConfig()
@@ -180,10 +190,13 @@ describe('Medication tab - Add Prescription Dialog', () => {
     userEvent.click(cancelButton)
 
     expect(screen.queryByTitle('prescriptionDialog')).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('heading', {name: /New Prescription/}),
+    ).not.toBeInTheDocument()
   })
 
   //FIXME Done is currently placeholder and would be implemented in future stories
-  it('WIP: should add prescription when user click Done', async () => {
+  it('should show new prescription table when user click Done', async () => {
     render(<MedicationApp />)
 
     await waitForMedicationConfig()
@@ -191,25 +204,63 @@ describe('Medication tab - Add Prescription Dialog', () => {
 
     userEvent.click(screen.getByText(/paracetomal 1/i))
 
-    await waitForConfigurationLoad()
-    await waitFor(() =>
-      expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument(),
-    )
-    userEvent.type(screen.getByLabelText('Dosage'), '1')
-    userEvent.click(screen.getByTitle('Dosage Unit'))
-    userEvent.click(screen.getByText('Tablet(s)'))
-    userEvent.click(screen.getByLabelText('Frequency'))
-    userEvent.click(screen.getByText('Immediately'))
-    userEvent.type(screen.getByLabelText('Duration'), '1')
-    userEvent.click(screen.getByTitle('Duration Unit'))
-    userEvent.click(screen.getByText('Day(s)'))
-    userEvent.click(screen.getByTitle('Route'))
-    userEvent.click(screen.getByText('Oral'))
-    const doneButton = screen.getByText(/done/i)
-    userEvent.click(doneButton)
+    await fillingDosageInstructions()
 
     expect(screen.queryByTitle('prescriptionDialog')).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', {name: /New Prescription/}),
+    ).toBeInTheDocument()
   })
+
+  it('should add new prescription to the new prescription table when user clicks done', async () => {
+    render(<MedicationApp />)
+
+    await waitForMedicationConfig()
+    await searchDrug('Par', 2)
+
+    userEvent.click(screen.getByText(/paracetomal 1/i))
+
+    await fillingDosageInstructions()
+
+    await waitForMedicationConfig()
+    await searchDrug('Par', 4)
+
+    userEvent.click(screen.getByText(/paracetomal 2/i))
+
+    await fillingDosageInstructions()
+
+    expect(screen.queryByTitle('prescriptionDialog')).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {name: /paracetomal 1/i}),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {name: /paracetomal 2/i}),
+    ).toBeInTheDocument()
+  })
+
+  it('should display new prescription in descending order', async () => {
+    render(<MedicationApp />)
+
+    await waitForMedicationConfig()
+    await searchDrug('Par', 2)
+
+    userEvent.click(screen.getByText(/paracetomal 1/i))
+
+    await fillingDosageInstructions()
+
+    await waitForMedicationConfig()
+    await searchDrug('Par', 4)
+
+    userEvent.click(screen.getByText(/paracetomal 2/i))
+
+    await fillingDosageInstructions()
+
+    expect(screen.queryByTitle('prescriptionDialog')).not.toBeInTheDocument()
+    const drugs = screen.getAllByLabelText(/prescription/i)
+    expect(drugs[0]).toHaveTextContent(/paracetomal 2/i)
+    expect(drugs[1]).toHaveTextContent(/paracetomal 1/i)
+  })
+
   it('should show prescription dialog when user clicks user input suggestion - Configured to accept non coded drugs ', async () => {
     adapter
       .onGet(CONFIG_URLS.MEDICATION_CONFIG)
@@ -250,6 +301,24 @@ describe('Medication tab - Add Prescription Dialog', () => {
     expect(screen.queryByTitle('prescriptionDialog')).toBeNull()
   })
 })
+
+async function fillingDosageInstructions() {
+  await waitForConfigurationLoad()
+  await waitFor(() =>
+    expect(screen.getByTitle('prescriptionDialog')).toBeInTheDocument(),
+  )
+  userEvent.type(screen.getByLabelText('Dosage'), '1')
+  userEvent.click(screen.getByTitle('Dosage Unit'))
+  userEvent.click(screen.getByText('Tablet(s)'))
+  userEvent.click(screen.getByLabelText('Frequency'))
+  userEvent.click(screen.getByText('Immediately'))
+  userEvent.type(screen.getByLabelText('Duration'), '1')
+  userEvent.click(screen.getByTitle('Duration Unit'))
+  userEvent.click(screen.getByText('Day(s)'))
+  userEvent.click(screen.getByTitle('Route'))
+  userEvent.click(screen.getByText('Oral'))
+  userEvent.click(screen.getByText(/done/i))
+}
 
 async function searchDrug(durgName: string, times: Number = 0) {
   const searchBox = screen.getByRole('searchbox', {name: /searchdrugs/i})

@@ -10,6 +10,7 @@ import {
 } from '@bahmni/design-system'
 import React from 'react'
 import {headerData} from '../utils/constants'
+import {getDrugInfo} from '../utils/helper'
 import {PrescriptionItem} from '../types/medication'
 
 interface PrescriptionData {
@@ -55,18 +56,20 @@ const getScheduleText = (
 
 const renderInstructions = (prescription: PrescriptionItem) => {
   const instructionJson = JSON.parse(
-    prescription.dosingInstructions.administrationInstructions,
+    prescription.dosingInstructions?.administrationInstructions,
   )
   return (
     <>
-      <Tag type="green" title="Instruction">
-        {' '}
-        {instructionJson.instructions}{' '}
-      </Tag>
-      {instructionJson.additionalInstructions && (
+      {instructionJson?.instructions && (
+        <Tag type="green" title="Instruction">
+          {' '}
+          {instructionJson?.instructions}{' '}
+        </Tag>
+      )}
+      {instructionJson?.additionalInstructions && (
         <Tag type="blue" title="Instruction">
           {' '}
-          {instructionJson.additionalInstructions}{' '}
+          {instructionJson?.additionalInstructions}{' '}
         </Tag>
       )}
     </>
@@ -101,12 +104,6 @@ const renderPrescriptionActions = (status: PrescriptionStatus) => {
       status === PrescriptionStatus.STOPPED
     )
   }
-}
-
-const getDrugInfo = (row: PrescriptionItem): string => {
-  if (row.drug === null && row.drugNonCoded) return row.drugNonCoded
-
-  return ` ${row.drug.name}, ${row.drug.form}, ${row.dosingInstructions.route}`
 }
 
 const PrescriptionTable = (props: PrescriptionData) => {

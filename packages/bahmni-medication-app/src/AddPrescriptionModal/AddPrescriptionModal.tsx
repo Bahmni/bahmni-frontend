@@ -26,6 +26,7 @@ import {defaultDurationUnits} from '../utils/constants'
 type AddPrescriptionModalProps = {
   drug: Drug | NonCodedDrug
   onClose: Function
+  onDone: Function
 }
 
 const styles = {
@@ -54,7 +55,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
   const [duration, setDuration] = useState<number>(0)
   const [durationUnit, setDurationUnit] = useState<DurationUnit>()
   const [frequency, setFrequency] = useState<Frequency>()
-  const [startDate, setStartDate] = useState<Date>(new Date())
+  const [startDate, setStartDate] = useState<number>(Date.now())
   const [quantity, setQuantity] = useState<number>(0)
   const [quantityUnit, setQuantityUnit] = useState<Unit>()
   const [route, setRoute] = useState<Route>()
@@ -153,6 +154,22 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
         )
       }
     })
+  }
+
+  const getDrugInstruction = () => {
+    return {
+      dateActivated: Date.now(),
+      drug: props.drug,
+      dose: dose,
+      doseUnit: doseUnit,
+      duration: duration,
+      durationUnit: durationUnit,
+      quantity: quantity,
+      quantityUnit: quantityUnit,
+      frequency: frequency,
+      route: route,
+      startDate: startDate,
+    }
   }
 
   if (error) return <p>Something went wrong..</p>
@@ -259,8 +276,8 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                     short={true}
                     value={currentDate}
                     minDate={currentDate}
-                    onChange={(selectedDate: Date[]) => {
-                      setStartDate(selectedDate[0])
+                    onChange={(selectedDate: number) => {
+                      setStartDate(Date.parse(selectedDate[0]))
                     }}
                   >
                     <DatePickerInput
@@ -332,18 +349,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                 className="confirm"
                 disabled={!isDataValid}
                 onClick={() => {
-                  console.log(
-                    dose,
-                    doseUnit,
-                    duration,
-                    durationUnit,
-                    quantity,
-                    quantityUnit,
-                    frequency,
-                    route,
-                    startDate,
-                  )
-                  props.onClose()
+                  props.onDone(getDrugInstruction())
                 }}
               >
                 Done

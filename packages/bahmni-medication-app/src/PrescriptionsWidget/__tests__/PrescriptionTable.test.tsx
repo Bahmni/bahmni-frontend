@@ -50,7 +50,9 @@ describe('Prescription Table', () => {
     ).toBeInTheDocument()
     expect(
       screen.getByRole('cell', {
-        name: /5 Capsule\(s\), Thrice a day for 5 Day\(s\) started on 12\/22\/2021 by Super Man/i,
+        name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
+          mockPrescriptionResponse[0].dateActivated,
+        )} by Super Man`,
       }),
     ).toBeInTheDocument()
     expect(
@@ -65,7 +67,9 @@ describe('Prescription Table', () => {
     expect(screen.getByRole('cell', {name: /Paz/i})).toBeInTheDocument()
     expect(
       screen.getByRole('cell', {
-        name: /5 Capsule\(s\), Thrice a day for 5 Day\(s\) started on 12\/22\/2021 by Super Man/i,
+        name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
+          mockPrescriptionResponse[0].dateActivated,
+        )} by Super Man`,
       }),
     ).toBeInTheDocument()
     expect(
@@ -117,7 +121,9 @@ describe('Prescription Table', () => {
     )
     expect(
       screen.getByRole('cell', {
-        name: /5 Capsule\(s\), Thrice a day for 5 Day\(s\) started on 12\/22\/2021 by Super Man/i,
+        name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
+          mockPrescriptionResponse[0].dateActivated,
+        )} by Super Man`,
       }),
     ).toHaveStyle('text-decoration:line-through;')
   })
@@ -229,4 +235,8 @@ function renderWithContextProvider(children) {
   return render(
     <StoppedPrescriptionsProvider>{children}</StoppedPrescriptionsProvider>,
   )
+}
+
+function getDateString(dateInMilliSeconds: number): string {
+  return new Date(dateInMilliSeconds).toLocaleDateString()
 }

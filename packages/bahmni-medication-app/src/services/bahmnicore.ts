@@ -37,7 +37,7 @@ export const fetchDrugOrderConfig = async (): Promise<DrugOrderConfig> => {
   return responseBody(response)
 }
 
-export const saveNewPrescription = async (payload: EncounterPayload) => {
+export const saveMedicationEncounter = async (payload: EncounterPayload) => {
   const response = await api.post<EncounterPayload>(
     REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION,
     payload,

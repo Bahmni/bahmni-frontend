@@ -4,7 +4,7 @@ import {useAsync} from 'react-async'
 import {useStoppedPrescriptions} from '../context/StoppedPrescriptionContext'
 import Loader from '../Loader/Loader'
 import {createEncounterPayload} from '../NewPrescriptionTable/newPrescriptionHelper'
-import {saveNewPrescription} from '../services/bahmnicore'
+import {saveMedicationEncounter} from '../services/bahmnicore'
 import {
   getEncounterTypeUuid,
   getProviderUuid,
@@ -41,12 +41,12 @@ const SaveMedication = (props: SaveMedicationProps) => {
   const {stoppedPrescriptions, setStoppedPrescriptions} =
     useStoppedPrescriptions()
   const {
-    run: savedPrescription,
+    run: savePrescription,
     isPending,
     isFulfilled,
     isRejected,
   } = useAsync<any>({
-    deferFn: () => saveNewPrescription(payloadData),
+    deferFn: () => saveMedicationEncounter(payloadData),
     onResolve: () => {
       setStoppedPrescriptions([]), props.onSaveSuccess()
     },
@@ -54,11 +54,11 @@ const SaveMedication = (props: SaveMedicationProps) => {
 
   useEffect(() => {
     if (payloadData) {
-      savedPrescription()
+      savePrescription()
     }
   }, [payloadData])
 
-  const payload = async () => {
+  const onSaveClicked = async () => {
     if (props.newPrescription.length > 0 || stoppedPrescriptions.length > 0) {
       setPayloadData(
         createEncounterPayload(
@@ -79,7 +79,7 @@ const SaveMedication = (props: SaveMedicationProps) => {
         style={{float: 'right'}}
         className="confirm"
         onClick={() => {
-          payload()
+          onSaveClicked()
         }}
       >
         Save

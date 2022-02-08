@@ -4,6 +4,7 @@ import MockAdapter from 'axios-mock-adapter/types'
 import {axe} from 'jest-axe'
 import {when} from 'jest-when'
 import React from 'react'
+import {StoppedPrescriptionsProvider} from '../context/StoppedPrescriptionContext'
 import {REST_ENDPOINTS} from '../utils/constants'
 import {useProviderName, useUserLocationUuid} from '../utils/cookie'
 import {getPatientUuid} from '../utils/helper'
@@ -49,7 +50,7 @@ beforeEach(() => {
 })
 
 test('should pass hygene accessibility tests', async () => {
-  const {container} = render(
+  const {container} = renderWithContextProvider(
     <SaveMedication
       newPrescription={mockNewPrescription}
       onSaveSuccess={() => {}}
@@ -66,7 +67,7 @@ describe('Medication tab - Save New Prescription', () => {
   })
 
   it('should able to view save button', async () => {
-    render(
+    renderWithContextProvider(
       <SaveMedication
         newPrescription={mockNewPrescription}
         onSaveSuccess={() => {}}
@@ -78,7 +79,7 @@ describe('Medication tab - Save New Prescription', () => {
   })
 
   it('should display success message on adding new prescription', async () => {
-    render(
+    renderWithContextProvider(
       <SaveMedication
         newPrescription={mockNewPrescription}
         onSaveSuccess={() => {}}
@@ -94,7 +95,7 @@ describe('Medication tab - Save New Prescription', () => {
   })
 
   it('should display failure message on adding new prescription', async () => {
-    render(
+    renderWithContextProvider(
       <SaveMedication
         newPrescription={mockNewPrescription}
         onSaveSuccess={() => {}}
@@ -110,7 +111,7 @@ describe('Medication tab - Save New Prescription', () => {
   })
 
   it('should display saving prescriptions message on adding new prescription', async () => {
-    render(
+    renderWithContextProvider(
       <SaveMedication
         newPrescription={mockNewPrescription}
         onSaveSuccess={() => {}}
@@ -128,3 +129,9 @@ describe('Medication tab - Save New Prescription', () => {
     expect(screen.queryByTitle(/loading/i)).not.toBeInTheDocument()
   })
 })
+
+function renderWithContextProvider(children) {
+  return render(
+    <StoppedPrescriptionsProvider>{children}</StoppedPrescriptionsProvider>,
+  )
+}

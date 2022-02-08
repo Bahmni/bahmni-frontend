@@ -6,6 +6,7 @@ import type {
   NewPrescription,
   Concept,
 } from '../types'
+import {PrescriptionItem} from '../types/medication'
 import {getPatientUuid} from '../utils/helper'
 
 export const createNewPrescription = (prescription): NewPrescription => {
@@ -93,7 +94,7 @@ export const createEncounterPayload = (
   providerUuid: String,
   encounterTypeUuid: String,
   visitType: String,
-  drugOrders: NewPrescription[],
+  drugOrders: (NewPrescription | PrescriptionItem)[],
 ): EncounterPayload => {
   return {
     locationUuid,

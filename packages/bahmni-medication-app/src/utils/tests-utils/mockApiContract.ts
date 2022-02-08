@@ -67,7 +67,7 @@ export const mockActivePrescriptionResponse: PrescriptionItem[] = [
     visit: {
       startDateTime: 1496851128000,
     },
-    dateStopped: 1607888143,
+    dateStopped: null,
     dateActivated: 1640254629000, //Date: 23/12/2021
     provider: {
       name: 'Super Man',

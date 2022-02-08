@@ -1,6 +1,7 @@
 import {Button, ToastNotification} from '@bahmni/design-system'
 import React, {useEffect, useState} from 'react'
 import {useAsync} from 'react-async'
+import {useStoppedPrescriptions} from '../context/StoppedPrescriptionContext'
 import Loader from '../Loader/Loader'
 import {createEncounterPayload} from '../NewPrescriptionTable/newPrescriptionHelper'
 import {saveNewPrescription} from '../services/bahmnicore'
@@ -37,6 +38,8 @@ const SaveMedication = (props: SaveMedicationProps) => {
   })
 
   const [payloadData, setPayloadData] = useState<any>()
+  const {stoppedPrescriptions, setStoppedPrescriptions} =
+    useStoppedPrescriptions()
   const {
     run: savedPrescription,
     isPending,
@@ -44,7 +47,9 @@ const SaveMedication = (props: SaveMedicationProps) => {
     isRejected,
   } = useAsync<any>({
     deferFn: () => saveNewPrescription(payloadData),
-    onResolve: () => props.onSaveSuccess(),
+    onResolve: () => {
+      setStoppedPrescriptions([]), props.onSaveSuccess()
+    },
   })
 
   useEffect(() => {
@@ -54,14 +59,14 @@ const SaveMedication = (props: SaveMedicationProps) => {
   }, [payloadData])
 
   const payload = async () => {
-    if (props.newPrescription.length !== 0) {
+    if (props.newPrescription.length > 0 || stoppedPrescriptions.length > 0) {
       setPayloadData(
         createEncounterPayload(
           locationUuid,
           providerUuid,
           encounterTypeUuid,
           visitType,
-          props.newPrescription,
+          [...props.newPrescription, ...stoppedPrescriptions],
         ),
       )
     }

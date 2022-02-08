@@ -1,3 +1,5 @@
+import {PrescriptionItem} from './medication'
+
 export type DosageForm = {
   uuid: string
   display: string
@@ -87,7 +89,7 @@ export type EncounterPayload = {
   visitType: String
   bahmniDiagnoses: Array
   orders: Array
-  drugOrders: Array<NewPrescription>
+  drugOrders: Array<NewPrescription | PrescriptionItem>
   disposition: String
   observations: Array
   encounterTypeUuid: String

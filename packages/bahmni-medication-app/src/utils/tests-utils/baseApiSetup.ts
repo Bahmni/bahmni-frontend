@@ -13,8 +13,21 @@ export function initMockApi() {
       ),
     )
 
+  const waitForPostCalls = async ({
+    apiURL,
+    times = 0,
+  }: ApiCallsNamedArguments) => {
+    await waitFor(() =>
+      expect(
+        adapter.history.post.filter(api => api.url === apiURL).length,
+      ).toBe(times),
+    )
+  }
   const apiParams = (apiURL: string) =>
     adapter.history.get.filter(api => api.url === apiURL).map(api => api.params)
 
-  return {adapter, waitForApiCalls, apiParams}
+  const apiBody = (apiURL: string) =>
+    adapter.history.post.filter(api => api.url === apiURL).map(api => api.data)
+
+  return {adapter, waitForApiCalls, apiParams, apiBody, waitForPostCalls}
 }

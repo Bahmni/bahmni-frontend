@@ -205,7 +205,6 @@ describe('Medication tab - Add Prescription Dialog', () => {
     )
   })
 
-  //FIXME: this test would change after implmenting Add Prescription button
   it('should hide prescription dialog and new prescription table when user clicks cancel', async () => {
     renderWithContextProvider(<MedicationApp />)
 
@@ -227,7 +226,6 @@ describe('Medication tab - Add Prescription Dialog', () => {
     ).not.toBeInTheDocument()
   })
 
-  //FIXME Done is currently placeholder and would be implemented in future stories
   it('should show new prescription table when user click Done', async () => {
     renderWithContextProvider(<MedicationApp />)
 
@@ -505,9 +503,9 @@ async function fillingDosageInstructions() {
   userEvent.click(screen.getByText(/done/i))
 }
 
-async function searchDrug(durgName: string, times: Number = 0) {
+async function searchDrug(drugName: string, times: Number = 0) {
   const searchBox = screen.getByRole('searchbox', {name: /searchdrugs/i})
-  userEvent.type(searchBox, durgName)
+  userEvent.type(searchBox, drugName)
   await waitForApiCalls({
     apiURL: REST_ENDPOINTS.DRUG_SEARCH,
     times: times,

@@ -169,12 +169,22 @@ describe('Prescription Table', () => {
     userEvent.click(screen.getByRole('button', {name: /Done/i}))
 
     const currentDate = new Date().toLocaleDateString()
-    expect(screen.getByRole('img', {name: /reset/i})).toBeInTheDocument()
+    expect(screen.getByText(/undo/i)).toBeInTheDocument()
     expect(
       screen.getByRole('cell', {
         name: `Stop Date : ${currentDate} Reason : - Notes: -`,
       }),
     ).toBeInTheDocument()
+    expect(screen.getByRole('cell', {name: /Aspirin 1*/i})).toHaveStyle(
+      'text-decoration:line-through;',
+    )
+    expect(
+      screen.getByRole('cell', {
+        name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
+          mockPrescriptionResponse[0].dateActivated,
+        )} by Super Man`,
+      }),
+    ).toHaveStyle('text-decoration:line-through;')
   })
 
   it('should not show stopped drug prescription info when user click Cancel in stop prescription modal', () => {
@@ -185,7 +195,7 @@ describe('Prescription Table', () => {
     userEvent.click(screen.getByRole('button', {name: /Cancel/i}))
 
     const currentDate = new Date().toLocaleDateString()
-    expect(screen.queryByRole('img', {name: /reset/i})).not.toBeInTheDocument()
+    expect(screen.queryByText(/undo/i)).not.toBeInTheDocument()
     expect(
       screen.queryByRole('cell', {
         name: `Stop Date : ${currentDate} Reason : - Notes: -`,
@@ -201,13 +211,13 @@ describe('Prescription Table', () => {
     userEvent.click(screen.getByRole('button', {name: /Done/i}))
 
     const currentDate = new Date().toLocaleDateString()
-    expect(screen.getByRole('img', {name: /reset/i})).toBeInTheDocument()
+    expect(screen.getByText(/undo/i)).toBeInTheDocument()
     expect(
       screen.getByRole('cell', {
         name: `Stop Date : ${currentDate} Reason : - Notes: -`,
       }),
     ).toBeInTheDocument()
-    userEvent.click(screen.getByRole('img', {name: /reset/i}))
+    userEvent.click(screen.getByText(/undo/i))
     expect(
       screen.queryByRole('cell', {
         name: `Stop Date : ${currentDate} Reason : - Notes: -`,
@@ -216,6 +226,16 @@ describe('Prescription Table', () => {
     expect(
       screen.getByRole('cell', {name: /revise stop renew/i}),
     ).toBeInTheDocument()
+    expect(screen.getByRole('cell', {name: /Aspirin 1*/i})).not.toHaveStyle(
+      'text-decoration:line-through;',
+    )
+    expect(
+      screen.getByRole('cell', {
+        name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
+          mockPrescriptionResponse[0].dateActivated,
+        )} by Super Man`,
+      }),
+    ).not.toHaveStyle('text-decoration:line-through;')
   })
   it('should show only add action for stopped prescription', () => {
     renderWithContextProvider(

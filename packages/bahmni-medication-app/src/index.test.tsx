@@ -463,7 +463,7 @@ describe('Medication tab - Save New Prescription', () => {
     userEvent.click(screen.getAllByText(/stop/i)[0])
     userEvent.click(screen.getByRole('button', {name: /done/i}))
     await waitFor(() => {
-      expect(screen.getAllByRole('img', {name: /reset/i}).length).toBe(2)
+      expect(screen.getAllByText(/undo/i).length).toBe(2)
     })
     userEvent.click(screen.getByRole('button', {name: /save/i}))
     await waitFor(() => {

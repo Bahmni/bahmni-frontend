@@ -22,7 +22,6 @@ import DatePicker from 'carbon-components-react/es/components/DatePicker'
 import DatePickerInput from 'carbon-components-react/es/components/DatePickerInput'
 import Tag from 'carbon-components-react/es/components/Tag/Tag'
 import TextArea from 'carbon-components-react/es/components/TextArea'
-import Reset24 from '@carbon/icons-react/es/reset/24'
 import {Close24, Star24} from '@carbon/icons-react'
 import {ToastNotification} from 'carbon-components-react/es/components/Notification/Notification'
 import Loading from 'carbon-components-react/es/components/Loading/Loading'
@@ -54,7 +53,6 @@ export {
   Link,
   Tag,
   TextArea,
-  Reset24,
   Close24,
   Star24,
 }

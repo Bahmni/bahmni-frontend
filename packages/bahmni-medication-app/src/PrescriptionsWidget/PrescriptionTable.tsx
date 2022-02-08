@@ -2,7 +2,6 @@ import {
   Column,
   Grid,
   Link,
-  Reset24,
   Row,
   Table,
   TableBody,
@@ -30,6 +29,7 @@ const styles = {
     paddingTop: '10px',
   } as React.CSSProperties,
   tableSubHeading: {textAlign: 'center'},
+  strikeText: {textDecoration: 'line-through'},
 }
 enum PrescriptionStatus {
   ACTIVE = 'active',
@@ -40,7 +40,6 @@ enum PrescriptionStatus {
 const StatusStylesMap = {
   active: {color: 'orange'},
   scheduled: {color: 'green'},
-  stopped: {textDecoration: 'line-through'},
 }
 
 const getScheduleText = (
@@ -112,10 +111,9 @@ const PrescriptionTable = (props: PrescriptionData) => {
     if (isPastPrescription(status)) return <Link inline>add</Link>
     if (currentStopInfo)
       return (
-        <Reset24
-          aria-label="Reset"
-          onClick={() => handleUndoStopAction(prescriptionIndex)}
-        />
+        <Link inline onClick={() => handleUndoStopAction(prescriptionIndex)}>
+          undo
+        </Link>
       )
 
     return (
@@ -254,18 +252,20 @@ const PrescriptionTable = (props: PrescriptionData) => {
                   renderPrescriptionDateHeader(index)}
                 <TableRow>
                   <TableCell
-                    style={{
-                      textDecoration:
-                        StatusStylesMap[prescriptionStatus]?.textDecoration,
-                    }}
+                    style={
+                      (prescriptionStatus === PrescriptionStatus.STOPPED ||
+                        currentStopInfo) &&
+                      styles.strikeText
+                    }
                   >
                     {getDrugInfo(row)}
                   </TableCell>
                   <TableCell
-                    style={{
-                      textDecoration:
-                        StatusStylesMap[prescriptionStatus]?.textDecoration,
-                    }}
+                    style={
+                      (prescriptionStatus === PrescriptionStatus.STOPPED ||
+                        currentStopInfo) &&
+                      styles.strikeText
+                    }
                   >
                     {getScheduleText(row, prescriptionStatus)}
                     <small style={styles.providerName}>

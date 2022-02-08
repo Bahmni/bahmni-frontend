@@ -17,7 +17,7 @@ import {useStoppedPrescriptions} from '../context/StoppedPrescriptionContext'
 import {StopPrescriptionInfo} from '../types'
 import {getDrugInfo} from '../utils/helper'
 import {headerData} from '../utils/constants'
-import StopPrescripotionModal from './StopPrescriptionModal'
+import StopPrescriptionModal from './StopPrescriptionModal'
 import type {PrescriptionItem} from '../types/medication'
 
 type PrescriptionData = {
@@ -301,7 +301,7 @@ const PrescriptionTable = (props: PrescriptionData) => {
         </TableBody>
       </Table>
       {isStopActionClicked() && (
-        <StopPrescripotionModal
+        <StopPrescriptionModal
           drugInfo={getDrugInfo(props.data[selectedStopPrescriptionIndex])}
           onClose={(stopPrescriptionInfo: StopPrescriptionInfo) =>
             handleStopPrescriptionModalClose(stopPrescriptionInfo)

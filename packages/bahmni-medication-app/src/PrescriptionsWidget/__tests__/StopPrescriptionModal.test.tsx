@@ -3,18 +3,18 @@ import userEvent from '@testing-library/user-event'
 import {axe} from 'jest-axe'
 import React from 'react'
 import {stopReasons} from '../../utils/constants'
-import StopPrescripotionModal from '../StopPrescriptionModal'
+import StopPrescriptionModal from '../StopPrescriptionModal'
 
 test('should pass hygene accessibility tests', async () => {
   const {container} = render(
-    <StopPrescripotionModal drugInfo={'Test Drug'} onClose={() => {}} />,
+    <StopPrescriptionModal drugInfo={'Test Drug'} onClose={() => {}} />,
   )
   expect(await axe(container)).toHaveNoViolations()
 })
 
 describe('Stop Prescription Modal', () => {
   it('should show input controls for StopDate, Reason and Notes', () => {
-    render(<StopPrescripotionModal drugInfo={'Test Drug'} onClose={() => {}} />)
+    render(<StopPrescriptionModal drugInfo={'Test Drug'} onClose={() => {}} />)
     expect(screen.getByLabelText(/Stop Date/i)).toBeInTheDocument()
     expect(
       screen.getByRole('combobox', {
@@ -24,15 +24,15 @@ describe('Stop Prescription Modal', () => {
     expect(screen.getByLabelText(/notes/i)).toBeInTheDocument()
   })
   it('should display selected drug info', () => {
-    render(<StopPrescripotionModal drugInfo={'Test Drug'} onClose={() => {}} />)
+    render(<StopPrescriptionModal drugInfo={'Test Drug'} onClose={() => {}} />)
     expect(screen.getByText(/Test Drug/i)).toBeInTheDocument()
   })
   it('should not allow user to select past date as prescription stop date', async () => {
     render(
-      <StopPrescripotionModal
+      <StopPrescriptionModal
         drugInfo={'Test Drug'}
         onClose={() => {}}
-      ></StopPrescripotionModal>,
+      ></StopPrescriptionModal>,
     )
 
     const stopDateInput = screen.getByLabelText('Stop Date')
@@ -46,10 +46,10 @@ describe('Stop Prescription Modal', () => {
   })
   it('should display stop reason from constans when user clicks on stop reason dropdown', async () => {
     render(
-      <StopPrescripotionModal
+      <StopPrescriptionModal
         drugInfo={'Test Drug'}
         onClose={() => {}}
-      ></StopPrescripotionModal>,
+      ></StopPrescriptionModal>,
     )
 
     userEvent.click(
@@ -64,10 +64,10 @@ describe('Stop Prescription Modal', () => {
   it('should pass stopped info when user clicks done', () => {
     const onClose = jest.fn()
     render(
-      <StopPrescripotionModal
+      <StopPrescriptionModal
         drugInfo={'Test Drug'}
         onClose={onClose}
-      ></StopPrescripotionModal>,
+      ></StopPrescriptionModal>,
     )
     const stopDateInput = screen.getByLabelText('Stop Date')
     userEvent.click(stopDateInput)
@@ -99,10 +99,10 @@ describe('Stop Prescription Modal', () => {
 
   it('should disable Done button when stop date is empty', () => {
     render(
-      <StopPrescripotionModal
+      <StopPrescriptionModal
         drugInfo={'Test Drug'}
         onClose={() => {}}
-      ></StopPrescripotionModal>,
+      ></StopPrescriptionModal>,
     )
     const stopDateInput = screen.getByLabelText('Stop Date')
     userEvent.clear(stopDateInput)
@@ -117,10 +117,10 @@ describe('Stop Prescription Modal', () => {
   it('should pass null when user clicks cancel', () => {
     const onClose = jest.fn()
     render(
-      <StopPrescripotionModal
+      <StopPrescriptionModal
         drugInfo={'Test Drug'}
         onClose={onClose}
-      ></StopPrescripotionModal>,
+      ></StopPrescriptionModal>,
     )
     userEvent.click(
       screen.getByRole('button', {

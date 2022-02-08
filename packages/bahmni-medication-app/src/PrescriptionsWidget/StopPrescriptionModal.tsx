@@ -47,7 +47,7 @@ type StopPrescriptionModalProps = {
   onClose: Function
 }
 
-const StopPrescripotionModal = (props: StopPrescriptionModalProps) => {
+const StopPrescriptionModal = (props: StopPrescriptionModalProps) => {
   const [stopDate, setStopDate] = useState<Date>(new Date())
   const [reason, setReason] = useState<string>()
   const [notes, setNotes] = useState<string>()
@@ -130,4 +130,4 @@ const StopPrescripotionModal = (props: StopPrescriptionModalProps) => {
   )
 }
 
-export default StopPrescripotionModal
+export default StopPrescriptionModal

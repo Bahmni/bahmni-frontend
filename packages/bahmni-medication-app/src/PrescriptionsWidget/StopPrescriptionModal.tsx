@@ -9,7 +9,9 @@ import {
   TextArea,
 } from '@bahmni/design-system'
 import React, {useState} from 'react'
+import {PrescriptionItem} from '../types/medication'
 import {stopReasons} from '../utils/constants'
+import {getDrugInfo} from '../utils/helper'
 
 const styles = {
   modal_container: {
@@ -43,7 +45,7 @@ const styles = {
 }
 
 type StopPrescriptionModalProps = {
-  drugInfo: String
+  prescription: PrescriptionItem
   onClose: Function
 }
 
@@ -57,7 +59,7 @@ const StopPrescriptionModal = (props: StopPrescriptionModalProps) => {
     <div style={styles.modal_container} title="stopPrescriptionModal">
       <div style={styles.modal_content}>
         <Grid>
-          <Row style={styles.row}>{props.drugInfo}</Row>
+          <Row style={styles.row}>{getDrugInfo(props.prescription)}</Row>
           <Row style={styles.row}>
             <Column>
               <DatePicker
@@ -66,6 +68,9 @@ const StopPrescriptionModal = (props: StopPrescriptionModalProps) => {
                 value={stopDate}
                 short={true}
                 minDate={currentDate}
+                maxDate={new Date(
+                  props.prescription.effectiveStopDate,
+                ).toLocaleDateString(locale)}
                 onChange={(selectedDate: Date[]) => {
                   setStopDate(selectedDate[0])
                 }}

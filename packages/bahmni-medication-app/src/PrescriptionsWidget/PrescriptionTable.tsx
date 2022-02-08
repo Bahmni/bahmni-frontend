@@ -302,7 +302,7 @@ const PrescriptionTable = (props: PrescriptionData) => {
       </Table>
       {isStopActionClicked() && (
         <StopPrescriptionModal
-          drugInfo={getDrugInfo(props.data[selectedStopPrescriptionIndex])}
+          prescription={props.data[selectedStopPrescriptionIndex]}
           onClose={(stopPrescriptionInfo: StopPrescriptionInfo) =>
             handleStopPrescriptionModalClose(stopPrescriptionInfo)
           }

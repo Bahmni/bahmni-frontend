@@ -7,8 +7,8 @@ import {
   OrderBasketStoreActions,
   OrderBasketStore,
   orderBasketStoreActions,
-} from '../state/order-basket-store'
-import {launchPatientWorkspace} from '../events/launchPatientWorkspace'
+} from '../../state/order-basket-store'
+import {launchPatientWorkspace} from '../../events/launchPatientWorkspace'
 import {css} from '@emotion/css'
 import styled from '@emotion/styled'
 

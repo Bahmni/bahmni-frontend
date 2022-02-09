@@ -12,7 +12,6 @@ import {useProviderName, useUserLocationUuid} from './utils/cookie'
 import {getPatientUuid} from './utils/helper'
 import {initMockApi} from './utils/tests-utils/baseApiSetup'
 import {
-  mockActivePrescriptionResponse,
   mockDrugOrderConfigApiResponse,
   mockDrugsApiResponse,
   mockEncounterTypeResponse,

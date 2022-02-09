@@ -439,50 +439,6 @@ describe('Medication tab - Save New Prescription', () => {
 
     expect(screen.queryByTitle(/newprescription/i)).not.toBeInTheDocument()
   })
-
-  //TODO: FIXME by unmocking Prescription Widget
-  it.skip('should save stopped prescriptions', async () => {
-    const actualPrescriptionWidget = jest.requireActual(
-      './PrescriptionsWidget/PrescriptionWidget',
-    )
-    screen.debug(actualPrescriptionWidget)
-    when(PrescriptionWidget).mockReturnValue(
-      actualPrescriptionWidget.PrescriptionWidget,
-    )
-    adapter
-      .onGet(REST_ENDPOINTS.ACTIVE_PRESCRIPTION)
-      .reply(200, mockActivePrescriptionResponse)
-    adapter
-      .onGet(REST_ENDPOINTS.ALL_PRESCRIPTION)
-      .reply(200, mockActivePrescriptionResponse)
-    adapter.onPost(REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION).reply(200)
-
-    renderWithContextProvider(<MedicationApp />)
-    await waitForMedicationConfig()
-
-    userEvent.click(screen.getAllByText(/stop/i)[0])
-    userEvent.click(screen.getByRole('button', {name: /done/i}))
-    await waitFor(() => {
-      expect(screen.getAllByText(/undo/i).length).toBe(2)
-    })
-    userEvent.click(screen.getByRole('button', {name: /save/i}))
-    await waitFor(() => {
-      expect(screen.getByText(/save successful/i)).toBeInTheDocument()
-    })
-    expect(
-      JSON.parse(apiBody(REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION)).drugOrders[0],
-    ).toMatchObject({
-      action: 'DISCONTINUE',
-      drug: mockActivePrescriptionResponse[1].drug,
-    })
-    adapter.reset()
-
-    userEvent.click(screen.getByRole('button', {name: /save/i}))
-    await waitForPostCalls({
-      apiURL: REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION,
-      times: 0,
-    })
-  })
 })
 
 async function fillingDosageInstructions() {

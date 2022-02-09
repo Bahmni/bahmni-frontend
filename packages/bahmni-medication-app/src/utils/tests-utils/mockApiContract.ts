@@ -34,6 +34,7 @@ export const mockDrugsApiResponse = {
 
 export const mockActivePrescriptionResponse: PrescriptionItem[] = [
   {
+    uuid: '1',
     visit: {
       startDateTime: 1496851128000,
       uuid: '123',
@@ -64,6 +65,7 @@ export const mockActivePrescriptionResponse: PrescriptionItem[] = [
     effectiveStopDate: nextDay,
   },
   {
+    uuid: '2',
     visit: {
       startDateTime: 1496851128000,
     },

@@ -4,9 +4,12 @@ import {FetchResponse} from './types'
 
 export const sessionEndpoint = '/ws/rest/v1/session'
 
+// @ts-ignore
+window.openmrsBase = 'openmrs'
+
 export function makeUrl(path: string) {
-  return path
-  // return window.openmrsBase + path
+  // @ts-ignore
+  return window.openmrsBase + path
 }
 
 export function openmrsFetch<T = any>(

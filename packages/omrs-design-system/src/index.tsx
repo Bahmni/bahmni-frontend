@@ -3,7 +3,8 @@ import FloatingOrderBasketButton from './components/floating-order-basket-button
 import {orderBasketStore} from './state/order-basket-store'
 import {Provider} from 'unistore/react'
 import './i18n/config'
-import OrderBasket from './components/order-basket/order-basket.component_old'
+import {CardHeader} from './components/cards'
+import OrderBasket from './components/order-basket/order-basket.component'
 
 const App = () => {
   return (
@@ -11,7 +12,15 @@ const App = () => {
       <h1>Hello OMRS</h1>
       <Provider store={orderBasketStore}>
         <div>
-          <OrderBasket />
+          <CardHeader title="My Card">
+            <h1>This is My card body</h1>
+          </CardHeader>
+          <OrderBasket
+            patientUuid="12345"
+            closeWorkspace={() => {
+              console.log('closing...')
+            }}
+          />
           <FloatingOrderBasketButton />
         </div>
       </Provider>

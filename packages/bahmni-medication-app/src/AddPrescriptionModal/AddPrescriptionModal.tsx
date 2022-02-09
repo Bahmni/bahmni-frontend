@@ -20,11 +20,13 @@ import {
   Route,
   Unit,
   NonCodedDrug,
+  NewPrescription,
 } from '../types'
 import {defaultDurationUnits} from '../utils/constants'
 
 type AddPrescriptionModalProps = {
-  drug: Drug | NonCodedDrug
+  drug?: Drug | NonCodedDrug
+  newPrescriptionForEdit?: NewPrescription
   onClose: Function
   onDone: Function
 }
@@ -63,6 +65,57 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
   const [isDoseUnitAndRouteSet, setIsDoseUnitAndRouteSet] =
     useState<boolean>(false)
 
+  function getDrugName(): String {
+    if (props.drug) return props.drug.name
+    if (props.newPrescriptionForEdit)
+      return props.newPrescriptionForEdit.drug
+        ? props.newPrescriptionForEdit.drug.name
+        : props.newPrescriptionForEdit.drugNonCoded
+  }
+
+  function isEditPrescription(): boolean {
+    return props.newPrescriptionForEdit !== undefined
+  }
+
+  function intialiseValuesForEdit() {
+    let editPrescriptionInfo = props.newPrescriptionForEdit
+    setDose(editPrescriptionInfo.dosingInstructions.dose)
+    setDoseUnit(
+      drugOrderConfig.doseUnits.find(
+        unit => unit.name === editPrescriptionInfo.dosingInstructions.doseUnits,
+      ),
+    )
+    setDuration(editPrescriptionInfo.duration)
+    setDurationUnit(
+      defaultDurationUnits.find(
+        unit => unit.name === editPrescriptionInfo.durationUnits,
+      ),
+    )
+    setFrequency(
+      drugOrderConfig.frequencies.find(
+        frequency =>
+          frequency.name === editPrescriptionInfo.dosingInstructions.frequency,
+      ),
+    )
+    setStartDate(editPrescriptionInfo.effectiveStartDate)
+    setQuantity(editPrescriptionInfo.dosingInstructions.quantity)
+    setQuantityUnit(
+      drugOrderConfig.doseUnits.find(
+        unit =>
+          unit.name === editPrescriptionInfo.dosingInstructions.quantityUnits,
+      ),
+    )
+    setRoute(
+      drugOrderConfig.routes.find(
+        route => route.name === editPrescriptionInfo.dosingInstructions.route,
+      ),
+    )
+  }
+
+  useEffect(() => {
+    if (isEditPrescription() && drugOrderConfig) intialiseValuesForEdit()
+  }, [drugOrderConfig])
+
   useEffect(() => {
     if (dose > 0 && duration > 0 && durationUnit && frequency) {
       setQuantity(
@@ -100,7 +153,12 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
   ])
 
   useEffect(() => {
-    if (props.drug.dosageForm && drugOrderConfig && medicationConfig) {
+    if (
+      !isEditPrescription() &&
+      props.drug.dosageForm &&
+      drugOrderConfig &&
+      medicationConfig
+    ) {
       if (!isDoseUnitAndRouteSet) setDefaultUnitAndRoute()
     }
   }, [drugOrderConfig, medicationConfig])
@@ -187,7 +245,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
         <Grid>
           <Row title="drugName" style={styles.row}>
             <Column>
-              <h5>{props.drug.name}</h5>
+              <h5>{getDrugName()}</h5>
             </Column>
           </Row>
           <Row title="prescriptionDetails" style={styles.row}>
@@ -205,6 +263,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                         onChange={(event: {target: HTMLInputElement}) =>
                           setDose(parseFloat(event.target.value))
                         }
+                        value={isNaN(dose) ? 0 : dose}
                       ></NumberInput>
                     </Column>
                     <Column sm={3}>
@@ -229,6 +288,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                     id="frequencySearch"
                     titleText="Frequency"
                     placeholder="Select Frequency"
+                    selectedItem={frequency}
                     onChange={(event: {selectedItem: Frequency}) => {
                       setFrequency(event.selectedItem)
                     }}
@@ -248,6 +308,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                         onChange={(event: {target: HTMLInputElement}) =>
                           setDuration(parseFloat(event.target.value))
                         }
+                        value={isNaN(duration) ? 0 : duration}
                       ></NumberInput>
                     </Column>
                     <Column sm={3}>
@@ -274,7 +335,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                     datePickerType="single"
                     locale={locale}
                     short={true}
-                    value={currentDate}
+                    value={startDate}
                     minDate={currentDate}
                     onChange={(selectedDate: number) => {
                       setStartDate(Date.parse(selectedDate[0]))

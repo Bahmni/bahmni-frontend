@@ -16,7 +16,7 @@ const App = () => {
             <h1>This is My card body</h1>
           </CardHeader>
           <OrderBasket
-            patientUuid="12345"
+            patientUuid="a751f0da-39ab-45a3-db52-21706f5ed201"
             closeWorkspace={() => {
               console.log('closing...')
             }}

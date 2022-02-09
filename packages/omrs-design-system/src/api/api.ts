@@ -62,7 +62,7 @@ export function getDrugByName(
   abortController?: AbortController,
 ) {
   return openmrsFetch(
-    `/ws/rest/v1/drug?q=${drugName}&v=custom:(uuid,name,strength,dosageForm:(display,uuid),concept)`,
+    `/ws/rest/v1/drug?q=${drugName}&s=ordered&v=custom:(uuid,name,strength,dosageForm:(display,uuid),concept)`,
     {
       signal: abortController?.signal,
     },

@@ -9,7 +9,7 @@ window.openmrsBase = 'openmrs'
 
 export function makeUrl(path: string) {
   // @ts-ignore
-  return window.openmrsBase + path
+  return 'http://localhost/' + window.openmrsBase + path
 }
 
 export function openmrsFetch<T = any>(

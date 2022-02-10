@@ -16,6 +16,7 @@ import AddPrescriptionModal from '../AddPrescriptionModal/AddPrescriptionModal'
 import {NewPrescription} from '../types'
 import {newPrescriptionHeader} from '../utils/constants'
 import {getDrugInfo} from '../utils/helper'
+import {createNewPrescription} from './createNewPrescription'
 
 const styles = {
   action: {
@@ -37,6 +38,7 @@ const getScheduleText = (prescriptionItem: any) => {
 }
 interface PrescriptionData {
   data: NewPrescription[]
+  setData: Function
 }
 
 const NewPrescriptionTable = React.memo((props: PrescriptionData) => {
@@ -44,6 +46,15 @@ const NewPrescriptionTable = React.memo((props: PrescriptionData) => {
 
   const isEditActionClicked = (): boolean => {
     return selectedIndexForEdit >= 0
+  }
+
+  function handlePrescriptionUpdate(updatedPrescriptionInfo) {
+    let updatedPrescription = createNewPrescription(updatedPrescriptionInfo)
+    console.log(updatedPrescription)
+    let temp = [...props.data]
+    temp[selectedIndexForEdit] = updatedPrescription
+    props.setData(temp)
+    setSelectedIndexForEdit(-1)
   }
 
   return (
@@ -89,7 +100,9 @@ const NewPrescriptionTable = React.memo((props: PrescriptionData) => {
             <AddPrescriptionModal
               newPrescriptionForEdit={props.data[selectedIndexForEdit]}
               onClose={() => setSelectedIndexForEdit(-1)}
-              onDone={() => {}}
+              onDone={updatedPrescriptionInfo => {
+                handlePrescriptionUpdate(updatedPrescriptionInfo)
+              }}
             ></AddPrescriptionModal>
           </Modal>
         )}

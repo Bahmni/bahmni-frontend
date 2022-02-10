@@ -132,7 +132,7 @@ const MedicationApp = () => {
           }}
         ></AddPrescriptionModal>
       )}
-      <NewPrescriptionTable data={newPrescription}></NewPrescriptionTable>
+      <NewPrescriptionTable data={newPrescription} setData = {setNewPrescription}></NewPrescriptionTable>
       <PrescriptionWidget />
     </div>
   )

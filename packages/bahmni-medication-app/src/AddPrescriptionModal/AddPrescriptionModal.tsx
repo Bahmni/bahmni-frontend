@@ -65,12 +65,14 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
   const [isDoseUnitAndRouteSet, setIsDoseUnitAndRouteSet] =
     useState<boolean>(false)
 
-  function getDrugName(): String {
-    if (props.drug) return props.drug.name
-    if (props.newPrescriptionForEdit)
-      return props.newPrescriptionForEdit.drug
-        ? props.newPrescriptionForEdit.drug.name
-        : props.newPrescriptionForEdit.drugNonCoded
+  function getDrug() {
+    if (props.drug) return props.drug
+    if (isEditPrescription())
+      return (
+        props.newPrescriptionForEdit.drug || {
+          name: props.newPrescriptionForEdit.drugNonCoded,
+        }
+      )
   }
 
   function isEditPrescription(): boolean {
@@ -217,7 +219,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
   const getDrugInstruction = () => {
     return {
       dateActivated: Date.now(),
-      drug: props.drug,
+      drug: getDrug(),
       dose: dose,
       doseUnit: doseUnit,
       duration: duration,
@@ -245,7 +247,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
         <Grid>
           <Row title="drugName" style={styles.row}>
             <Column>
-              <h5>{getDrugName()}</h5>
+              <h5>{getDrug().name}</h5>
             </Column>
           </Row>
           <Row title="prescriptionDetails" style={styles.row}>

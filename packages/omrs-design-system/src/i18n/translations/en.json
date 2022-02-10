@@ -73,5 +73,8 @@
   "signAndClose": "Sign and close",
   "startDate": "Start date",
   "takeAsNeeded": "Take As Needed",
-  "validationNoItemSelected": "Please select one of the available items."
+  "validationNoItemSelected": "Please select one of the available items.",
+  "maximize":"Maximize",
+  "minimize":"Minimize",
+  "hide":"Hide"
 }

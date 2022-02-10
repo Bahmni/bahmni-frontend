@@ -62,24 +62,25 @@ const FloatingOrderBasketButton = connect<
     OrderBasketStore &
     OrderBasketStoreActions) => {
     const {t, i18n} = useTranslation('en')
-
-    return (
-      <Button
-        kind="secondary"
-        className={floatingOrderBasketButton}
-        onClick={() => {
-          shouldShowBasket(!showBasket)
-          launchPatientWorkspace('open-order-basket')
-          console.log(`Creating CustomEvent 'open-order-basket'`)
-        }}
-      >
-        <div className={elementContainer}>
-          <span>{t('orderBasket')}</span>
-          <OrderBasketSvg />
-          {items.length > 0 && <CountTag>{items.length}</CountTag>}
-        </div>
-      </Button>
-    )
+    if (!showBasket)
+      return (
+        <Button
+          kind="secondary"
+          className={floatingOrderBasketButton}
+          onClick={() => {
+            shouldShowBasket(!showBasket)
+            launchPatientWorkspace('open-order-basket')
+            console.log(`Creating CustomEvent 'open-order-basket'`)
+          }}
+        >
+          <div className={elementContainer}>
+            <span>{t('orderBasket')}</span>
+            <OrderBasketSvg />
+            {items.length > 0 && <CountTag>{items.length}</CountTag>}
+          </div>
+        </Button>
+      )
+    return <></>
   },
 )
 

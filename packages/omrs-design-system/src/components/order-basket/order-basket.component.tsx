@@ -30,6 +30,7 @@ import {ErrorState} from '../error-state'
 import {EmptyState} from '../empty-state'
 import MedicationsDetailsTable from '../medications-details-table/medications-details-table.component'
 import {showToast} from '../../atoms/toasts'
+import ActionPadContainer from '../workspace/action-pad-container'
 
 export interface OrderBasketProps {
   closeWorkspace(): void
@@ -42,12 +43,14 @@ const OrderBasket = connect<
   OrderBasketStore,
   {}
 >(
-  'items',
+  ['items', 'showBasket'],
   orderBasketStoreActions,
 )(
   ({
     patientUuid,
     items,
+    showBasket,
+    shouldShowBasket,
     closeWorkspace,
     setItems,
   }: OrderBasketProps & OrderBasketStore & OrderBasketStoreActions) => {
@@ -143,6 +146,7 @@ const OrderBasket = connect<
     const handleCancelClicked = () => {
       setItems([])
       closeWorkspace()
+      shouldShowBasket(!showBasket)
     }
 
     const openMedicationOrderFormForAddingNewOrder = (
@@ -180,76 +184,82 @@ const OrderBasket = connect<
               />
             )
           }
-          return (
-            <>
-              <OrderBasketSearch
-                encounterUuid={encounterUuid}
-                onSearchResultClicked={handleSearchResultClicked}
-              />
-              <div className={styles.container}>
-                <div className={styles.orderBasketContainer}>
-                  <OrderBasketItemList
-                    orderBasketItems={items}
-                    onItemClicked={order =>
-                      openMedicationOrderFormForUpdatingExistingOrder(
-                        items.indexOf(order),
-                      )
-                    }
-                    onItemRemoveClicked={order => {
-                      const newOrders = [...items]
-                      newOrders.splice(items.indexOf(order), 1)
-                      setItems(newOrders)
-                    }}
-                  />
-                  {(() => {
-                    if (isLoadingOrders)
-                      return <DataTableSkeleton role="progressbar" />
-                    if (isError)
+          if (showBasket) {
+            return (
+              <>
+                <OrderBasketSearch
+                  encounterUuid={encounterUuid}
+                  onSearchResultClicked={handleSearchResultClicked}
+                />
+                <div className={styles.container}>
+                  <div className={styles.orderBasketContainer}>
+                    <OrderBasketItemList
+                      orderBasketItems={items}
+                      onItemClicked={order =>
+                        openMedicationOrderFormForUpdatingExistingOrder(
+                          items.indexOf(order),
+                        )
+                      }
+                      onItemRemoveClicked={order => {
+                        const newOrders = [...items]
+                        newOrders.splice(items.indexOf(order), 1)
+                        setItems(newOrders)
+                      }}
+                    />
+                    {(() => {
+                      if (isLoadingOrders)
+                        return <DataTableSkeleton role="progressbar" />
+                      if (isError)
+                        return (
+                          <ErrorState
+                            error={isError}
+                            headerTitle={headerTitle}
+                          />
+                        )
+                      if (activePatientOrders?.length) {
+                        return (
+                          <MedicationsDetailsTable
+                            isValidating={isValidating}
+                            title={t('activeMedications', 'Active Medications')}
+                            medications={activePatientOrders}
+                            showDiscontinueButton={true}
+                            showModifyButton={true}
+                            showReorderButton={false}
+                            showAddNewButton={false}
+                          />
+                        )
+                      }
                       return (
-                        <ErrorState error={isError} headerTitle={headerTitle} />
-                      )
-                    if (activePatientOrders?.length) {
-                      return (
-                        <MedicationsDetailsTable
-                          isValidating={isValidating}
-                          title={t('activeMedications', 'Active Medications')}
-                          medications={activePatientOrders}
-                          showDiscontinueButton={true}
-                          showModifyButton={true}
-                          showReorderButton={false}
-                          showAddNewButton={false}
+                        <EmptyState
+                          displayText={displayText}
+                          headerTitle={headerTitle}
                         />
                       )
-                    }
-                    return (
-                      <EmptyState
-                        displayText={displayText}
-                        headerTitle={headerTitle}
-                      />
-                    )
-                  })()}
+                    })()}
+                  </div>
+                  <ButtonSet
+                    className={isTablet ? styles.tablet : styles.desktop}
+                  >
+                    <Button
+                      className={styles.button}
+                      kind="secondary"
+                      onClick={handleCancelClicked}
+                    >
+                      {t('cancel', 'Cancel')}
+                    </Button>
+                    <Button
+                      className={styles.button}
+                      kind="primary"
+                      onClick={handleSaveClicked}
+                    >
+                      {t('signAndClose', 'Sign and close')}
+                    </Button>
+                  </ButtonSet>
                 </div>
-                <ButtonSet
-                  className={isTablet ? styles.tablet : styles.desktop}
-                >
-                  <Button
-                    className={styles.button}
-                    kind="secondary"
-                    onClick={handleCancelClicked}
-                  >
-                    {t('cancel', 'Cancel')}
-                  </Button>
-                  <Button
-                    className={styles.button}
-                    kind="primary"
-                    onClick={handleSaveClicked}
-                  >
-                    {t('signAndClose', 'Sign and close')}
-                  </Button>
-                </ButtonSet>
-              </div>
-            </>
-          )
+              </>
+            )
+          }
+          return <></>
         })()}
       </>
     )

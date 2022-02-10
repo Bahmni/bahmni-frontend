@@ -1,0 +1,92 @@
+@import "../root.scss";
+
+.header {
+  background-color: $ui-03;
+  top: 3rem;
+  border-bottom: 1px solid $text-03;
+  z-index: 1000;
+
+  a {
+    @include carbon--type-style('productive-heading-02');
+    color: $text-01;
+
+    &:hover {
+      color: inherit;
+    }
+  }
+
+  &:not(.maximized) {
+    right: auto;
+    left: auto;
+  }
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: inline-block;
+}
+
+.fixed {
+  position: fixed !important;
+  top: 6rem;
+  right: auto;
+  left: auto;
+  overflow-y: auto;
+  background-color: $ui-02;
+}
+
+.fullWidth {
+  // Subtract side rail width
+  width: calc(100% - 50px);
+}
+
+.dynamicWidth {
+  width: calc(50% - 9.6rem);
+}
+
+/* Desktop */
+:global(.omrs-breakpoint-gt-tablet) {
+  .maximized {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+  }
+  
+  .container {
+    margin-right: 3rem;
+    flex: 1;
+    height: 100vh;
+  }
+}
+
+/* Tablet */
+:global(.omrs-breakpoint-lt-desktop) {
+  .container {
+    background-color: $ui-01;
+    position: fixed;
+    top: 3rem;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+  }
+
+  .header {
+    display: none;
+  }
+
+  .fixed {
+    top: 3rem;
+    background-color: $ui-01;
+  }
+
+  // .dynamicWidth {
+  //   width: 100%;
+  // }
+}

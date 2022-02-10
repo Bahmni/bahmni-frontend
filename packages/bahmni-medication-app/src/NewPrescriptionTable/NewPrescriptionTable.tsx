@@ -33,13 +33,16 @@ const getScheduleText = (prescriptionItem: any) => {
   const schedule: String = `${doseInfo.dose} ${doseInfo.doseUnits}, ${doseInfo.frequency} for ${prescriptionItem.duration} ${prescriptionItem.durationUnits} starting on ${startDate}`
   return schedule
 }
-interface PrescriptionData {
-  data: NewPrescription[]
-}
 
-const NewPrescriptionTable = React.memo((props: PrescriptionData) => {
-  return (
-    props.data.length > 0 && (
+const NewPrescriptionTable = React.memo(
+  (props: {data: NewPrescription[]; setData: Function}) => {
+    const handleDelete = (index: number) => {
+      if (window.confirm('Are you sure you want to remove?')) {
+        props.setData(props.data.filter(data => data != props.data[index]))
+      }
+    }
+
+    return props.data.length > 0 ? (
       <div style={styles.tablePos}>
         <TableContainer title="New Prescription">
           <Table title="newPrescription">
@@ -51,7 +54,7 @@ const NewPrescriptionTable = React.memo((props: PrescriptionData) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {props.data.map(row => (
+              {props.data.map((row, index) => (
                 <React.Fragment key={Math.random()}>
                   <TableRow aria-label="prescription">
                     <TableCell>{getDrugInfo(row)}</TableCell>
@@ -65,7 +68,12 @@ const NewPrescriptionTable = React.memo((props: PrescriptionData) => {
                       <span style={styles.action}>
                         <Link>edit</Link>
                         <Star24 aria-label="favourite" />
-                        <Close24 aria-label="close" />
+                        <Close24
+                          aria-label="delete"
+                          onClick={() => {
+                            handleDelete(index)
+                          }}
+                        />
                       </span>
                     </TableCell>
                   </TableRow>
@@ -75,8 +83,10 @@ const NewPrescriptionTable = React.memo((props: PrescriptionData) => {
           </Table>
         </TableContainer>
       </div>
+    ) : (
+      <></>
     )
-  )
-})
+  },
+)
 
 export default NewPrescriptionTable

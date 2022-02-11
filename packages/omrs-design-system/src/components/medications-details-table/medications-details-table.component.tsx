@@ -32,7 +32,6 @@ import {
 } from '../../state/order-basket-store'
 import {Order} from '../../types/order'
 import {OrderBasketItem} from '../../types/order-basket-item'
-import {launchPatientWorkspace} from '../../events/launchPatientWorkspace'
 import {CardHeader} from '../cards'
 
 export interface ActiveMedicationsProps {
@@ -69,11 +68,6 @@ const MedicationsDetailsTable = connect<
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
     const [paginatedMedications] = paginate(medications, page, pageSize)
-
-    const openOrderBasket = React.useCallback(
-      () => launchPatientWorkspace('order-basket-workspace'),
-      [],
-    )
 
     const tableHeaders = [
       {
@@ -208,7 +202,7 @@ const MedicationsDetailsTable = connect<
               kind="ghost"
               renderIcon={Add16}
               iconDescription="Launch order basket"
-              onClick={openOrderBasket}
+              onClick={() => {}}
             >
               {t('add', 'Add')}
             </Button>
@@ -416,7 +410,6 @@ function OrderBasketItemActions({
         indication: medication.orderReasonNonCoded,
       },
     ])
-    launchPatientWorkspace('order-basket-workspace')
   }, [items, setItems, medication])
 
   const handleReorderClick = useCallback(() => {

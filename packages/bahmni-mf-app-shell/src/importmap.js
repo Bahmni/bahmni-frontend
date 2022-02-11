@@ -8,6 +8,11 @@ if (!window.localStorage.hasOwnProperty('importMap')) {
           enabled: true,
           urls: ['/bahmni/mf/bahmni-medication/bundle.js'],
         },
+        {
+          name: 'omrs-order-basket',
+          enabled: true,
+          urls: ['/bahmni/mf/omrs-design-system/bundle.js'],
+        },
       ],
     }),
   )

@@ -5,6 +5,7 @@
   top: 3rem;
   border-bottom: 1px solid $text-03;
   z-index: 1000;
+  position: unset !important;
 
   a {
     @include carbon--type-style('productive-heading-02');
@@ -40,53 +41,28 @@
 
 .fullWidth {
   // Subtract side rail width
-  width: calc(100% - 50px);
+  // width: calc(100% - 1rem);
+  width: 100%;
 }
 
 .dynamicWidth {
   width: calc(50% - 9.6rem);
 }
 
-/* Desktop */
-:global(.omrs-breakpoint-gt-tablet) {
-  .maximized {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-  }
-  
-  .container {
-    margin-right: 3rem;
-    flex: 1;
-    height: 100vh;
-  }
+.maximized {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  overflow-y: auto;
 }
 
-/* Tablet */
-:global(.omrs-breakpoint-lt-desktop) {
-  .container {
-    background-color: $ui-01;
-    position: fixed;
-    top: 3rem;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-  }
-
-  .header {
-    display: none;
-  }
-
-  .fixed {
-    top: 3rem;
-    background-color: $ui-01;
-  }
-
-  // .dynamicWidth {
-  //   width: 100%;
-  // }
+.container {
+  // margin-right: 1rem;
+  flex: 1;
+  height: calc(100vh - 9rem);
+  min-width: 50%;
+  min-height: 100%;
 }

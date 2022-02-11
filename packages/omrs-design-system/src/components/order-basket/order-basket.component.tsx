@@ -30,7 +30,7 @@ import {ErrorState} from '../error-state'
 import {EmptyState} from '../empty-state'
 import MedicationsDetailsTable from '../medications-details-table/medications-details-table.component'
 import {showToast} from '../../atoms/toasts'
-import ActionPadContainer from '../workspace/action-pad-container'
+import {events, on} from '../../events/customEvents'
 
 export interface OrderBasketProps {
   closeWorkspace(): void
@@ -77,6 +77,15 @@ const OrderBasket = connect<
       isLoading: isLoadingOrders,
       isValidating,
     } = usePatientOrders(patientUuid, 'ACTIVE')
+
+    const minimiseOrderBasket = React.useCallback(
+      () => shouldShowBasket(false),
+      [],
+    )
+
+    useEffect(() => {
+      on(events.minimizeOrderBasket, minimiseOrderBasket)
+    }, [minimiseOrderBasket])
 
     useEffect(() => {
       const abortController = new AbortController()

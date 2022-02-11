@@ -8,9 +8,9 @@ import {
   OrderBasketStore,
   orderBasketStoreActions,
 } from '../../state/order-basket-store'
-import {launchPatientWorkspace} from '../../events/launchPatientWorkspace'
 import {css} from '@emotion/css'
 import styled from '@emotion/styled'
+import {events, trigger} from '../../events/customEvents'
 
 export interface FloatingOrderBasketButtonProps {}
 
@@ -69,7 +69,7 @@ const FloatingOrderBasketButton = connect<
           className={floatingOrderBasketButton}
           onClick={() => {
             shouldShowBasket(!showBasket)
-            launchPatientWorkspace('open-order-basket')
+            trigger(events.openActionPad, {})
             console.log(`Creating CustomEvent 'open-order-basket'`)
           }}
         >

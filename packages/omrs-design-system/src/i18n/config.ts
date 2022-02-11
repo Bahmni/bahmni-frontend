@@ -15,7 +15,7 @@ export const resources = {
 
 i18n.use(initReactI18next).use(LanguageDetector).init({
   fallbackLng: 'en',
-  debug: true,
+  // debug: true,
   resources,
 })
 

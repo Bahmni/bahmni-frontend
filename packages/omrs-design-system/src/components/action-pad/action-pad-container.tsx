@@ -9,6 +9,7 @@ import {
 } from 'carbon-components-react'
 import React, {useState} from 'react'
 import {useTranslation} from 'react-i18next'
+import {events, off, on, trigger} from '../../events/customEvents'
 import {useLayoutType} from '../../utils/hooks/useLayoutType'
 import styles from './action-pad-container.scss'
 
@@ -22,18 +23,37 @@ const ActionPadContainer = ({title, children}: ActionPadProps) => {
   const layout = useLayoutType()
 
   const [isMaximised, setIsMaximised] = useState(false)
+  const [isActionPadOpen, setIsActionPadOpen] = useState(false)
+
+  const openActionPad = React.useCallback(() => setIsActionPadOpen(true), [])
+  const closeActionPad = React.useCallback(() => setIsActionPadOpen(false), [])
+
+  React.useEffect(() => {
+    on(events.openActionPad, openActionPad)
+  }, [openActionPad])
+
+  React.useEffect(() => {
+    on(events.closeActionPad, closeActionPad)
+  }, [closeActionPad])
 
   const toggleWindowState = () => {
     setIsMaximised(!isMaximised)
   }
 
   return (
-    <>
+    <aside
+      className={`${styles.container} ${
+        isMaximised ? `${styles.maximized}` : undefined
+      } ${
+        isActionPadOpen
+          ? `${styles.show}`
+          : `${styles.hide}
+      }`
+      }`}
+    >
       <Header
         aria-label="Workspace Title"
-        className={`${styles.header} ${
-          isMaximised ? `${styles.fullWidth}` : `${styles.dynamicWidth}`
-        }`}
+        className={`${styles.header} ${isMaximised && `${styles.fullWidth}`}`}
       >
         <HeaderName prefix="">{title}</HeaderName>
         <HeaderGlobalBar>
@@ -53,7 +73,10 @@ const ActionPadContainer = ({title, children}: ActionPadProps) => {
             iconDescription={t('hide', 'Hide')}
             hasIconOnly
             kind="ghost"
-            onClick={() => {}}
+            onClick={() => {
+              setIsActionPadOpen(false)
+              trigger(events.minimizeOrderBasket, {})
+            }}
             renderIcon={ArrowRight16}
             tooltipPosition="bottom"
             tooltipAlignment="end"
@@ -61,7 +84,7 @@ const ActionPadContainer = ({title, children}: ActionPadProps) => {
         </HeaderGlobalBar>
       </Header>
       {children}
-    </>
+    </aside>
   )
 }
 

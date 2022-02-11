@@ -8,6 +8,7 @@ import {
   mockDrugOrderConfigBadApiResponse,
   mockDrugsApiResponse,
   mockMedicationConfig,
+  mockNewPrescription,
   mockNonCodedDrug,
 } from '../utils/tests-utils/mockApiContract'
 import MockAdapter from 'axios-mock-adapter/types'
@@ -576,6 +577,53 @@ describe('Medication Tab - Prescription Dialog', () => {
         .getAllByLabelText('Route')
         .find(item => item instanceof HTMLButtonElement),
     ).toHaveTextContent('Topical')
+  })
+
+  it('should autofill input fields with values when used with edit prescription', async () => {
+    adapter
+      .onGet(CONFIG_URLS.MEDICATION_CONFIG)
+      .reply(200, mockMedicationConfig)
+    render(
+      <AddPrescriptionModal
+        newPrescriptionForEdit={mockNewPrescription[0]}
+        onClose={() => {}}
+        onDone={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+    expect(screen.getByLabelText('Dosage')).toHaveValue(
+      mockNewPrescription[0].dosingInstructions.dose,
+    )
+    expect(screen.getByLabelText('Dosage Unit')).toHaveTextContent(
+      mockNewPrescription[0].dosingInstructions.doseUnits,
+    )
+    expect(screen.getByLabelText('Frequency')).toHaveValue(
+      mockNewPrescription[0].dosingInstructions.frequency,
+    )
+    expect(screen.getByLabelText('Duration')).toHaveValue(
+      mockNewPrescription[0].duration,
+    )
+    expect(screen.getByLabelText('Duration Unit')).toHaveTextContent(
+      mockNewPrescription[0].durationUnits,
+    )
+    expect(screen.getByLabelText('Start Date')).toHaveValue(
+      new Date(mockNewPrescription[0].effectiveStartDate).toLocaleDateString(
+        'en',
+        {year: 'numeric', month: '2-digit', day: '2-digit'},
+      ),
+    )
+    expect(screen.getByLabelText('Quantity')).toHaveValue(
+      mockNewPrescription[0].dosingInstructions.quantity,
+    )
+    expect(screen.getByLabelText('Quantity Unit')).toHaveTextContent(
+      mockNewPrescription[0].dosingInstructions.quantityUnits,
+    )
+    //TODO : Find a better way of asserting on Route dropdown value
+    expect(
+      screen
+        .getAllByLabelText('Route')
+        .find(item => item instanceof HTMLButtonElement),
+    ).toHaveTextContent(mockNewPrescription[0].dosingInstructions.route)
   })
 })
 

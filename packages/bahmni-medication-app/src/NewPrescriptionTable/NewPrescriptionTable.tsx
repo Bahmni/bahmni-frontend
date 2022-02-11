@@ -50,7 +50,6 @@ const NewPrescriptionTable = React.memo((props: PrescriptionData) => {
 
   function handlePrescriptionUpdate(updatedPrescriptionInfo) {
     let updatedPrescription = createNewPrescription(updatedPrescriptionInfo)
-    console.log(updatedPrescription)
     let temp = [...props.data]
     temp[selectedIndexForEdit] = updatedPrescription
     props.setData(temp)

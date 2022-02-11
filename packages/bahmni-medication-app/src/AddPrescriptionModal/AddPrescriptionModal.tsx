@@ -337,10 +337,10 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                     datePickerType="single"
                     locale={locale}
                     short={true}
-                    value={startDate}
+                    value={new Date(startDate)}
                     minDate={currentDate}
-                    onChange={(selectedDate: number) => {
-                      setStartDate(Date.parse(selectedDate[0]))
+                    onChange={(selectedDate: Date[]) => {
+                      setStartDate(Date.parse(selectedDate[0].toString()))
                     }}
                   >
                     <DatePickerInput

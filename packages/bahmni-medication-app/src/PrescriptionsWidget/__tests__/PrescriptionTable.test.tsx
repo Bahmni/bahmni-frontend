@@ -51,7 +51,7 @@ describe('Prescription Table', () => {
     expect(
       screen.getByRole('cell', {
         name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
-          mockPrescriptionResponse[0].dateActivated,
+          mockPrescriptionResponse[0].effectiveStartDate,
         )} by Super Man`,
       }),
     ).toBeInTheDocument()
@@ -68,7 +68,7 @@ describe('Prescription Table', () => {
     expect(
       screen.getByRole('cell', {
         name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
-          mockPrescriptionResponse[0].dateActivated,
+          mockPrescriptionResponse[0].effectiveStartDate,
         )} by Super Man`,
       }),
     ).toBeInTheDocument()
@@ -122,7 +122,7 @@ describe('Prescription Table', () => {
     expect(
       screen.getByRole('cell', {
         name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
-          mockPrescriptionResponse[0].dateActivated,
+          mockPrescriptionResponse[0].effectiveStartDate,
         )} by Super Man`,
       }),
     ).toHaveStyle('text-decoration:line-through;')
@@ -181,7 +181,7 @@ describe('Prescription Table', () => {
     expect(
       screen.getByRole('cell', {
         name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
-          mockPrescriptionResponse[0].dateActivated,
+          mockPrescriptionResponse[0].effectiveStartDate,
         )} by Super Man`,
       }),
     ).toHaveStyle('text-decoration:line-through;')
@@ -232,7 +232,7 @@ describe('Prescription Table', () => {
     expect(
       screen.getByRole('cell', {
         name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
-          mockPrescriptionResponse[0].dateActivated,
+          mockPrescriptionResponse[0].effectiveStartDate,
         )} by Super Man`,
       }),
     ).not.toHaveStyle('text-decoration:line-through;')

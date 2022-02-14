@@ -304,7 +304,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
                     id="frequencySearch"
                     titleText="Frequency"
                     placeholder="Select Frequency"
-                    selectedItem={frequency}
+                    selectedItem={frequency ?? ''}
                     onChange={(event: {selectedItem: Frequency}) => {
                       setFrequency(event.selectedItem)
                     }}

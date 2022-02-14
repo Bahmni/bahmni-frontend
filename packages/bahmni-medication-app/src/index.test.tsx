@@ -340,6 +340,9 @@ describe('New Prescription table - Delete action', () => {
     expect(
       screen.queryByRole('cell', {name: /paracetomal 2/i}),
     ).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {name: /paracetomal 1/i}),
+    ).toBeInTheDocument()
   })
 
   it('should not remove drug from new prescription table on clicking cancel in confirm popup ', async () => {
@@ -356,7 +359,7 @@ describe('New Prescription table - Delete action', () => {
     userEvent.click(screen.getByRole('img', {name: /delete/i}))
 
     expect(
-      screen.queryByRole('cell', {name: /paracetomal 1/i}),
+      screen.getByRole('cell', {name: /paracetomal 1/i}),
     ).toBeInTheDocument()
   })
 })

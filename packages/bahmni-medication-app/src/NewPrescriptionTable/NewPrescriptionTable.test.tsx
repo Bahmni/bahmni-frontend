@@ -49,27 +49,37 @@ describe('New Prescription Table', () => {
     expect(screen.getByRole('img', {name: /delete/i})).toBeInTheDocument()
   })
 
-  describe('New Prescription Table - delete action', () => {
-    it('should open confirm popup on clicking delete action', async () => {
-      window.confirm = jest.fn(() => false)
-      render(
-        <NewPrescriptionTable data={mockNewPrescription} setData={() => {}} />,
-      )
-      userEvent.click(screen.getByRole('img', {name: /delete/i}))
+  it('should open confirm popup on clicking delete action', async () => {
+    window.confirm = jest.fn(() => false)
+    render(
+      <NewPrescriptionTable data={mockNewPrescription} setData={() => {}} />,
+    )
+    userEvent.click(screen.getByRole('img', {name: /delete/i}))
 
-      expect(window.confirm).toBeCalled()
-    })
+    expect(window.confirm).toBeCalled()
+  })
 
-    it('should update state on clicking ok in confirm popup ', async () => {
-      window.confirm = jest.fn(() => true)
-      const setData = jest.fn()
-      render(
-        <NewPrescriptionTable data={mockNewPrescription} setData={setData} />,
-      )
+  it('should update state on clicking ok in confirm popup ', async () => {
+    window.confirm = jest.fn(() => true)
+    const setData = jest.fn()
+    render(
+      <NewPrescriptionTable data={mockNewPrescription} setData={setData} />,
+    )
 
-      userEvent.click(screen.getByRole('img', {name: /delete/i}))
+    userEvent.click(screen.getByRole('img', {name: /delete/i}))
 
-      expect(setData).toBeCalled()
-    })
+    expect(setData).toBeCalledWith([])
+  })
+
+  it('should not update state on clicking cancel in confirm popup ', async () => {
+    window.confirm = jest.fn(() => false)
+    const setData = jest.fn()
+    render(
+      <NewPrescriptionTable data={mockNewPrescription} setData={setData} />,
+    )
+
+    userEvent.click(screen.getByRole('img', {name: /delete/i}))
+
+    expect(setData).not.toBeCalled()
   })
 })

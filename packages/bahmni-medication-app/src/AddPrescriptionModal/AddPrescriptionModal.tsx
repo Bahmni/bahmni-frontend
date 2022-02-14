@@ -64,6 +64,8 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
   const [isDataValid, setIsDataValid] = useState<boolean>(false)
   const [isDoseUnitAndRouteSet, setIsDoseUnitAndRouteSet] =
     useState<boolean>(false)
+  const [isQuantitySetForEdit, setIsQuantitySetForEdit] =
+    useState<boolean>(false)
 
   function getDrug() {
     if (props.drug) return props.drug
@@ -114,19 +116,31 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
     )
   }
 
+  function isQuantityAutoCalculateEnabled(): boolean {
+    return !isEditPrescription() || isQuantitySetForEdit
+  }
+
   useEffect(() => {
     if (isEditPrescription() && drugOrderConfig) intialiseValuesForEdit()
   }, [drugOrderConfig])
 
   useEffect(() => {
-    if (dose > 0 && duration > 0 && durationUnit && frequency) {
-      setQuantity(
-        Math.ceil(
-          dose * duration * durationUnit.factor * frequency.frequencyPerDay,
-        ),
-      )
-    } else {
-      setQuantity(0)
+    if (isEditPrescription() && quantity > 0) {
+      setIsQuantitySetForEdit(true)
+    }
+  }, [quantity])
+
+  useEffect(() => {
+    if (isQuantityAutoCalculateEnabled()) {
+      if (dose > 0 && duration > 0 && durationUnit && frequency) {
+        setQuantity(
+          Math.ceil(
+            dose * duration * durationUnit.factor * frequency.frequencyPerDay,
+          ),
+        )
+      } else {
+        setQuantity(0)
+      }
     }
   }, [dose, duration, durationUnit, frequency])
 

@@ -625,6 +625,24 @@ describe('Medication Tab - Prescription Dialog', () => {
         .find(item => item instanceof HTMLButtonElement),
     ).toHaveTextContent(mockNewPrescription[0].dosingInstructions.route)
   })
+
+  it('should set quantity value that is passed instead of auto calculation', async () => {
+    adapter
+      .onGet(CONFIG_URLS.MEDICATION_CONFIG)
+      .reply(200, mockMedicationConfig)
+    let updatedPrescription = {...mockNewPrescription[0]}
+    updatedPrescription.dosingInstructions.quantity = 10
+
+    render(
+      <AddPrescriptionModal
+        newPrescriptionForEdit={updatedPrescription}
+        onClose={() => {}}
+        onDone={() => {}}
+      ></AddPrescriptionModal>,
+    )
+    await waitForDrugOrderConfig()
+    expect(screen.getByLabelText('Quantity')).toHaveValue(10)
+  })
 })
 
 async function waitForDrugOrderConfig() {

@@ -6,17 +6,24 @@ import hi from './translations/hi.json'
 
 export const resources = {
   en: {
-    en,
+    translation: en,
   },
   hi: {
-    hi,
+    translation: hi,
   },
 } as const
 
-i18n.use(initReactI18next).use(LanguageDetector).init({
-  fallbackLng: 'en',
-  // debug: true,
-  resources,
-})
+i18n
+  .use(initReactI18next)
+  .use(LanguageDetector)
+  .init({
+    fallbackLng: 'en',
+    debug:
+      process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test',
+    resources,
+    interpolation: {
+      escapeValue: false,
+    },
+  })
 
 export default i18n

@@ -1,6 +1,10 @@
 {
   "orderBasket": "दवाओं का थैला",
+  "activeMedications": "सक्रिय दवाएं",
+  "signAndClose": "साइन करें और बंद करें",
   "All": "सब",
+  "cancel": "रद्द करें",
+  "emptyOrderBasket": "तुम्हारी टोकरी खाली है",
   "At the stage of collection": "कलेक्शन के चरण पर",
   "Successfully completed": "सफलतापूर्वक पूरा किया गया",
   "Partially completed": " आंशिक रूप से पूरा किया गया",

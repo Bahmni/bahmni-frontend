@@ -61,7 +61,7 @@ const FloatingOrderBasketButton = connect<
   }: FloatingOrderBasketButtonProps &
     OrderBasketStore &
     OrderBasketStoreActions) => {
-    const {t, i18n} = useTranslation('en')
+    const {t, i18n} = useTranslation()
     if (!showBasket)
       return (
         <Button

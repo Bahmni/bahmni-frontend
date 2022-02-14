@@ -64,7 +64,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
   const [isDataValid, setIsDataValid] = useState<boolean>(false)
   const [isDoseUnitAndRouteSet, setIsDoseUnitAndRouteSet] =
     useState<boolean>(false)
-  const [isQuantitySetForEdit, setIsQuantitySetForEdit] =
+  const [isQuantitySetFromEditInfo, setIsQuantitySetFromEditInfo] =
     useState<boolean>(false)
 
   function getDrug() {
@@ -82,7 +82,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
   }
 
   function intialiseValuesForEdit() {
-    let editPrescriptionInfo = props.newPrescriptionForEdit
+    const editPrescriptionInfo = props.newPrescriptionForEdit
     setDose(editPrescriptionInfo.dosingInstructions.dose)
     setDoseUnit(
       drugOrderConfig.doseUnits.find(
@@ -117,7 +117,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
   }
 
   function isQuantityAutoCalculateEnabled(): boolean {
-    return !isEditPrescription() || isQuantitySetForEdit
+    return !isEditPrescription() || isQuantitySetFromEditInfo
   }
 
   useEffect(() => {
@@ -126,7 +126,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
 
   useEffect(() => {
     if (isEditPrescription() && quantity > 0) {
-      setIsQuantitySetForEdit(true)
+      setIsQuantitySetFromEditInfo(true)
     }
   }, [quantity])
 

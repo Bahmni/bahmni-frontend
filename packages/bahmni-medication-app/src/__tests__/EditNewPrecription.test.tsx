@@ -66,7 +66,7 @@ describe('Medication Tab - Editting new prescription', () => {
     ).toBeInTheDocument()
   })
 
-  it('should show updated prescription info when user cancel edit new prescription', async () => {
+  it('should not show updated prescription info when user cancel edit new prescription', async () => {
     render(<MedicationApp />)
 
     await waitForMedicationConfig()

@@ -8,7 +8,10 @@ import NewPrescriptionTable from './NewPrescriptionTable'
 
 test('should pass hygene accessibility tests', async () => {
   const {container} = render(
-    <NewPrescriptionTable data={mockNewPrescription} setData={() => {}} />,
+    <NewPrescriptionTable
+      newPrescriptions={mockNewPrescription}
+      setNewPrescriptions={() => {}}
+    />,
   )
   expect(await axe(container)).toHaveNoViolations()
 })
@@ -16,7 +19,10 @@ test('should pass hygene accessibility tests', async () => {
 describe('New Prescription Table', () => {
   it('should display all the heading', () => {
     render(
-      <NewPrescriptionTable data={mockNewPrescription} setData={() => {}} />,
+      <NewPrescriptionTable
+        newPrescriptions={mockNewPrescription}
+        setNewPrescriptions={() => {}}
+      />,
     )
     newPrescriptionHeader.map(i => {
       expect(screen.getByText(i)).toBeInTheDocument()
@@ -25,7 +31,10 @@ describe('New Prescription Table', () => {
 
   it('should display drug name, dosing instructions and quantity', () => {
     render(
-      <NewPrescriptionTable data={mockNewPrescription} setData={() => {}} />,
+      <NewPrescriptionTable
+        newPrescriptions={mockNewPrescription}
+        setNewPrescriptions={() => {}}
+      />,
     )
     expect(
       screen.getByRole('cell', {name: /Paracetomal 1, Tablet, Oral/i}),
@@ -42,7 +51,10 @@ describe('New Prescription Table', () => {
 
   it('should display all the actions', () => {
     render(
-      <NewPrescriptionTable data={mockNewPrescription} setData={() => {}} />,
+      <NewPrescriptionTable
+        newPrescriptions={mockNewPrescription}
+        setNewPrescriptions={() => {}}
+      />,
     )
     expect(screen.getByRole('cell', {name: /edit/i})).toBeInTheDocument()
     expect(screen.getByRole('img', {name: /favourite/i})).toBeInTheDocument()
@@ -52,7 +64,10 @@ describe('New Prescription Table', () => {
   it('should open confirm popup on clicking delete action', async () => {
     window.confirm = jest.fn(() => false)
     render(
-      <NewPrescriptionTable data={mockNewPrescription} setData={() => {}} />,
+      <NewPrescriptionTable
+        newPrescriptions={mockNewPrescription}
+        setNewPrescriptions={() => {}}
+      />,
     )
     userEvent.click(screen.getByRole('img', {name: /delete/i}))
 
@@ -61,25 +76,31 @@ describe('New Prescription Table', () => {
 
   it('should update state on clicking ok in confirm popup ', async () => {
     window.confirm = jest.fn(() => true)
-    const setData = jest.fn()
+    const setNewPrescriptions = jest.fn()
     render(
-      <NewPrescriptionTable data={mockNewPrescription} setData={setData} />,
+      <NewPrescriptionTable
+        newPrescriptions={mockNewPrescription}
+        setNewPrescriptions={setNewPrescriptions}
+      />,
     )
 
     userEvent.click(screen.getByRole('img', {name: /delete/i}))
 
-    expect(setData).toBeCalledWith([])
+    expect(setNewPrescriptions).toBeCalledWith([])
   })
 
   it('should not update state on clicking cancel in confirm popup ', async () => {
     window.confirm = jest.fn(() => false)
-    const setData = jest.fn()
+    const setNewPrescriptions = jest.fn()
     render(
-      <NewPrescriptionTable data={mockNewPrescription} setData={setData} />,
+      <NewPrescriptionTable
+        newPrescriptions={mockNewPrescription}
+        setNewPrescriptions={setNewPrescriptions}
+      />,
     )
 
     userEvent.click(screen.getByRole('img', {name: /delete/i}))
 
-    expect(setData).not.toBeCalled()
+    expect(setNewPrescriptions).not.toBeCalled()
   })
 })

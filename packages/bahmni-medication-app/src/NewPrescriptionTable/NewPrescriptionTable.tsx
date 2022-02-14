@@ -15,6 +15,11 @@ import {NewPrescription} from '../types'
 import {newPrescriptionHeader} from '../utils/constants'
 import {getDrugInfo} from '../utils/helper'
 
+interface NewPrescriptionProps {
+  newPrescriptions: NewPrescription[]
+  setNewPrescriptions: Function
+}
+
 const styles = {
   action: {
     display: 'inline-flex',
@@ -34,59 +39,64 @@ const getScheduleText = (prescriptionItem: any) => {
   return schedule
 }
 
-const NewPrescriptionTable = React.memo(
-  (props: {data: NewPrescription[]; setData: Function}) => {
-    const handleDelete = (index: number) => {
-      if (window.confirm('Are you sure you want to remove?')) {
-        props.setData(props.data.filter(data => data != props.data[index]))
-      }
+const NewPrescriptionTable = ({
+  newPrescriptions,
+  setNewPrescriptions,
+}: NewPrescriptionProps) => {
+  const handleDelete = (index: number) => {
+    if (window.confirm('Are you sure you want to remove?')) {
+      setNewPrescriptions(
+        newPrescriptions.filter(
+          newPrescription => newPrescription != newPrescriptions[index],
+        ),
+      )
     }
+  }
 
-    return props.data.length > 0 ? (
-      <div style={styles.tablePos}>
-        <TableContainer title="New Prescription">
-          <Table title="newPrescription">
-            <TableHead>
-              <TableRow>
-                {newPrescriptionHeader.map((header, i) => (
-                  <TableHeader key={i}>{header}</TableHeader>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {props.data.map((row, index) => (
-                <React.Fragment key={Math.random()}>
-                  <TableRow aria-label="prescription">
-                    <TableCell>{getDrugInfo(row)}</TableCell>
-                    <TableCell>{getScheduleText(row)}</TableCell>
-                    <TableCell>
-                      {row.dosingInstructions.quantity}{' '}
-                      {row.dosingInstructions.quantityUnits}
-                    </TableCell>
-                    <TableCell></TableCell>
-                    <TableCell>
-                      <span style={styles.action}>
-                        <Link>edit</Link>
-                        <Star24 aria-label="favourite" />
-                        <Close24
-                          aria-label="delete"
-                          onClick={() => {
-                            handleDelete(index)
-                          }}
-                        />
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                </React.Fragment>
+  return newPrescriptions.length > 0 ? (
+    <div style={styles.tablePos}>
+      <TableContainer title="New Prescription">
+        <Table title="newPrescription">
+          <TableHead>
+            <TableRow>
+              {newPrescriptionHeader.map((header, i) => (
+                <TableHeader key={i}>{header}</TableHeader>
               ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
-    ) : (
-      <></>
-    )
-  },
-)
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {newPrescriptions.map((row, index) => (
+              <React.Fragment key={Math.random()}>
+                <TableRow aria-label="prescription">
+                  <TableCell>{getDrugInfo(row)}</TableCell>
+                  <TableCell>{getScheduleText(row)}</TableCell>
+                  <TableCell>
+                    {row.dosingInstructions.quantity}{' '}
+                    {row.dosingInstructions.quantityUnits}
+                  </TableCell>
+                  <TableCell></TableCell>
+                  <TableCell>
+                    <span style={styles.action}>
+                      <Link>edit</Link>
+                      <Star24 aria-label="favourite" />
+                      <Close24
+                        aria-label="delete"
+                        onClick={() => {
+                          handleDelete(index)
+                        }}
+                      />
+                    </span>
+                  </TableCell>
+                </TableRow>
+              </React.Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
+  ) : (
+    <></>
+  )
+}
 
 export default NewPrescriptionTable

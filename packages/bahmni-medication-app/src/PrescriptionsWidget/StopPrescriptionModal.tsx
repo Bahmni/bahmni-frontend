@@ -28,12 +28,12 @@ const styles = {
   modal_content: {
     backgroundColor: '#fefefe',
     margin: '15% auto',
-    padding: '20px',
+    padding: '1.25rem',
     border: '1px solid #888',
     width: '50%',
   },
   row: {
-    marginBottom: '20px',
+    marginBottom: '1.25rem',
   },
   cancel_button: {
     backgroundColor: 'grey',

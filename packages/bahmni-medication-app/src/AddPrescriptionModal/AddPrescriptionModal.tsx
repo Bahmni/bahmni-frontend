@@ -34,7 +34,7 @@ const styles = {
     border: '2px solid #f4f4f4',
   },
   row: {
-    marginBottom: '20px',
+    marginBottom: '1.25rem',
   },
   cancel_button: {
     backgroundColor: 'grey',

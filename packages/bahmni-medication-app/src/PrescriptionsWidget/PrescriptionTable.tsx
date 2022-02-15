@@ -26,7 +26,7 @@ const styles = {
   providerName: {
     fontSize: '0.7rem',
     float: 'right',
-    paddingTop: '10px',
+    paddingTop: '0.625rem',
   } as React.CSSProperties,
   tableSubHeading: {textAlign: 'center'},
   strikeText: {textDecoration: 'line-through'},

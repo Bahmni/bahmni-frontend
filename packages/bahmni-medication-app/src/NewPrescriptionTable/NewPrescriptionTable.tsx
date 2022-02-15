@@ -21,7 +21,7 @@ const styles = {
     justifyContent: 'space-evenly',
     width: '100%',
   },
-  tablePos: {padding: '5rem 16px 0px 16px'},
+  tablePos: {padding: '5rem 1rem 0 1rem'},
 }
 
 const getScheduleText = (prescriptionItem: NewPrescription): string => {

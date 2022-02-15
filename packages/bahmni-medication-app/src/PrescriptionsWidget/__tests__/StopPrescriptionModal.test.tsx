@@ -98,7 +98,7 @@ describe('Stop Prescription Modal', () => {
     }
   })
 
-  it('should display stop reason from constans when user clicks on stop reason dropdown', async () => {
+  it('should display stop reason from constants when user clicks on stop reason dropdown', async () => {
     render(
       <StopPrescriptionModal
         prescription={mockActivePrescriptionResponse[0]}
@@ -142,14 +142,12 @@ describe('Stop Prescription Modal', () => {
       }),
     )
 
-    expect(onClose).toBeCalledWith(
-      expect.objectContaining({
-        notes: 'Sample Text',
-        reason: stopReasons[0],
-        //TODO Find a way to expect on the date selected
-        stopDate: expect.any(Date),
-      }),
-    )
+    expect(onClose).toBeCalledWith({
+      notes: 'Sample Text',
+      reason: stopReasons[0],
+      //TODO Find a way to expect on the date selected
+      stopDate: expect.any(Date),
+    })
   })
 
   it('should disable Done button when stop date is empty', () => {

@@ -78,7 +78,7 @@ describe('Medication tab - Save New Prescription', () => {
     })
   })
 
-  it('should display success message on adding new prescription', async () => {
+  it('should display success message on successful save of new prescription', async () => {
     renderWithContextProvider(
       <SaveMedication
         newPrescription={mockNewPrescription}
@@ -94,7 +94,7 @@ describe('Medication tab - Save New Prescription', () => {
     })
   })
 
-  it('should display failure message on adding new prescription', async () => {
+  it('should display failure message on unsuccessful save of new prescription', async () => {
     renderWithContextProvider(
       <SaveMedication
         newPrescription={mockNewPrescription}
@@ -110,7 +110,7 @@ describe('Medication tab - Save New Prescription', () => {
     })
   })
 
-  it('should display saving prescriptions message on adding new prescription', async () => {
+  it('should display loader while saving new prescription', async () => {
     renderWithContextProvider(
       <SaveMedication
         newPrescription={mockNewPrescription}

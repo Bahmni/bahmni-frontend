@@ -367,16 +367,6 @@ describe('Medication tab - Save New Prescription', () => {
     })
   })
 
-  it('should not hide new prescription table on save failure', async () => {
-    renderWithContextProvider(<MedicationApp />)
-    adapter.onPost(REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION).reply(404)
-    await saveMedication()
-
-    await waitFor(() => {
-      expect(screen.queryByTitle(/newPrescription/i)).toBeInTheDocument()
-    })
-  })
-
   it('should rerender prescription table on successful save', async () => {
     renderWithContextProvider(<MedicationApp />)
     adapter.onPost(REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION).reply(200)

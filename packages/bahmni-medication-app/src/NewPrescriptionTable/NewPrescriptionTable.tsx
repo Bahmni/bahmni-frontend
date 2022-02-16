@@ -1,6 +1,7 @@
 import {
   Close24,
   Link,
+  Modal,
   Star24,
   Table,
   TableBody,
@@ -10,10 +11,12 @@ import {
   TableHeader,
   TableRow,
 } from '@bahmni/design-system'
-import React from 'react'
+import React, {useState} from 'react'
+import AddPrescriptionModal from '../AddPrescriptionModal/AddPrescriptionModal'
 import {NewPrescription} from '../types'
 import {newPrescriptionHeader} from '../utils/constants'
 import {getDrugInfo} from '../utils/helper'
+import {createNewPrescription} from './createNewPrescription'
 
 const styles = {
   action: {
@@ -35,9 +38,24 @@ const getScheduleText = (prescriptionItem: any) => {
 }
 interface PrescriptionData {
   data: NewPrescription[]
+  setData: Function
 }
 
 const NewPrescriptionTable = React.memo((props: PrescriptionData) => {
+  const [selectedIndexForEdit, setSelectedIndexForEdit] = useState(-1)
+
+  const isEditActionClicked = (): boolean => {
+    return selectedIndexForEdit >= 0
+  }
+
+  function handlePrescriptionUpdate(updatedPrescriptionInfo) {
+    const updatedPrescription = createNewPrescription(updatedPrescriptionInfo)
+    let temp = [...props.data]
+    temp[selectedIndexForEdit] = updatedPrescription
+    props.setData(temp)
+    setSelectedIndexForEdit(-1)
+  }
+
   return (
     props.data.length > 0 && (
       <div style={styles.tablePos}>
@@ -51,7 +69,7 @@ const NewPrescriptionTable = React.memo((props: PrescriptionData) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {props.data.map(row => (
+              {props.data.map((row, index) => (
                 <React.Fragment key={Math.random()}>
                   <TableRow aria-label="prescription">
                     <TableCell>{getDrugInfo(row)}</TableCell>
@@ -63,7 +81,9 @@ const NewPrescriptionTable = React.memo((props: PrescriptionData) => {
                     <TableCell></TableCell>
                     <TableCell>
                       <span style={styles.action}>
-                        <Link>edit</Link>
+                        <Link onClick={() => setSelectedIndexForEdit(index)}>
+                          edit
+                        </Link>
                         <Star24 aria-label="favourite" />
                         <Close24 aria-label="close" />
                       </span>
@@ -74,6 +94,17 @@ const NewPrescriptionTable = React.memo((props: PrescriptionData) => {
             </TableBody>
           </Table>
         </TableContainer>
+        {isEditActionClicked() && (
+          <Modal>
+            <AddPrescriptionModal
+              newPrescriptionForEdit={props.data[selectedIndexForEdit]}
+              onClose={() => setSelectedIndexForEdit(-1)}
+              onDone={updatedPrescriptionInfo => {
+                handlePrescriptionUpdate(updatedPrescriptionInfo)
+              }}
+            ></AddPrescriptionModal>
+          </Modal>
+        )}
       </div>
     )
   )

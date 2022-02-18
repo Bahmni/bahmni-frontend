@@ -4,10 +4,11 @@ import {axe} from 'jest-axe'
 import {when} from 'jest-when'
 import React from 'react'
 import ActivePrescription from '../ActivePrescription'
-import {getPatientUuid, getDrugInfo} from '../../utils/helper'
+import {getPatientUuid} from '../../utils/helper'
 import {initMockApi} from '../../utils/tests-utils/baseApiSetup'
 import {mockActivePrescriptionResponse} from '../../utils/tests-utils/mockApiContract'
 import {REST_ENDPOINTS} from '../../utils/constants'
+import {StoppedPrescriptionsProvider} from '../../context/StoppedPrescriptionContext'
 
 jest.mock('../../utils/helper', () => {
   const originalModule = jest.requireActual('../../utils/helper')
@@ -25,7 +26,7 @@ afterEach(() => {
 })
 
 test('should pass hygene accessibility tests', async () => {
-  const {container} = render(<ActivePrescription />)
+  const {container} = renderWithContextProvider(<ActivePrescription />)
   await waitForApiCalls({apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION, times: 1})
   expect(await axe(container)).toHaveNoViolations()
 })
@@ -42,7 +43,7 @@ describe('Active Prescription', () => {
       .onGet(REST_ENDPOINTS.ACTIVE_PRESCRIPTION)
       .reply(200, mockActivePrescriptionResponse)
 
-    render(<ActivePrescription />)
+    renderWithContextProvider(<ActivePrescription />)
 
     await waitForApiCalls({
       apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
@@ -62,7 +63,7 @@ describe('Active Prescription', () => {
     when(getPatientUuid).mockReturnValue('someInvalidId')
     adapter.onGet(REST_ENDPOINTS.ACTIVE_PRESCRIPTION).reply(404)
 
-    render(<ActivePrescription />)
+    renderWithContextProvider(<ActivePrescription />)
 
     await waitForApiCalls({
       apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
@@ -78,7 +79,7 @@ describe('Active Prescription', () => {
     when(getPatientUuid).mockReturnValue('patientUuid')
     adapter.onGet(REST_ENDPOINTS.ACTIVE_PRESCRIPTION).reply(200, [])
 
-    render(<ActivePrescription />)
+    renderWithContextProvider(<ActivePrescription />)
     await waitForApiCalls({
       apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
       times: 1,
@@ -92,13 +93,13 @@ describe('Active Prescription', () => {
     when(getPatientUuid).mockReturnValue('patientUuid')
     adapter.onGet(REST_ENDPOINTS.ACTIVE_PRESCRIPTION).timeout()
 
-    render(<ActivePrescription />)
-    expect(screen.getByText(/loading/i)).toBeInTheDocument()
+    renderWithContextProvider(<ActivePrescription />)
+    expect(screen.getByText(/Loading Prescriptions/i)).toBeInTheDocument()
     await waitForApiCalls({
       apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
       times: 1,
     })
-    expect(screen.queryByText(/loading/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Loading Prescriptions/i)).not.toBeInTheDocument()
   })
 
   it('should display prescriptions in descending order based on prescried date', async () => {
@@ -107,7 +108,7 @@ describe('Active Prescription', () => {
       .onGet(REST_ENDPOINTS.ACTIVE_PRESCRIPTION)
       .reply(200, mockActivePrescriptionResponse)
 
-    render(<ActivePrescription />)
+    renderWithContextProvider(<ActivePrescription />)
     await waitForApiCalls({
       apiURL: REST_ENDPOINTS.ACTIVE_PRESCRIPTION,
       times: 1,
@@ -125,4 +126,10 @@ describe('Active Prescription', () => {
 
 function getDateString(timeStamp: number): string {
   return new Date(timeStamp).toLocaleDateString()
+}
+
+function renderWithContextProvider(children) {
+  return render(
+    <StoppedPrescriptionsProvider>{children}</StoppedPrescriptionsProvider>,
+  )
 }

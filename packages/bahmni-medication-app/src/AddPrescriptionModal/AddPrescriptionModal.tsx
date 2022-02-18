@@ -13,7 +13,7 @@ import {
 import React, {useEffect, useState} from 'react'
 import useDrugOrderConfig from '../hooks/useDrugOrderConfig'
 import useMedicationConfig from '../hooks/useMedicationConfig'
-import {
+import type {
   Drug,
   DurationUnit,
   Frequency,
@@ -36,7 +36,7 @@ const styles = {
     border: '2px solid #f4f4f4',
   },
   row: {
-    marginBottom: '20px',
+    marginBottom: '1.25rem',
   },
   cancel_button: {
     backgroundColor: 'grey',

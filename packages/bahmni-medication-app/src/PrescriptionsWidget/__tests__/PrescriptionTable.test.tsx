@@ -1,6 +1,8 @@
 import {render, screen} from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import {axe} from 'jest-axe'
 import React from 'react'
+import {StoppedPrescriptionsProvider} from '../../context/StoppedPrescriptionContext'
 import {headerData} from '../../utils/constants'
 import {
   mockAllPrescriptionResponse,
@@ -10,7 +12,7 @@ import {
 import PrescriptionTable from '../PrescriptionTable'
 
 test('should pass hygene accessibility tests', async () => {
-  const {container} = render(
+  const {container} = renderWithContextProvider(
     <PrescriptionTable data={mockPrescriptionResponse} />,
   )
   expect(await axe(container)).toHaveNoViolations()
@@ -18,14 +20,18 @@ test('should pass hygene accessibility tests', async () => {
 
 describe('Prescription Table', () => {
   it('should display all the heading', () => {
-    render(<PrescriptionTable data={mockPrescriptionResponse} />)
+    renderWithContextProvider(
+      <PrescriptionTable data={mockPrescriptionResponse} />,
+    )
     headerData.map(i => {
       expect(screen.getByText(i)).toBeInTheDocument()
     })
   })
 
   it('should display prescriptions categorised by date prescribed', () => {
-    render(<PrescriptionTable data={mockPrescriptionResponse} />)
+    renderWithContextProvider(
+      <PrescriptionTable data={mockPrescriptionResponse} />,
+    )
     mockPrescriptionResponse.forEach(response => {
       expect(
         screen.getByRole('cell', {
@@ -36,13 +42,17 @@ describe('Prescription Table', () => {
   })
 
   it('should display drug and provider information', () => {
-    render(<PrescriptionTable data={mockPrescriptionResponse} />)
+    renderWithContextProvider(
+      <PrescriptionTable data={mockPrescriptionResponse} />,
+    )
     expect(
       screen.getByRole('cell', {name: /Aspirin 1, Tablet, Oral/i}),
     ).toBeInTheDocument()
     expect(
       screen.getByRole('cell', {
-        name: /5 Capsule\(s\), Thrice a day for 5 Day\(s\) started on 12\/22\/2021 by Super Man/i,
+        name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
+          mockPrescriptionResponse[0].effectiveStartDate,
+        )} by Super Man`,
       }),
     ).toBeInTheDocument()
     expect(
@@ -51,11 +61,15 @@ describe('Prescription Table', () => {
   })
 
   it('should display non coded drug name', () => {
-    render(<PrescriptionTable data={mockPrescriptionResponseForNonCodedDrug} />)
+    renderWithContextProvider(
+      <PrescriptionTable data={mockPrescriptionResponseForNonCodedDrug} />,
+    )
     expect(screen.getByRole('cell', {name: /Paz/i})).toBeInTheDocument()
     expect(
       screen.getByRole('cell', {
-        name: /5 Capsule\(s\), Thrice a day for 5 Day\(s\) started on 12\/22\/2021 by Super Man/i,
+        name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
+          mockPrescriptionResponse[0].effectiveStartDate,
+        )} by Super Man`,
       }),
     ).toBeInTheDocument()
     expect(
@@ -64,69 +78,185 @@ describe('Prescription Table', () => {
   })
 
   it('should display instructions for prescriptions', () => {
-    render(<PrescriptionTable data={mockPrescriptionResponse} />)
+    renderWithContextProvider(
+      <PrescriptionTable data={mockPrescriptionResponse} />,
+    )
     expect(
       screen.getByRole('cell', {name: /As directed Test Data/i}),
     ).toBeInTheDocument()
   })
 
   it('should display status as active for active prescription', () => {
-    render(<PrescriptionTable data={mockAllPrescriptionResponse.active} />)
+    renderWithContextProvider(
+      <PrescriptionTable data={mockAllPrescriptionResponse.active} />,
+    )
     const statusCell = screen.getByRole('cell', {name: 'active'})
     expect(statusCell).toBeInTheDocument()
     expect(statusCell).toHaveStyle('color:orange;')
   })
 
   it('should display status as scheduled for scheduled prescription', () => {
-    render(<PrescriptionTable data={mockAllPrescriptionResponse.scheduled} />)
+    renderWithContextProvider(
+      <PrescriptionTable data={mockAllPrescriptionResponse.scheduled} />,
+    )
     const statusCell = screen.getByRole('cell', {name: 'scheduled'})
     expect(statusCell).toBeInTheDocument()
     expect(statusCell).toHaveStyle('color:green;')
   })
 
   it('should display status as stopped for stopped prescription', () => {
-    render(<PrescriptionTable data={mockAllPrescriptionResponse.stopped} />)
+    renderWithContextProvider(
+      <PrescriptionTable data={mockAllPrescriptionResponse.stopped} />,
+    )
     expect(screen.getByRole('cell', {name: 'stopped'})).toBeInTheDocument()
   })
 
   it('should strikethorugh drug info and schedule text for stopped prescription', () => {
-    render(<PrescriptionTable data={mockAllPrescriptionResponse.stopped} />)
+    renderWithContextProvider(
+      <PrescriptionTable data={mockAllPrescriptionResponse.stopped} />,
+    )
 
     expect(screen.getByRole('cell', {name: /Aspirin 4*/i})).toHaveStyle(
       'text-decoration:line-through;',
     )
     expect(
       screen.getByRole('cell', {
-        name: /5 Capsule\(s\), Thrice a day for 5 Day\(s\) started on 12\/22\/2021 by Super Man/i,
+        name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
+          mockPrescriptionResponse[0].effectiveStartDate,
+        )} by Super Man`,
       }),
     ).toHaveStyle('text-decoration:line-through;')
   })
 
   it('should display status as finished for finished prescription', () => {
-    render(<PrescriptionTable data={mockAllPrescriptionResponse.finished} />)
+    renderWithContextProvider(
+      <PrescriptionTable data={mockAllPrescriptionResponse.finished} />,
+    )
     expect(screen.getByRole('cell', {name: 'finished'})).toBeInTheDocument()
   })
 
   it('should show revise,stop and renew actions for active prescription', () => {
-    render(<PrescriptionTable data={mockAllPrescriptionResponse.active} />)
+    renderWithContextProvider(
+      <PrescriptionTable data={mockAllPrescriptionResponse.active} />,
+    )
     expect(
       screen.getByRole('cell', {name: /revise stop renew/i}),
     ).toBeInTheDocument()
   })
 
   it('should show revise,stop and renew actions for scheduled prescription', () => {
-    render(<PrescriptionTable data={mockAllPrescriptionResponse.scheduled} />)
+    renderWithContextProvider(
+      <PrescriptionTable data={mockAllPrescriptionResponse.scheduled} />,
+    )
     expect(
       screen.getByRole('cell', {name: /revise stop renew/i}),
     ).toBeInTheDocument()
   })
 
+  it('should show stop prescription modal when user clicks stop action link', () => {
+    renderWithContextProvider(
+      <PrescriptionTable data={mockAllPrescriptionResponse.active} />,
+    )
+    userEvent.click(screen.getByText(/stop/i))
+    expect(screen.getByTitle('stopPrescriptionModal')).toBeInTheDocument()
+  })
+
+  it('should show stopped drug prescription info when user click Done in stop prescription modal', () => {
+    renderWithContextProvider(
+      <PrescriptionTable data={mockAllPrescriptionResponse.active} />,
+    )
+    userEvent.click(screen.getByText(/stop/i))
+    userEvent.click(screen.getByRole('button', {name: /Done/i}))
+
+    const currentDate = new Date().toLocaleDateString()
+    expect(screen.getByText(/undo/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {
+        name: `Stop Date : ${currentDate} Reason : - Notes: -`,
+      }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('cell', {name: /Aspirin 1*/i})).toHaveStyle(
+      'text-decoration:line-through;',
+    )
+    expect(
+      screen.getByRole('cell', {
+        name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
+          mockPrescriptionResponse[0].effectiveStartDate,
+        )} by Super Man`,
+      }),
+    ).toHaveStyle('text-decoration:line-through;')
+  })
+
+  it('should not show stopped drug prescription info when user click Cancel in stop prescription modal', () => {
+    renderWithContextProvider(
+      <PrescriptionTable data={mockAllPrescriptionResponse.active} />,
+    )
+    userEvent.click(screen.getByText(/stop/i))
+    userEvent.click(screen.getByRole('button', {name: /Cancel/i}))
+
+    const currentDate = new Date().toLocaleDateString()
+    expect(screen.queryByText(/undo/i)).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('cell', {
+        name: `Stop Date : ${currentDate} Reason : - Notes: -`,
+      }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should not stop the prescribed drug when user undos the stop action', () => {
+    renderWithContextProvider(
+      <PrescriptionTable data={mockAllPrescriptionResponse.active} />,
+    )
+    userEvent.click(screen.getByText(/stop/i))
+    userEvent.click(screen.getByRole('button', {name: /Done/i}))
+
+    const currentDate = new Date().toLocaleDateString()
+    expect(screen.getByText(/undo/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {
+        name: `Stop Date : ${currentDate} Reason : - Notes: -`,
+      }),
+    ).toBeInTheDocument()
+    userEvent.click(screen.getByText(/undo/i))
+    expect(
+      screen.queryByRole('cell', {
+        name: `Stop Date : ${currentDate} Reason : - Notes: -`,
+      }),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {name: /revise stop renew/i}),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('cell', {name: /Aspirin 1*/i})).not.toHaveStyle(
+      'text-decoration:line-through;',
+    )
+    expect(
+      screen.getByRole('cell', {
+        name: `5 Capsule(s), Thrice a day for 5 Day(s) started on ${getDateString(
+          mockPrescriptionResponse[0].effectiveStartDate,
+        )} by Super Man`,
+      }),
+    ).not.toHaveStyle('text-decoration:line-through;')
+  })
   it('should show only add action for stopped prescription', () => {
-    render(<PrescriptionTable data={mockAllPrescriptionResponse.stopped} />)
+    renderWithContextProvider(
+      <PrescriptionTable data={mockAllPrescriptionResponse.stopped} />,
+    )
     expect(screen.getByRole('cell', {name: /add/i})).toBeInTheDocument()
   })
   it('should show only add action for finished prescription', () => {
-    render(<PrescriptionTable data={mockAllPrescriptionResponse.finished} />)
+    renderWithContextProvider(
+      <PrescriptionTable data={mockAllPrescriptionResponse.finished} />,
+    )
     expect(screen.getByRole('cell', {name: /add/i})).toBeInTheDocument()
   })
 })
+
+function renderWithContextProvider(children) {
+  return render(
+    <StoppedPrescriptionsProvider>{children}</StoppedPrescriptionsProvider>,
+  )
+}
+
+function getDateString(dateInMilliSeconds: number): string {
+  return new Date(dateInMilliSeconds).toLocaleDateString()
+}

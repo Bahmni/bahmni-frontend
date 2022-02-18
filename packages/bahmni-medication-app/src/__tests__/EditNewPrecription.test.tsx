@@ -8,8 +8,11 @@ import {initMockApi} from '../utils/tests-utils/baseApiSetup'
 import {
   mockDrugOrderConfigApiResponse,
   mockDrugsApiResponse,
-  mockMedicationConfigRespone,
+  mockMedicationConfigResponse,
 } from '../utils/tests-utils/mockApiContract'
+import {when} from 'jest-when'
+import {useProviderName, useUserLocationUuid} from '../utils/cookie'
+import {StoppedPrescriptionsProvider} from '../context/StoppedPrescriptionContext'
 
 let adapter: MockAdapter, waitForApiCalls: Function
 
@@ -22,6 +25,14 @@ jest.mock('../utils/helper', () => {
   }
 })
 
+jest.mock('../utils/cookie', () => {
+  return {
+    __esModule: true,
+    useProviderName: jest.fn(),
+    useUserLocationUuid: jest.fn(),
+  }
+})
+
 describe('Medication Tab - Editting new prescription', () => {
   beforeEach(() => {
     sessionStorage.clear()
@@ -31,13 +42,15 @@ describe('Medication Tab - Editting new prescription', () => {
       .reply(200, mockDrugOrderConfigApiResponse)
     adapter
       .onGet(CONFIG_URLS.MEDICATION_CONFIG)
-      .reply(200, mockMedicationConfigRespone)
+      .reply(200, mockMedicationConfigResponse.allowOnlyCodedDrugs)
     adapter
       .onGet(REST_ENDPOINTS.DRUG_SEARCH)
       .reply(200, mockDrugsApiResponse.validResponse)
+    when(useProviderName).mockReturnValue('superman')
+    when(useUserLocationUuid).mockReturnValue('locationUuid')
   })
   it('should show updated prescription info when user completes edit new prescription', async () => {
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
     await searchDrug('Par', 2)
@@ -67,7 +80,7 @@ describe('Medication Tab - Editting new prescription', () => {
   })
 
   it('should not show updated prescription info when user cancel edit new prescription', async () => {
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
     await searchDrug('Par', 2)
@@ -134,4 +147,10 @@ async function waitForConfigurationLoad() {
     apiURL: REST_ENDPOINTS.DRUG_ORDER_CONFIG,
     times: 1,
   })
+}
+
+function renderWithContextProvider(children) {
+  return render(
+    <StoppedPrescriptionsProvider>{children}</StoppedPrescriptionsProvider>,
+  )
 }

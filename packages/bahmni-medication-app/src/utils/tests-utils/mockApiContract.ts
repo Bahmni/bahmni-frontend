@@ -1,5 +1,9 @@
-import {DrugOrderConfig} from '../../types'
-
+import type {
+  DrugOrderConfig,
+  NewPrescription,
+  NonCodedDrug,
+} from '../../types/index'
+import type {PrescriptionItem} from '../../types/medication'
 const currentDate = new Date()
 const nextDay = currentDate.setDate(currentDate.getDate() + 1)
 const previousDay = currentDate.setDate(currentDate.getDate() - 1)
@@ -10,15 +14,15 @@ export const mockDrugsApiResponse = {
       {
         uuid: '1',
         name: 'Paracetomal 1',
-        strength: '',
-        concept: '',
+        strength: '75mg',
+        concept: {uuid: '1'},
         dosageForm: {uuid: '1', display: 'Tablet'},
       },
       {
         uuid: '2',
         name: 'Paracetomal 2',
-        strength: '',
-        concept: '',
+        strength: '800mg',
+        concept: {uuid: '1'},
         dosageForm: {uuid: '1', display: 'Tablet'},
       },
     ],
@@ -28,10 +32,12 @@ export const mockDrugsApiResponse = {
   },
 }
 
-export const mockActivePrescriptionResponse = [
+export const mockActivePrescriptionResponse: PrescriptionItem[] = [
   {
+    uuid: '1',
     visit: {
       startDateTime: 1496851128000,
+      uuid: '123',
     },
     dateStopped: null,
     dateActivated: 1640164841000, //Date: 22/12/2021
@@ -59,10 +65,11 @@ export const mockActivePrescriptionResponse = [
     effectiveStopDate: nextDay,
   },
   {
+    uuid: '2',
     visit: {
       startDateTime: 1496851128000,
     },
-    dateStopped: 1607888143,
+    dateStopped: null,
     dateActivated: 1640254629000, //Date: 23/12/2021
     provider: {
       name: 'Super Man',
@@ -88,10 +95,11 @@ export const mockActivePrescriptionResponse = [
   },
 ]
 
-export const mockPrescriptionResponse = [
+export const mockPrescriptionResponse: PrescriptionItem[] = [
   {
     visit: {
       startDateTime: 1496851128000,
+      uuid: '12345',
     },
     dateStopped: 1607888143,
     dateActivated: 1640164841000, //Date: 22/12/2021
@@ -101,6 +109,8 @@ export const mockPrescriptionResponse = [
     drug: {
       name: 'Aspirin 1',
       form: 'Tablet',
+      uuid: '1',
+      strength: null,
     },
     drugNonCoded: null,
     dosingInstructions: {
@@ -130,6 +140,8 @@ export const mockPrescriptionResponse = [
     drug: {
       name: 'Aspirin 2',
       form: 'Tablet',
+      uuid: '2',
+      strength: null,
     },
     dosingInstructions: {
       dose: 4.0,
@@ -147,10 +159,11 @@ export const mockPrescriptionResponse = [
   },
 ]
 
-export const mockPrescriptionResponseForNonCodedDrug = [
+export const mockPrescriptionResponseForNonCodedDrug: PrescriptionItem[] = [
   {
     visit: {
       startDateTime: 1496851128000,
+      uuid: '123456',
     },
     dateActivated: 1640164841000,
     dateStopped: 1607888143,
@@ -175,7 +188,12 @@ export const mockPrescriptionResponseForNonCodedDrug = [
     effectiveStopDate: 1607888143,
   },
 ]
-export const mockAllPrescriptionResponse = {
+export const mockAllPrescriptionResponse: {
+  active: PrescriptionItem[]
+  scheduled: PrescriptionItem[]
+  finished: PrescriptionItem[]
+  stopped: PrescriptionItem[]
+} = {
   active: [
     {
       visit: {
@@ -189,6 +207,8 @@ export const mockAllPrescriptionResponse = {
       drug: {
         name: 'Aspirin 1',
         form: 'Tablet',
+        uuid: '1',
+        strength: null,
       },
       dosingInstructions: {
         dose: 5.0,
@@ -219,6 +239,8 @@ export const mockAllPrescriptionResponse = {
       drug: {
         name: 'Aspirin 2',
         form: 'Tablet',
+        uuid: '2',
+        strength: null,
       },
       dosingInstructions: {
         dose: 5.0,
@@ -249,6 +271,8 @@ export const mockAllPrescriptionResponse = {
       drug: {
         name: 'Aspirin 3',
         form: 'Tablet',
+        uuid: '3',
+        strength: null,
       },
       dosingInstructions: {
         dose: 5.0,
@@ -279,6 +303,8 @@ export const mockAllPrescriptionResponse = {
       drug: {
         name: 'Aspirin 4',
         form: 'Tablet',
+        uuid: '4',
+        strength: null,
       },
       dosingInstructions: {
         dose: 5.0,
@@ -298,22 +324,24 @@ export const mockAllPrescriptionResponse = {
   ],
 }
 
-export const mockMedicationConfigRespone = {
-  commonConfig: {},
-  tabConfig: {
-    allMedicationTabConfig: {
-      inputOptionsConfig: {
-        allowOnlyCodedDrugs: false,
+export const mockMedicationConfigResponse = {
+  allowCodedAndNonCodedDrugs: {
+    commonConfig: {},
+    tabConfig: {
+      allMedicationTabConfig: {
+        inputOptionsConfig: {
+          allowOnlyCodedDrugs: false,
+        },
       },
     },
   },
-}
-export const mockNonCodedDrugConfigResponse = {
-  commonConfig: {},
-  tabConfig: {
-    allMedicationTabConfig: {
-      inputOptionsConfig: {
-        allowOnlyCodedDrugs: true,
+  allowOnlyCodedDrugs: {
+    commonConfig: {},
+    tabConfig: {
+      allMedicationTabConfig: {
+        inputOptionsConfig: {
+          allowOnlyCodedDrugs: true,
+        },
       },
     },
   },
@@ -377,15 +405,15 @@ export const mockMedicationConfig = {
   },
 }
 
-export const mockNonCodedDrug = {
+export const mockNonCodedDrug: NonCodedDrug = {
   name: 'Non-Coded Drug',
 }
 
-export const mockNewPrescription = [
+export const mockNewPrescription: NewPrescription[] = [
   {
+    careSetting: 'OUTPATIENT',
     action: 'NEW',
     dateStopped: null,
-    dateActivated: 1642506772121,
     autoExpireDate: 1642593171905,
     drug: {form: 'Tablet', name: 'Paracetomal 1', strength: '', uuid: '1'},
     dosingInstructions: {
@@ -404,3 +432,26 @@ export const mockNewPrescription = [
     scheduledDate: 1642506771905,
   },
 ]
+
+export const mockProviderResponse = {
+  results: [
+    {
+      uuid: 'providerUuid',
+      display: 'superman - Super Man',
+    },
+  ],
+}
+
+export const mockEncounterTypeResponse = {
+  uuid: 'encounterTypeUuid',
+}
+
+export const mockVisitTypeResponse = {
+  results: [
+    {
+      visitType: {
+        name: 'OPD',
+      },
+    },
+  ],
+}

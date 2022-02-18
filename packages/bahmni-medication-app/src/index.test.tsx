@@ -2,43 +2,74 @@ import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import MockAdapter from 'axios-mock-adapter/types'
 import {axe} from 'jest-axe'
+import {when} from 'jest-when'
 import React from 'react'
+import {StoppedPrescriptionsProvider} from './context/StoppedPrescriptionContext'
 import MedicationApp from './index'
+import {PrescriptionWidget} from './PrescriptionsWidget/PrescriptionWidget'
 import {CONFIG_URLS, REST_ENDPOINTS} from './utils/constants'
+import {useProviderName, useUserLocationUuid} from './utils/cookie'
+import {getPatientUuid} from './utils/helper'
 import {initMockApi} from './utils/tests-utils/baseApiSetup'
 import {
-  mockDrugsApiResponse,
-  mockMedicationConfigRespone,
-  mockNonCodedDrugConfigResponse,
   mockDrugOrderConfigApiResponse,
+  mockDrugsApiResponse,
+  mockEncounterTypeResponse,
+  mockMedicationConfigResponse,
+  mockProviderResponse,
+  mockVisitTypeResponse,
 } from './utils/tests-utils/mockApiContract'
 
+jest.mock('./PrescriptionsWidget/PrescriptionWidget')
+
 Element.prototype.scrollIntoView = jest.fn()
-let adapter: MockAdapter, waitForApiCalls: Function, apiParams: Function
+let adapter: MockAdapter,
+  waitForApiCalls: Function,
+  waitForPostCalls: Function,
+  apiBody: Function
+
+jest.mock('./utils/cookie', () => {
+  return {
+    __esModule: true,
+    useProviderName: jest.fn(),
+    useUserLocationUuid: jest.fn(),
+  }
+})
+
+jest.mock('./utils/helper', () => {
+  const originalModule = jest.requireActual('./utils/helper')
+  return {
+    __esModule: true,
+    ...originalModule,
+    getPatientUuid: jest.fn(),
+  }
+})
 
 test('should pass hygene accessibility tests', async () => {
-  ;({adapter, waitForApiCalls, apiParams} = initMockApi())
-  const {container} = render(<MedicationApp />)
+  ;({adapter, waitForApiCalls} = initMockApi())
+  const {container} = renderWithContextProvider(<MedicationApp />)
   adapter
     .onGet(CONFIG_URLS.MEDICATION_CONFIG)
-    .reply(200, mockMedicationConfigRespone)
+    .reply(200, mockMedicationConfigResponse.allowCodedAndNonCodedDrugs)
 
   await waitForMedicationConfig()
   expect(await axe(container)).toHaveNoViolations()
 })
 
 beforeEach(() => {
-  ;({adapter, waitForApiCalls, apiParams} = initMockApi())
+  ;({adapter, waitForApiCalls, waitForPostCalls, apiBody} = initMockApi())
   sessionStorage.clear()
   adapter
     .onGet(REST_ENDPOINTS.DRUG_ORDER_CONFIG)
     .reply(200, mockDrugOrderConfigApiResponse)
+  waitForSaveMedicationLoad()
+  when(PrescriptionWidget).mockReturnValue(<p>Prescription Widget</p>)
 })
 
 describe('Medication Tab', () => {
   it('should show error message when fetching medication config fails', async () => {
     adapter.onGet(CONFIG_URLS.MEDICATION_CONFIG).reply(404)
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
 
@@ -47,7 +78,7 @@ describe('Medication Tab', () => {
 
   it('should show Loading message while fetching medication config', async () => {
     adapter.onGet(CONFIG_URLS.MEDICATION_CONFIG).timeout()
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     expect(screen.getByText(/loading data/i)).toBeInTheDocument()
     await waitForMedicationConfig()
@@ -58,14 +89,14 @@ describe('Medication tab - Drugs search', () => {
   beforeEach(() => {
     adapter
       .onGet(CONFIG_URLS.MEDICATION_CONFIG)
-      .reply(200, mockMedicationConfigRespone)
+      .reply(200, mockMedicationConfigResponse.allowCodedAndNonCodedDrugs)
   })
   it('should show matching drugs when user enters valid input in search bar', async () => {
     adapter
       .onGet(REST_ENDPOINTS.DRUG_SEARCH)
       .reply(200, mockDrugsApiResponse.validResponse)
 
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
     await searchDrug('Par', 2)
@@ -78,7 +109,7 @@ describe('Medication tab - Drugs search', () => {
     adapter
       .onGet(REST_ENDPOINTS.DRUG_SEARCH)
       .reply(200, mockDrugsApiResponse.emptyResponse)
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
     await waitForMedicationConfig()
     await searchDrug('Paz', 2)
 
@@ -89,7 +120,7 @@ describe('Medication tab - Drugs search', () => {
     adapter
       .onGet(REST_ENDPOINTS.DRUG_SEARCH)
       .reply(200, mockDrugsApiResponse.validResponse)
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
 
@@ -105,7 +136,7 @@ describe('Medication tab - Drugs search', () => {
     adapter
       .onGet(REST_ENDPOINTS.DRUG_SEARCH)
       .reply(200, mockDrugsApiResponse.validResponse)
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
     await searchDrug('Par', 2)
@@ -129,15 +160,15 @@ describe('Medication tab - Drugs search', () => {
   })
 
   it('should show prescription widget', async () => {
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
 
-    expect(screen.getByTitle('prescriptionWidget')).toBeInTheDocument()
+    expect(screen.getByText(/Prescription Widget/i)).toBeInTheDocument()
   })
 
   it('should not show new prescription table unless user adds new prescription', async () => {
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
 
@@ -151,13 +182,13 @@ describe('Medication tab - Add Prescription Dialog', () => {
   beforeEach(() => {
     adapter
       .onGet(CONFIG_URLS.MEDICATION_CONFIG)
-      .reply(200, mockMedicationConfigRespone)
+      .reply(200, mockMedicationConfigResponse.allowCodedAndNonCodedDrugs)
     adapter
       .onGet(REST_ENDPOINTS.DRUG_SEARCH)
       .reply(200, mockDrugsApiResponse.validResponse)
   })
   it('should show prescription dialog when user clicks a drug', async () => {
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
     await searchDrug('Par', 2)
@@ -173,9 +204,8 @@ describe('Medication tab - Add Prescription Dialog', () => {
     )
   })
 
-  //FIXME: this test would change after implmenting Add Prescription button
   it('should hide prescription dialog and new prescription table when user clicks cancel', async () => {
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
     await searchDrug('Par', 2)
@@ -195,9 +225,8 @@ describe('Medication tab - Add Prescription Dialog', () => {
     ).not.toBeInTheDocument()
   })
 
-  //FIXME Done is currently placeholder and would be implemented in future stories
   it('should show new prescription table when user click Done', async () => {
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
     await searchDrug('Par', 2)
@@ -213,7 +242,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
   })
 
   it('should add new prescription to the new prescription table when user clicks done', async () => {
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
     await searchDrug('Par', 2)
@@ -239,7 +268,7 @@ describe('Medication tab - Add Prescription Dialog', () => {
   })
 
   it('should display new prescription in descending order', async () => {
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
     await searchDrug('Par', 2)
@@ -264,11 +293,11 @@ describe('Medication tab - Add Prescription Dialog', () => {
   it('should show prescription dialog when user clicks user input suggestion - Configured to accept non coded drugs ', async () => {
     adapter
       .onGet(CONFIG_URLS.MEDICATION_CONFIG)
-      .reply(200, mockMedicationConfigRespone)
+      .reply(200, mockMedicationConfigResponse.allowCodedAndNonCodedDrugs)
     adapter
       .onGet(REST_ENDPOINTS.DRUG_SEARCH)
       .reply(200, mockDrugsApiResponse.emptyResponse)
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
     await waitForMedicationConfig()
     await searchDrug('Paz', 2)
 
@@ -282,11 +311,11 @@ describe('Medication tab - Add Prescription Dialog', () => {
   it('should show error message when user clicks user input suggestion - Configured to accept only coded drugs', async () => {
     adapter
       .onGet(CONFIG_URLS.MEDICATION_CONFIG)
-      .reply(200, mockNonCodedDrugConfigResponse)
+      .reply(200, mockMedicationConfigResponse.allowOnlyCodedDrugs)
     adapter
       .onGet(REST_ENDPOINTS.DRUG_SEARCH)
       .reply(200, mockDrugsApiResponse.emptyResponse)
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
     await waitForMedicationConfig()
     await searchDrug('Paz', 2)
 
@@ -302,20 +331,118 @@ describe('Medication tab - Add Prescription Dialog', () => {
   })
 })
 
-describe('New Prescription table - Delete action', () => {
+describe('Medication tab - Save New Prescription', () => {
   beforeEach(() => {
     adapter
       .onGet(CONFIG_URLS.MEDICATION_CONFIG)
-      .reply(200, mockNonCodedDrugConfigResponse)
+      .reply(200, mockMedicationConfigResponse.allowCodedAndNonCodedDrugs)
     adapter
       .onGet(REST_ENDPOINTS.DRUG_SEARCH)
       .reply(200, mockDrugsApiResponse.validResponse)
   })
+  it('should render save button in medication tab', async () => {
+    renderWithContextProvider(<MedicationApp />)
+    await waitForMedicationConfig()
 
+    expect(screen.getByRole('button', {name: /save/i})).toBeInTheDocument()
+  })
+
+  it('should hide new prescription table on successful save', async () => {
+    renderWithContextProvider(<MedicationApp />)
+    adapter.onPost(REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION).reply(200)
+    await saveMedication()
+
+    await waitFor(() => {
+      expect(screen.queryByTitle(/newPrescription/i)).not.toBeInTheDocument()
+    })
+  })
+
+  it('should not hide new prescription table on save failure', async () => {
+    renderWithContextProvider(<MedicationApp />)
+    adapter.onPost(REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION).reply(404)
+    await saveMedication()
+
+    await waitFor(() => {
+      expect(screen.queryByTitle(/newPrescription/i)).toBeInTheDocument()
+    })
+  })
+
+  it('should rerender prescription table on successful save', async () => {
+    renderWithContextProvider(<MedicationApp />)
+    adapter.onPost(REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION).reply(200)
+
+    await saveMedication()
+
+    when(PrescriptionWidget).mockReturnValue(
+      <p>Prescription Widget Rerendered</p>,
+    )
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Prescription Widget Rerendered/i),
+      ).toBeInTheDocument()
+    })
+    expect(screen.queryByText('Prescription Widget')).not.toBeInTheDocument()
+  })
+
+  it('should not rerender prescription table on save failure', async () => {
+    renderWithContextProvider(<MedicationApp />)
+    adapter.onPost(REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION).reply(404)
+
+    await saveMedication()
+
+    when(PrescriptionWidget).mockReturnValue(
+      <p>Prescription Widget Rerendered</p>,
+    )
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(/Prescription Widget Rerendered/i),
+      ).not.toBeInTheDocument()
+    })
+    expect(screen.getByText(/Prescription Widget/i)).toBeInTheDocument()
+  })
+
+  it('should save non coded drug', async () => {
+    adapter
+      .onGet(REST_ENDPOINTS.DRUG_SEARCH)
+      .reply(200, mockDrugsApiResponse.emptyResponse)
+    renderWithContextProvider(<MedicationApp />)
+    adapter.onPost(REST_ENDPOINTS.SAVE_NEW_PRESCRIPTION).reply(200)
+
+    await waitForMedicationConfig()
+    await searchDrug('Parz', 3)
+
+    userEvent.click(screen.getByText(/parz/i))
+
+    await fillingDosageInstructions()
+
+    const drugs = screen.getAllByTitle(/newprescription/i)
+    expect(drugs[0]).toHaveTextContent(/parz/i)
+
+    userEvent.click(screen.getByRole('button', {name: /save/i}))
+
+    await waitFor(() => {
+      expect(screen.getByText(/save successful/i)).toBeInTheDocument()
+    })
+
+    expect(screen.queryByTitle(/newprescription/i)).not.toBeInTheDocument()
+  })
+})
+
+describe('New Prescription table - Delete action', () => {
+  beforeEach(() => {
+    adapter
+      .onGet(CONFIG_URLS.MEDICATION_CONFIG)
+      .reply(200, mockMedicationConfigResponse.allowCodedAndNonCodedDrugs)
+    adapter
+      .onGet(REST_ENDPOINTS.DRUG_SEARCH)
+      .reply(200, mockDrugsApiResponse.validResponse)
+  })
   it('should remove drug from new prescription table on clicking ok in confirm popup ', async () => {
     window.confirm = jest.fn(() => true)
 
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
     await searchDrug('Par', 2)
@@ -348,7 +475,7 @@ describe('New Prescription table - Delete action', () => {
   it('should not remove drug from new prescription table on clicking cancel in confirm popup ', async () => {
     window.confirm = jest.fn(() => false)
 
-    render(<MedicationApp />)
+    renderWithContextProvider(<MedicationApp />)
 
     await waitForMedicationConfig()
     await searchDrug('Par', 2)
@@ -381,9 +508,9 @@ async function fillingDosageInstructions() {
   userEvent.click(screen.getByText(/done/i))
 }
 
-async function searchDrug(durgName: string, times: Number = 0) {
+async function searchDrug(drugName: string, times: Number = 0) {
   const searchBox = screen.getByRole('searchbox', {name: /searchdrugs/i})
-  userEvent.type(searchBox, durgName)
+  userEvent.type(searchBox, drugName)
   await waitForApiCalls({
     apiURL: REST_ENDPOINTS.DRUG_SEARCH,
     times: times,
@@ -402,4 +529,32 @@ async function waitForConfigurationLoad() {
     apiURL: REST_ENDPOINTS.DRUG_ORDER_CONFIG,
     times: 1,
   })
+}
+
+async function waitForSaveMedicationLoad() {
+  adapter.onGet(REST_ENDPOINTS.PROVIDER).reply(200, mockProviderResponse)
+  adapter
+    .onGet(REST_ENDPOINTS.ENCOUNTER_TYPE)
+    .reply(200, mockEncounterTypeResponse)
+  adapter.onGet(REST_ENDPOINTS.VISIT).reply(200, mockVisitTypeResponse)
+  when(useProviderName).mockReturnValue('superman')
+  when(useUserLocationUuid).mockReturnValue('locationUuid')
+  when(getPatientUuid).mockReturnValue('patientUuid')
+}
+
+async function saveMedication() {
+  await waitForMedicationConfig()
+  await searchDrug('Par', 2)
+
+  userEvent.click(screen.getByText(/paracetomal 1/i))
+
+  await fillingDosageInstructions()
+
+  userEvent.click(screen.getByRole('button', {name: /save/i}))
+}
+
+function renderWithContextProvider(children) {
+  return render(
+    <StoppedPrescriptionsProvider>{children}</StoppedPrescriptionsProvider>,
+  )
 }

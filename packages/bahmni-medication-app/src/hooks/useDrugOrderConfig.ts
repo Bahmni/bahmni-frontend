@@ -2,7 +2,7 @@ import {useEffect} from 'react'
 import {useAsync} from 'react-async'
 import createPersistedState from 'use-persisted-state'
 import {fetchDrugOrderConfig} from '../services/bahmnicore'
-import {DrugOrderConfig} from '../types'
+import type {DrugOrderConfig} from '../types'
 const useDrugOrderConfigState = createPersistedState(
   'bahmniDrugOrderConfig',
   sessionStorage,

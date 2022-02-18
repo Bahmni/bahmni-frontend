@@ -1,3 +1,5 @@
+import {PrescriptionItem} from './medication'
+
 export type DosageForm = {
   uuid: string
   display: string
@@ -11,6 +13,7 @@ export type Drug = {
 }
 
 export type NonCodedDrug = {
+  uuid?: String
   name: String
   dosageForm?: DosageForm = undefined
 }
@@ -46,37 +49,67 @@ export type DurationUnit = {
   factor: number
 }
 
-export interface NewPrescription {
+export type StopPrescriptionInfo = {
+  stopDate: Date
+  reason?: string
+  notes?: string
+}
+
+export type NewPrescription = {
+  careSetting: string
   action?: string
   dateStopped: number
   autoExpireDate: number
-  concept?: any
-  dateActivated: number
+  concept?: Concept
   dosingInstructions: DosingInstructions
   drug: DrugInfo
   drugNonCoded?: any
   duration: number
-  durationUnits: String
+  durationUnits: string
   effectiveStartDate: number
   effectiveStopDate: number
   scheduledDate: number
 }
 
-export interface DrugInfo {
+export type Concept = {
+  uuid: String
+}
+
+export type EncounterPayload = {
+  locationUuid: String
+  patientUuid: String
+  encounterUuid: String
+  visitUuid: String
+  providers: [
+    {
+      uuid: String
+    },
+  ]
+  encounterDateTime?: String
+  visitType: String
+  bahmniDiagnoses: Array
+  orders: Array
+  drugOrders: Array<NewPrescription | PrescriptionItem>
+  disposition: String
+  observations: Array
+  encounterTypeUuid: String
+}
+
+export type DrugInfo = {
   form: String
   name: String
   strength: String
   uuid: String
 }
 
-export interface DosingInstructions {
-  administrationInstructions?: String
+export type DosingInstructions = {
+  administrationInstructions?: string
   asNeeded?: boolean
   dose: number
-  doseUnits: String
-  frequency: String
+  doseUnits: string
+  frequency: string
   numberOfRefills?: any
   quantity: number
-  quantityUnits: String
-  route: String
+  quantityUnits: string
+  route: string
 }

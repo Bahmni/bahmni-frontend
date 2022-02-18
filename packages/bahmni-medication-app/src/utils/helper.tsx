@@ -13,5 +13,5 @@ export const getDrugInfo = (
   if (prescriptionItem.drug === null && prescriptionItem.drugNonCoded)
     return `${prescriptionItem.drugNonCoded}, ${prescriptionItem.dosingInstructions.route}`
 
-  return ` ${prescriptionItem.drug.name}, ${prescriptionItem.drug.form}, ${prescriptionItem.dosingInstructions.route}`
+  return `${prescriptionItem.drug.name}, ${prescriptionItem.drug.form}, ${prescriptionItem.dosingInstructions.route}`
 }

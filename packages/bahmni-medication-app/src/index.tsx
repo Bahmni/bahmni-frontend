@@ -1,20 +1,26 @@
-import {ClickableTile, InlineLoading, Search} from '@bahmni/design-system'
+import {
+  ClickableTile,
+  Column,
+  Grid,
+  InlineLoading,
+  Row,
+  Search,
+} from '@bahmni/design-system'
 import React, {useEffect, useState} from 'react'
 import {useAsync} from 'react-async'
 import AddPrescriptionModal from './AddPrescriptionModal/AddPrescriptionModal'
 import useMedicationConfig from './hooks/useMedicationConfig'
-import {PrescriptionWidget} from './PrescriptionsWidget/PrescriptionWidget'
-import {search} from './services/drugs'
-import {Drug, DrugResult, NewPrescription, NonCodedDrug} from './types'
-import {createNewPrescription} from './NewPrescriptionTable/createNewPrescription'
+import {createNewPrescription} from './NewPrescriptionTable/newPrescriptionHelper'
 import NewPrescriptionTable from './NewPrescriptionTable/NewPrescriptionTable'
+import {PrescriptionWidget} from './PrescriptionsWidget/PrescriptionWidget'
+import SaveMedication from './SaveMedication/SaveMedication'
+import {search} from './services/drugs'
+import {getNonCodedDrugUuid} from './services/openmrs'
+import {Drug, DrugResult, NewPrescription, NonCodedDrug} from './types'
 
 const styles = {
   container: {
     margin: '1rem 0 0 1rem',
-  } as React.CSSProperties,
-  search_bar: {
-    width: '70%',
   },
   tileList: {
     margin: 'auto',
@@ -30,13 +36,25 @@ const MedicationApp = () => {
   const [allowOnlyCodedDrug, setAllowOnlyCodedDrug] = useState(false)
   const {medicationConfig, isMedicationConfigLoading, medicationConfigError} =
     useMedicationConfig()
-
+  const [prescriptionWidgetKey, setPrescriptionWidgetKey] = useState<number>(
+    Math.random(),
+  )
   const {
     run: searchDrug,
     data: drugs,
     error: error,
   } = useAsync<DrugResult>({
     deferFn: () => search(userInput.trim()),
+    // onReject: (e) => error ?? console.log(e),
+  })
+
+  const {
+    run: getNonCodedUUID,
+    data: nonCodedUuid,
+    error: nonCodedUuidError,
+  } = useAsync<String>({
+    deferFn: () => getNonCodedDrugUuid(),
+    onResolve: () => setSelectedDrug({name: userInput, uuid: nonCodedUuid}),
     // onReject: (e) => error ?? console.log(e),
   })
 
@@ -47,6 +65,14 @@ const MedicationApp = () => {
     setAllowOnlyCodedDrug(false)
     setSelectedDrug(null)
   }, [userInput])
+
+  useEffect(() => {
+    if (selectedDrug && selectedDrug?.uuid == undefined) {
+      nonCodedUuid == undefined
+        ? getNonCodedUUID()
+        : setSelectedDrug({name: userInput, uuid: nonCodedUuid})
+    }
+  }, [selectedDrug])
 
   const updateStatesForNonCodedDrug = () => {
     // TODO: Refactor to get allowOnlyCodedDrugs based on tabConfigName
@@ -69,6 +95,12 @@ const MedicationApp = () => {
       </p>
     )
   }
+
+  const onSaveSuccess = () => {
+    setNewPrescription([])
+    setPrescriptionWidgetKey(Math.random())
+  }
+
   const onAddPrescription = prescription => {
     setUserInput('')
     setNewPrescription([
@@ -107,22 +139,36 @@ const MedicationApp = () => {
     return <InlineLoading description="Loading Data..." />
   return (
     <div style={styles.container}>
-      <div style={styles.search_bar}>
-        <Search
-          id="search"
-          data-testid="Search Drug"
-          labelText="SearchDrugs"
-          placeholder="Search for drug to add in prescription"
-          onChange={(e: {target: HTMLInputElement}) =>
-            setUserInput(e.target.value)
-          }
-          onClear={() => setUserInput('')}
-          value={userInput}
-        />
-        {drugs && !selectedDrug && userInput.length >= 2 && (
-          <div style={styles.tileList}>{showDrugOptions()}</div>
-        )}
-      </div>
+      <Grid condensed>
+        <Row>
+          <Column>
+            <Search
+              id="search"
+              data-testid="Search Drug"
+              labelText="SearchDrugs"
+              placeholder="Search for drug to add in prescription"
+              onChange={(e: {target: HTMLInputElement}) =>
+                setUserInput(e.target.value)
+              }
+              onClear={() => setUserInput('')}
+              value={userInput}
+            />
+          </Column>
+          <Column lg={3} md={2} sm={1}>
+            <SaveMedication
+              newPrescription={newPrescription}
+              onSaveSuccess={onSaveSuccess}
+            />
+          </Column>
+        </Row>
+        <Row>
+          <Column lg={9} md={6} sm={3}>
+            {drugs && !selectedDrug && userInput.length >= 2 && (
+              <div style={styles.tileList}>{showDrugOptions()}</div>
+            )}
+          </Column>
+        </Row>
+      </Grid>
       {selectedDrug && (
         <AddPrescriptionModal
           drug={selectedDrug}
@@ -136,7 +182,7 @@ const MedicationApp = () => {
         newPrescriptions={newPrescription}
         setNewPrescriptions={setNewPrescription}
       ></NewPrescriptionTable>
-      <PrescriptionWidget />
+      <PrescriptionWidget key={prescriptionWidgetKey} />
     </div>
   )
 }

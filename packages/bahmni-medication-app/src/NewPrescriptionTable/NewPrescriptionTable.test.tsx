@@ -41,11 +41,13 @@ describe('New Prescription Table', () => {
     ).toBeInTheDocument()
     expect(
       screen.getByRole('cell', {
-        name: /1 Tablet\(s\), Immediately for 1 Day\(s\) starting on 1\/18\/2022/i,
+        name: `2 Tablet(s), Immediately for 2 Day(s) starting on ${new Date(
+          mockNewPrescription[0].effectiveStartDate,
+        ).toLocaleDateString('en')}`,
       }),
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('cell', {name: /2 Tablet\(s\)/i}),
+      screen.getByRole('cell', {name: /4 Tablet\(s\)/i}),
     ).toBeInTheDocument()
   })
 

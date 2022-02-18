@@ -28,7 +28,7 @@ export const createNewPrescription = (prescription): NewPrescription => {
 
     if (isCodedDrug(prescription.drug)) {
       drug = {
-        form: prescription.drug.dosageForm.display,
+        form: prescription.drug.form || prescription.drug.dosageForm.display,
         name: prescription.drug.name,
         strength: prescription.drug.strength,
         uuid: prescription.drug.uuid,

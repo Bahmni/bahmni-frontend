@@ -1,6 +1,7 @@
 import {
   Close24,
   Link,
+  Modal,
   Star24,
   Table,
   TableBody,
@@ -10,10 +11,12 @@ import {
   TableHeader,
   TableRow,
 } from '@bahmni/design-system'
-import React from 'react'
+import React, {useState} from 'react'
+import AddPrescriptionModal from '../AddPrescriptionModal/AddPrescriptionModal'
 import {NewPrescription} from '../types'
 import {newPrescriptionHeader} from '../utils/constants'
 import {getDrugInfo} from '../utils/helper'
+import {createNewPrescription} from './createNewPrescription'
 
 interface NewPrescriptionProps {
   newPrescriptions: NewPrescription[]
@@ -43,6 +46,8 @@ const NewPrescriptionTable = ({
   newPrescriptions,
   setNewPrescriptions,
 }: NewPrescriptionProps) => {
+  const [selectedIndexForEdit, setSelectedIndexForEdit] = useState(-1)
+
   const handleDelete = (index: number) => {
     if (window.confirm('Are you sure you want to remove?')) {
       setNewPrescriptions(
@@ -51,6 +56,17 @@ const NewPrescriptionTable = ({
         ),
       )
     }
+  }
+  const isEditActionClicked = (): boolean => {
+    return selectedIndexForEdit >= 0
+  }
+
+  function handlePrescriptionUpdate(updatedPrescriptionInfo) {
+    const updatedPrescription = createNewPrescription(updatedPrescriptionInfo)
+    let temp = [...newPrescriptions]
+    temp[selectedIndexForEdit] = updatedPrescription
+    setNewPrescriptions(temp)
+    setSelectedIndexForEdit(-1)
   }
 
   return newPrescriptions.length > 0 ? (
@@ -77,7 +93,9 @@ const NewPrescriptionTable = ({
                   <TableCell></TableCell>
                   <TableCell>
                     <span style={styles.action}>
-                      <Link>edit</Link>
+                      <Link onClick={() => setSelectedIndexForEdit(index)}>
+                        edit
+                      </Link>
                       <Star24 aria-label="favourite" />
                       <Close24
                         aria-label="delete"
@@ -93,6 +111,17 @@ const NewPrescriptionTable = ({
           </TableBody>
         </Table>
       </TableContainer>
+      {isEditActionClicked() && (
+        <Modal>
+          <AddPrescriptionModal
+            newPrescriptionForEdit={newPrescriptions[selectedIndexForEdit]}
+            onClose={() => setSelectedIndexForEdit(-1)}
+            onDone={updatedPrescriptionInfo => {
+              handlePrescriptionUpdate(updatedPrescriptionInfo)
+            }}
+          ></AddPrescriptionModal>
+        </Modal>
+      )}
     </div>
   ) : (
     <></>

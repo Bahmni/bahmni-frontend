@@ -25,6 +25,7 @@ import TextArea from 'carbon-components-react/es/components/TextArea'
 import {Close24, Star24} from '@carbon/icons-react'
 import {ToastNotification} from 'carbon-components-react/es/components/Notification/Notification'
 import Loading from 'carbon-components-react/es/components/Loading/Loading'
+import Modal from './Modal'
 
 export {
   Button,
@@ -55,4 +56,5 @@ export {
   TextArea,
   Close24,
   Star24,
+  Modal,
 }

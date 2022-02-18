@@ -65,7 +65,7 @@ export type NewPrescription = {
   drug: DrugInfo
   drugNonCoded?: any
   duration: number
-  durationUnits: String
+  durationUnits: string
   effectiveStartDate: number
   effectiveStopDate: number
   scheduledDate: number
@@ -103,13 +103,13 @@ export type DrugInfo = {
 }
 
 export type DosingInstructions = {
-  administrationInstructions?: String
+  administrationInstructions?: string
   asNeeded?: boolean
   dose: number
-  doseUnits: String
-  frequency: String
+  doseUnits: string
+  frequency: string
   numberOfRefills?: any
   quantity: number
-  quantityUnits: String
-  route: String
+  quantityUnits: string
+  route: string
 }

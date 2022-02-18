@@ -302,6 +302,67 @@ describe('Medication tab - Add Prescription Dialog', () => {
   })
 })
 
+describe('New Prescription table - Delete action', () => {
+  beforeEach(() => {
+    adapter
+      .onGet(CONFIG_URLS.MEDICATION_CONFIG)
+      .reply(200, mockNonCodedDrugConfigResponse)
+    adapter
+      .onGet(REST_ENDPOINTS.DRUG_SEARCH)
+      .reply(200, mockDrugsApiResponse.validResponse)
+  })
+
+  it('should remove drug from new prescription table on clicking ok in confirm popup ', async () => {
+    window.confirm = jest.fn(() => true)
+
+    render(<MedicationApp />)
+
+    await waitForMedicationConfig()
+    await searchDrug('Par', 2)
+
+    userEvent.click(screen.getByText(/paracetomal 1/i))
+    await fillingDosageInstructions()
+
+    await searchDrug('Par', 4)
+
+    userEvent.click(screen.getByText(/paracetomal 2/i))
+    await fillingDosageInstructions()
+
+    expect(
+      screen.getByRole('cell', {name: /paracetomal 1/i}),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {name: /paracetomal 2/i}),
+    ).toBeInTheDocument()
+
+    userEvent.click(screen.getAllByRole('img', {name: /delete/i})[0])
+
+    expect(
+      screen.queryByRole('cell', {name: /paracetomal 2/i}),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {name: /paracetomal 1/i}),
+    ).toBeInTheDocument()
+  })
+
+  it('should not remove drug from new prescription table on clicking cancel in confirm popup ', async () => {
+    window.confirm = jest.fn(() => false)
+
+    render(<MedicationApp />)
+
+    await waitForMedicationConfig()
+    await searchDrug('Par', 2)
+
+    userEvent.click(screen.getByText(/paracetomal 1/i))
+    await fillingDosageInstructions()
+
+    userEvent.click(screen.getByRole('img', {name: /delete/i}))
+
+    expect(
+      screen.getByRole('cell', {name: /paracetomal 1/i}),
+    ).toBeInTheDocument()
+  })
+})
 async function fillingDosageInstructions() {
   await waitForConfigurationLoad()
   await waitFor(() =>

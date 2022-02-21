@@ -28,7 +28,7 @@ export const createNewPrescription = (prescription): NewPrescription => {
 
   function setDrugInfo() {
     function isCodedDrug(drug) {
-      return drug.strength ? true : false
+      return drug.hasOwnProperty('strength') ? true : false
     }
 
     if (isCodedDrug(prescription.drug)) {

@@ -73,6 +73,7 @@ const AddPrescriptionModal = (props: AddPrescriptionModalProps) => {
       return (
         props.newPrescriptionForEdit.drug || {
           name: props.newPrescriptionForEdit.drugNonCoded,
+          uuid: props.newPrescriptionForEdit.concept.uuid,
         }
       )
   }

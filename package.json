@@ -14,7 +14,8 @@
     "test:parallel": "lerna run test --parallel",
     "coverage": "yarn test --coverage",
     "prepare": "husky install",
-    "start": "lerna run start --parallel"
+    "start": "lerna run start --parallel",
+    "bahmni": "openmrs develop --spa-path '/bahmni/' --sources 'packages/bahmni-lab-lite-app/' --importmap 'dist/importmap.json' --port 8200 --backend 'http://localhost:8080'"
   },
   "dependencies": {
     "swr": "^1.0.1"
@@ -35,6 +36,7 @@
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
     "@babel/runtime": "^7.12.13",
+    "@openmrs/esm-framework": "^3.2.0",
     "@testing-library/dom": "^7.20.0",
     "@testing-library/jest-dom": "^5.11.0",
     "@testing-library/react": "^10.4.3",
@@ -86,6 +88,7 @@
     "pretty-quick": "^2.0.2",
     "rimraf": "^3.0.2",
     "sass": "^1.44.0",
+    "openmrs": "next",
     "sass-loader": "^12.3.0",
     "style-loader": "^3.3.1",
     "ts-jest": "^26.4.2",

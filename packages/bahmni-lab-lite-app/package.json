@@ -2,7 +2,8 @@
   "name": "@bahmni/lab-lite-app",
   "version": "1.0.0",
   "description": "Bahmni Lab Lite",
-  "main": "src/index.tsx",
+  "browser": "dist/bahmni-lab-lite-app.js",
+  "main": "src/index.ts",
   "license": "MIT",
   "scripts": {
     "start": "openmrs develop",
@@ -11,6 +12,7 @@
     "build": "rimraf dist && npx webpack --mode development",
     "typescript": "tsc"
   },
+ 
   "peerDependencies": {
     "@openmrs/esm-framework": "3.x",
     "carbon-components": "10.x",

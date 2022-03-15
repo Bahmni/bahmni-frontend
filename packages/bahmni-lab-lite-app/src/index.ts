@@ -5,8 +5,7 @@
  * microfrontend.
  */
 
-import {getAsyncLifecycle, defineConfigSchema} from '@openmrs/esm-framework'
-import {configSchema} from './config-schema'
+import {getAsyncLifecycle} from '@openmrs/esm-framework'
 
 /**
  * This tells the app shell how to obtain translation files: that they
@@ -38,8 +37,6 @@ function setupOpenMRS() {
     featureName: 'lab-lite',
     moduleName,
   }
-
-  defineConfigSchema(moduleName, configSchema)
 
   return {
     pages: [

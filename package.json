@@ -15,7 +15,8 @@
     "coverage": "yarn test --coverage",
     "prepare": "husky install",
     "start": "lerna run start --parallel",
-    "bahmni": "openmrs develop --spa-path '/bahmni/' --sources 'packages/bahmni-lab-lite-app/' --importmap 'dist/importmap.json' --port 8200 --backend 'http://localhost:8080'"
+    "bahmni": "openmrs develop --spa-path '/bahmni/' --sources 'packages/bahmni-lab-lite-app/' --importmap 'packages/bahmni-lab-lite-app/bahmni-dist/importmap.json' --port 8200 --backend 'http://localhost:8080'",
+    "assemble": "openmrs assemble --config 'spa-build-config.json' --mode 'config' --target 'packages/bahmni-lab-lite-app/bahmni-dist'"
   },
   "dependencies": {
     "swr": "^1.0.1"

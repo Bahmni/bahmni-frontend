@@ -1,0 +1,9 @@
+{
+    "publicUrl": "http://localhost:8201/bahmni-dist",
+    "frontendModules": {
+      "@openmrs/esm-offline-tools-app": "latest",
+      "@openmrs/esm-primary-navigation-app":"latest",
+      "@openmrs/esm-implementer-tools-app":"latest",
+      "@openmrs/esm-devtools-app":"latest"
+    }
+}

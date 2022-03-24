@@ -1,0 +1,18 @@
+{
+  "@openmrs/esm-login-app": {
+    "chooseLocation": {
+      "enabled": false
+    },
+    "logo": {
+      "src": "https://images.squarespace-cdn.com/content/v1/54358a40e4b0d0810faf80c2/1449227490774-VM0J81B5NXHRUIGXPF5H/Bahmni+logo+black+font.png?format=100w",
+      "alt": "Bahmni Logo"
+    }
+  },
+  "@openmrs/esm-primary-navigation-app": {
+    "logo": {
+      "src": "https://images.squarespace-cdn.com/content/v1/54358a40e4b0d0810faf80c2/1449227490774-VM0J81B5NXHRUIGXPF5H/Bahmni+logo+black+font.png?format=100w",
+      "alt": "Bahmni Logo",
+      "name": "Bahmni"
+    }
+  }
+}

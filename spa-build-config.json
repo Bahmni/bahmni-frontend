@@ -4,6 +4,8 @@
       "@openmrs/esm-offline-tools-app": "latest",
       "@openmrs/esm-primary-navigation-app":"latest",
       "@openmrs/esm-implementer-tools-app":"latest",
-      "@openmrs/esm-devtools-app":"latest"
+      "@openmrs/esm-devtools-app":"latest",
+      "@openmrs/esm-patient-search-app":"latest",
+      "@openmrs/esm-patient-banner-app":"latest"
     }
 }
